@@ -1,0 +1,23 @@
+// If you want to override variables do it here
+@import "variables";
+
+// Import CoreUI styles
+@import "~@coreui/coreui/scss/coreui.scss";
+
+// Some temp fixes
+@import "fixes";
+
+// If you want to add something do it here
+@import "custom";
+
+// .MuiTable-root {
+//   table-layout: fixed !important;
+// }
+.MuiTableCell-head {
+  min-width: 100% !important;
+}
+
+.MuiTable-root th,
+td {
+  border-right: 1px solid rgba(134, 134, 134, 0.527) !important;
+}
