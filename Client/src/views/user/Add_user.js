@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   CButton,
   CCard,
@@ -13,12 +13,12 @@ import {
   CLabel,
   CRow,
   // CSwitch,
-} from "@coreui/react";
-import CIcon from "@coreui/icons-react";
-import { useDispatch, useSelector } from "react-redux";
-import { addEmployee, addEmployeeMeta } from "src/actions/userActions";
-import MessageBox from "src/reusable/MessageBox";
-import LoadingBox from "src/reusable/LoadingBox";
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addEmployee, addEmployeeMeta } from '../../actions/userActions';
+import LoadingBox from '../../reusable/LoadingBox';
+import MessageBox from '../../reusable/MessageBox';
 
 const Add_user = (props) => {
   const [name, setName] = useState();
@@ -42,7 +42,7 @@ const Add_user = (props) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     var userInfo = JSON.parse(
-      localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK")
+      localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK')
     );
     if (userInfo) {
       dispatch(
@@ -57,14 +57,14 @@ const Add_user = (props) => {
         )
       );
       //addEmployeeMeta(data.id, employeeID,designation);
-      setName("");
-      setEmployeeID("");
-      setEmail("");
-      setmobileNum("");
-      setDesignaiton("");
-      setPassword("");
+      setName('');
+      setEmployeeID('');
+      setEmail('');
+      setmobileNum('');
+      setDesignaiton('');
+      setPassword('');
     } else {
-      props.history.push("/dashboard");
+      props.history.push('/dashboard');
     }
   };
 
@@ -186,7 +186,7 @@ const Add_user = (props) => {
               ) : newEmployeeInfo ? (
                 <MessageBox>User updated</MessageBox>
               ) : (
-                ""
+                ''
               )}
             </CCardBody>
             <CCardFooter>

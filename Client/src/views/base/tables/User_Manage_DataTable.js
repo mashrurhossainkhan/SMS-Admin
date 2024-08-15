@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
-import MaterialTable from "material-table";
-import { useDispatch, useSelector } from "react-redux";
-import LoadingBox from "src/reusable/LoadingBox";
-import MessageBox from "src/reusable/MessageBox";
+import React, { useEffect } from 'react';
+import MaterialTable from 'material-table';
+import { useDispatch, useSelector } from 'react-redux';
+import LoadingBox from '../../../reusable/LoadingBox';
+import MessageBox from '../../../reusable/MessageBox';
+/*
 import {
   detailsUserByCompanyId,
   removeEmployee,
-} from "src/actions/userActions";
-
+} from '../../../actions/userActions.js';
+*/
 export default function Manage_GroupOf_user_DataTable(props) {
   const employeeByCompanyID = useSelector((state) => state.employeeByCompanyID);
   const { loading, error, allEmployeeByCompanyID } = employeeByCompanyID;
@@ -17,19 +18,20 @@ export default function Manage_GroupOf_user_DataTable(props) {
 
   const dispatch = useDispatch();
 
+  /*
   useEffect(() => {
     dispatch(detailsUserByCompanyId(userInfoGS.company_id));
   }, [dispatch, userInfoGS.company_id]);
-
+*/
   const handleRemoveEmployee = (e, userID) => {
     e.preventDefault();
     if (window.confirm(`Are you sure you want to delete ${userID}?`)) {
-      dispatch(removeEmployee(userID));
+      //dispatch(removeEmployee(userID));
       window.location.reload();
     }
   };
   return (
-    <div style={{ maxWidth: "100%" }}>
+    <div style={{ maxWidth: '100%' }}>
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (
@@ -39,11 +41,11 @@ export default function Manage_GroupOf_user_DataTable(props) {
           <MaterialTable
             title="Manage User"
             columns={[
-              { title: "User Name", field: "userName" },
-              { title: "Employee ID", field: "employeeID" },
-              { title: "Email", field: "email" },
-              { title: "Phone No", field: "phoneNo" },
-              { title: "Designation", field: "designation" },
+              { title: 'User Name', field: 'userName' },
+              { title: 'Employee ID', field: 'employeeID' },
+              { title: 'Email', field: 'email' },
+              { title: 'Phone No', field: 'phoneNo' },
+              { title: 'Designation', field: 'designation' },
             ]}
             data={
               loading ? (
@@ -58,24 +60,24 @@ export default function Manage_GroupOf_user_DataTable(props) {
                     userName: item.userName,
                     employeeID: item.User_metum
                       ? item.User_metum.employee_id
-                      : "",
+                      : '',
                     email: item.email,
-                    phoneNo: item.User_metum ? item.User_metum.phn_no : "",
+                    phoneNo: item.User_metum ? item.User_metum.phn_no : '',
                     designation: item.User_metum
                       ? item.User_metum.designation
-                      : "",
+                      : '',
                   }))
               )
             }
             actions={[
               {
-                icon: "edit",
-                tooltip: "Edit User",
+                icon: 'edit',
+                tooltip: 'Edit User',
                 onClick: (event, data) => console.log(data.userID),
               },
               {
-                icon: "delete",
-                tooltip: "Delete User",
+                icon: 'delete',
+                tooltip: 'Delete User',
                 onClick: (event, data) =>
                   handleRemoveEmployee(event, data.userID),
               },

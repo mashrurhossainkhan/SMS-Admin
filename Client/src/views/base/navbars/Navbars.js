@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   CCard,
   CCardBody,
@@ -18,8 +18,8 @@ import {
   CInput,
   CButton,
   CImg,
-} from "@coreui/react";
-import { DocsLink } from "src/reusable";
+} from '@coreui/react';
+import { DocsLink } from '../../../reusable';
 
 const CNavbars = () => {
   const [isOpen, setIsOpen] = useState(false);

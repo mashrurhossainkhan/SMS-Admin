@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   CRow,
   CCol,
@@ -12,8 +12,8 @@ import {
   CNav,
   CNavItem,
   CNavLink,
-} from "@coreui/react";
-import { DocsLink } from "src/reusable";
+} from '@coreui/react';
+import { DocsLink } from '../../../reusable';
 
 const Navs = () => {
   return (

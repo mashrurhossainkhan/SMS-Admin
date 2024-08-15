@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 import {
   USER_FORGETPASSWORD_FAIL,
   USER_FORGETPASSWORD_REQUEST,
@@ -25,9 +25,9 @@ import {
   EMPLOYEE_REMOVE_REQUEST,
   EMPLOYEE_REMOVE_SUCCESS,
   EMPLOYEE_REMOVE_FAIL,
-} from "../constants/userConstants";
+} from '../constants/userConstants';
 
-const API = "http://localhost:5000";
+const API = 'http://localhost:5000';
 
 /*
 export const detailsUserByCompanyId = (companyId) => {
@@ -101,12 +101,12 @@ export const login = (email, password, props) => async (dispatch) => {
 
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
     const { data } = await axios.post(
-      API + "/api/user/login",
+      API + '/api/user/login',
       { email, password },
       config
     );
@@ -117,19 +117,19 @@ export const login = (email, password, props) => async (dispatch) => {
     });
 
     localStorage.setItem(
-      "3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK",
+      '3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK',
       JSON.stringify(data)
     );
 
-    if (JSON.parse(localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK"))) {
+    if (JSON.parse(localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK'))) {
       //will change later
       /*
             const userSignin = useSelector((state) => state.userSignin);
             const { loading, error, userInfoGS} = userSignin;
         */
-      window.location.href = "/dashboard";
+      window.location.href = '/dashboard';
     } else {
-      alert("Password or email is not correct!");
+      alert('Password or email is not correct!');
     }
   } catch (error) {
     dispatch({
@@ -143,7 +143,7 @@ export const login = (email, password, props) => async (dispatch) => {
 };
 
 export const logout = () => (dispatch) => {
-  localStorage.removeItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK");
+  localStorage.removeItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
   dispatch({ type: USER_LOGOUT });
 };
 
@@ -155,12 +155,12 @@ export const register = (name, email, password) => async (dispatch) => {
 
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
 
     const { data } = await axios.post(
-      API + "/api/user/register",
+      API + '/api/user/register',
       { name, email, password },
       config
     );
@@ -176,7 +176,7 @@ export const register = (name, email, password) => async (dispatch) => {
     });
 
     localStorage.setItem(
-      "3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK",
+      '3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK',
       JSON.stringify(data)
     );
   } catch (error) {
@@ -197,7 +197,7 @@ export const newPassword = (email, password) => async (dispatch) => {
     });
 
     const { data } = await axios.put(
-      API + "/api/user/newpassword/" + email + "/" + password
+      API + '/api/user/newpassword/' + email + '/' + password
     );
 
     dispatch({
@@ -221,7 +221,7 @@ export const forgetPassword = (email) => async (dispatch) => {
       type: USER_FORGETPASSWORD_REQUEST,
     });
 
-    const { data } = await axios.get(API + "/api/user/forgetpassword/" + email);
+    const { data } = await axios.get(API + '/api/user/forgetpassword/' + email);
 
     dispatch({
       type: USER_FORGETPASSWORD_SUCCESS,
@@ -246,7 +246,7 @@ export const addEmployee =
         type: NEW_EMPLOYEE_REQUEST,
       });
 
-      const { data } = await axios.post(API + "/api/user/new/employee", {
+      const { data } = await axios.post(API + '/api/user/new/employee', {
         name,
         companyId,
         email,
@@ -280,7 +280,7 @@ export const addEmployeeMeta =
         type: NEW_EMPLOYEE_META_REQUEST,
       });
       const { data } = await axios.post(
-        API + "/api/user/new/meta/info/employee",
+        API + '/api/user/new/meta/info/employee',
         { userID, employeeID, designation, phnNo }
       );
 
@@ -306,7 +306,7 @@ export const removeEmployee = (userID) => async (dispatch) => {
       type: EMPLOYEE_REMOVE_REQUEST,
     });
     console.log(userID);
-    const { data } = await axios.put(API + "/api/user/remove/" + userID);
+    const { data } = await axios.put(API + '/api/user/remove/' + userID);
 
     dispatch({
       type: EMPLOYEE_REMOVE_SUCCESS,
