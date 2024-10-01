@@ -9,6 +9,7 @@ passport.use(jwtStrategry);
 const noticeController = require('../controllers/noticeBoardController');
 const studentController = require('../controllers/studentController');
 const teacherController = require('../controllers/teacherController');
+const userController = require('../controllers/userController');
 
 router.use(function (req, res, next) {
   res.header(
@@ -18,6 +19,14 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+/* 
+Admin registration API Starts
+*/
+router.post('/api/user/register', userController.signup);
+/*
+Admin registration API ends
+*/
 
 //notice APIs start
 router.post('/api/create/notice', noticeController.addNotice);

@@ -56,6 +56,12 @@ db.teacherMetaAchievement = require('./teacherMetaAchievements')(
   Sequelize
 );
 db.studentMeta = require('./studentmeta')(sequelize, Sequelize);
+db.welcomeNote = require('./welcomeNote')(sequelize, Sequelize);
+db.principalNote = require('./pricipalNote')(sequelize, Sequelize);
+db.achievements = require('./schoolAchievements')(sequelize, Sequelize);
+db.upcomingEvents = require('./upComingEvents')(sequelize, Sequelize);
+db.alumni = require('./alumni')(sequelize, Sequelize);
+db.jobPosts = require('./jobPosts')(sequelize, Sequelize);
 // All DB relation
 
 // Datasource syc
