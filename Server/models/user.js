@@ -18,13 +18,13 @@ module.exports = function (sequelize, DataTypes) {
 
       name: {
         type: DataTypes.STRING,
-        allowNull: false,
         field: 'name',
       },
 
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
         field: 'email',
       },
 

@@ -53,3 +53,37 @@ exports.user_meta_data = async function (req, res) {
     return res.status(400).send({ error: e.message });
   }
 };
+
+//http://localhost:5000/api/user/login
+exports.login = async function (req, res) {
+  let body = req.body;
+  try {
+    const user = await User.findOne({
+      where: {
+        email: body.email,
+      },
+    });
+
+    if (!user) {
+      res.json('Email is not correct!');
+    }
+
+    console.log('user information ==> ' + JSON.stringify(user));
+
+    const isMatch = await bcrypt.compare(body.password, user.password);
+
+    if (isMatch) {
+      res.send({
+        email: body.email,
+        success: true,
+        message: 'Login successful',
+      });
+    } else {
+      res.send({ success: false, message: 'Invalid credentials' });
+    }
+
+    //exports.authenticate(req, res);
+  } catch (e) {
+    return res.status(400).send({ error: e.message });
+  }
+};
