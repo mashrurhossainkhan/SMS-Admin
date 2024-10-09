@@ -1,9 +1,3 @@
-//  Author: Mohammad Jihad Hossain
-//  Create Date: 24/03/2021
-//  Modify Date: 31/03/2021
-//  Description: User controller file for rest api project for FamousAuto
-
-// Library import
 const bcrypt = require('bcrypt');
 // Model import
 const models = require('../models');
@@ -13,11 +7,11 @@ const User = models.user;
 //http://localhost:5000/api/user/register
 exports.signup = async function (req, res) {
   let body = req.body;
-
+  console.log('body ==>', body);
   try {
     let hash = await bcrypt.hash(body.password, 10);
     await User.create({
-      userName: body.name,
+      name: body.name,
       email: body.email,
       password: hash,
       visibility: 1,
