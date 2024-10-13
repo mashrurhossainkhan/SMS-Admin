@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(expessFormData.parse());
 
 // for parsing multipart/form-data
-app.use(upload.array());
+// app.use(upload.array());
 app.use(express.static('uploads'));
 app.use(cookieParser());
 

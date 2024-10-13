@@ -11,6 +11,10 @@ const Notice = models.notice_board;
 exports.addNotice = function (req, res) {
   let body = req.body;
   try {
+    console.log('notice board date:' + JSON.stringify(body.date));
+    console.log('notice board noticeTitle:' + body.noticeTitle);
+    console.log('notice board noticeDetails:' + body.noticeDetails);
+    console.log('notice board noticeFile:' + imagePath);
     upload(req, res, async (err) => {
       // Handle Multer errors
       if (err instanceof multer.MulterError) {
@@ -37,10 +41,7 @@ exports.addNotice = function (req, res) {
         // Optionally, clean up the original image after compression
         fs.unlinkSync(req.file.path); // Delete the original uploaded image
       }
-      console.log('notice board date:' + body.date);
-      console.log('notice board noticeTitle:' + body.noticeTitle);
-      console.log('notice board noticeDetails:' + body.noticeDetails);
-      console.log('notice board noticeFile:' + imagePath);
+
       await Notice.create({
         date: body.date,
         noticeTitle: body.noticeTitle,

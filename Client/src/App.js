@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import "./scss/style.scss";
+import React, { Component } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import './scss/style.scss';
 
 const loading = (
   <div className="pt-3 text-center">
@@ -9,16 +9,25 @@ const loading = (
 );
 
 // Containers
-const TheLayout = React.lazy(() => import("./containers/TheLayout"));
+const TheLayout = React.lazy(() => import('./containers/TheLayout'));
 
 // Pages
-const Login = React.lazy(() => import("./views/pages/login/Login"));
-const Register = React.lazy(() => import("./views/pages/register/Register"));
-const Page404 = React.lazy(() => import("./views/pages/page404/Page404"));
-const Page500 = React.lazy(() => import("./views/pages/page500/Page500"));
-const ForgetPassword = React.lazy(() => import("./views/pages/forgetPasword/forgetPasword"));
-const NewPasswordScreen = React.lazy(() => import("./views/pages/forgetPasword/newPasswordScreen"));
-const EmailVerification = React.lazy(() => import("./views/pages/forgetPasword/enterVerificationCode"));
+const Login = React.lazy(() => import('./views/pages/login/Login'));
+const Register = React.lazy(() => import('./views/pages/register/Register'));
+const Page404 = React.lazy(() => import('./views/pages/page404/Page404'));
+const Page500 = React.lazy(() => import('./views/pages/page500/Page500'));
+const ForgetPassword = React.lazy(() =>
+  import('./views/pages/forgetPasword/forgetPasword')
+);
+const NewPasswordScreen = React.lazy(() =>
+  import('./views/pages/forgetPasword/newPasswordScreen')
+);
+const EmailVerification = React.lazy(() =>
+  import('./views/pages/forgetPasword/enterVerificationCode')
+);
+const NoticeBoardCreate = React.lazy(() =>
+  import('./views/pages/notice_board/Notice_board')
+);
 
 class App extends Component {
   render() {
@@ -32,13 +41,19 @@ class App extends Component {
               name="Login Page"
               render={(props) => <Login {...props} />}
             />
+
+            <Route
+              path="/notice_board/create"
+              name="Notice Board Create"
+              render={(props) => <NoticeBoardCreate {...props} />}
+            />
             <Route
               exact
               path="/forgetpassword"
               name="Forget Password Page"
               render={(props) => <ForgetPassword {...props} />}
             />
-             <Route
+            <Route
               exact
               path="/emailverificationcode"
               name="Forget Password Page"

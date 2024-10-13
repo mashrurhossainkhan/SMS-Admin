@@ -1,6 +1,6 @@
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import thunk from "redux-thunk";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import {
   userForgetPasswordReducer,
   userLoginReducer,
@@ -10,7 +10,8 @@ import {
   newEmployeeMetaReducer,
   employeeByCompanyIDReducer,
   employeeRemoveReducer,
-} from "./reducers/userReducers";
+} from './reducers/userReducers';
+import { newNoticeReducer } from './reducers/noticeReducer';
 
 const reducer = combineReducers({
   userVerificationCode: userForgetPasswordReducer,
@@ -21,12 +22,13 @@ const reducer = combineReducers({
   newEmplyeeMeta: newEmployeeMetaReducer,
   employeeByCompanyID: employeeByCompanyIDReducer,
   employeeRemove: employeeRemoveReducer,
+  newNotice: newNoticeReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem(
-  "3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK"
+  '3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK'
 )
-  ? JSON.parse(localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK"))
+  ? JSON.parse(localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK'))
   : null;
 
 const initialState = {

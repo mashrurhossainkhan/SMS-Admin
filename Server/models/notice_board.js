@@ -28,7 +28,7 @@ module.exports = function (sequelize, DataTypes) {
       },
 
       noticeFile: {
-        type: DataTypes.STRING,
+        type: DataTypes.BLOB,
         field: 'noticeFile',
       },
 

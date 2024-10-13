@@ -1,56 +1,56 @@
-import React from "react";
-import CIcon from "@coreui/icons-react";
+import React from 'react';
+import CIcon from '@coreui/icons-react';
 var userInfo = JSON.parse(
-  localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK")
+  localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK')
 );
 const _nav = [
   {
-    _tag: "CSidebarNavItem",
-    name: "Dashboard",
-    to: "/dashboard",
+    _tag: 'CSidebarNavItem',
+    name: 'Dashboard',
+    to: '/dashboard',
     icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
     badge: {
-      color: "info",
-      text: "NEW",
+      color: 'info',
+      text: 'NEW',
     },
   },
 
   // User
   {
-    _tag: "CSidebarNavDropdown",
-    name: "User",
-    route: "/user",
-    icon: "cil-puzzle",
+    _tag: 'CSidebarNavDropdown',
+    name: 'User',
+    route: '/user',
+    icon: 'cil-puzzle',
     _children: [
       {
-        _tag: "CSidebarNavItem",
-        name: "Add User",
-        to: "/user/add_user",
+        _tag: 'CSidebarNavItem',
+        name: 'Add User',
+        to: '/user/add_user',
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "Manage Of User",
-        to: "/user/manage_user",
+        _tag: 'CSidebarNavItem',
+        name: 'Manage Of User',
+        to: '/user/manage_user',
       },
     ],
   },
 
-  //Merchant
+  //notice_board
   {
-    _tag: "CSidebarNavDropdown",
-    name: "Merchant",
-    route: "/merchant",
+    _tag: 'CSidebarNavDropdown',
+    name: 'Notice Board',
+    route: '/notice_board',
     icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
     _children: [
       {
-        _tag: "CSidebarNavItem",
-        name: "Create",
-        to: "/merchant/create",
+        _tag: 'CSidebarNavItem',
+        name: 'Create',
+        to: '/notice_board/create',
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "Manage",
-        to: "/merchant/manage",
+        _tag: 'CSidebarNavItem',
+        name: 'Manage',
+        to: '/notice_board/manage',
       },
     ],
   },
