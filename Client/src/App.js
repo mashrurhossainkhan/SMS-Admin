@@ -29,6 +29,10 @@ const NoticeBoardCreate = React.lazy(() =>
   import('./views/pages/notice_board/Notice_board')
 );
 
+const AllNotices = React.lazy(() =>
+  import('./views/pages/notice_board/GetAllNotices')
+);
+
 class App extends Component {
   render() {
     return (
@@ -46,6 +50,12 @@ class App extends Component {
               path="/notice_board/create"
               name="Notice Board Create"
               render={(props) => <NoticeBoardCreate {...props} />}
+            />
+
+            <Route
+              path="/notice_board/manage/all"
+              name="All Notices"
+              render={(props) => <AllNotices {...props} />}
             />
             <Route
               exact

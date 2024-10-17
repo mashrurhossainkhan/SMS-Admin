@@ -3,8 +3,33 @@ import {
   NEW_NOTICE_REQUEST,
   NEW_NOTICE_SUCCESS,
   NEW_NOTICE_FAIL,
+  ALL_NOTICE_REQUEST,
+  ALL_NOTICE_SUCCESS,
+  ALL_NOTICE_FAIL,
 } from '../constants/noticeConstants';
 import { API } from './api';
+
+export const allNotices = () => async (dispatch) => {
+  try {
+    dispatch({ type: ALL_NOTICE_REQUEST });
+
+    // Make a POST request to your backend
+    const { data } = await axios.get(`${API}/api/all/notice`);
+
+    dispatch({
+      type: ALL_NOTICE_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: ALL_NOTICE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
 
 export const addNotice =
   (date, noticeTitle, noticeDetails, noticeFile) => async (dispatch) => {

@@ -50,7 +50,7 @@ const _nav = [
       {
         _tag: 'CSidebarNavItem',
         name: 'Manage',
-        to: '/notice_board/manage',
+        to: '/notice_board/manage/all',
       },
     ],
   },

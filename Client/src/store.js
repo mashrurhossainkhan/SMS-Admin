@@ -11,7 +11,7 @@ import {
   employeeByCompanyIDReducer,
   employeeRemoveReducer,
 } from './reducers/userReducers';
-import { newNoticeReducer } from './reducers/noticeReducer';
+import { AllNoticeReducer, newNoticeReducer } from './reducers/noticeReducer';
 
 const reducer = combineReducers({
   userVerificationCode: userForgetPasswordReducer,
@@ -23,6 +23,7 @@ const reducer = combineReducers({
   employeeByCompanyID: employeeByCompanyIDReducer,
   employeeRemove: employeeRemoveReducer,
   newNotice: newNoticeReducer,
+  AllNotice: AllNoticeReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem(

@@ -8,55 +8,23 @@ const Notice = models.notice_board;
 
 // Add new notice
 //http://localhost:5000/api/create/notice
-exports.addNotice = function (req, res) {
+exports.addNotice = async function (req, res) {
   let body = req.body;
   try {
-    console.log('notice board date:' + JSON.stringify(body.date));
-    console.log('notice board noticeTitle:' + body.noticeTitle);
-    console.log('notice board noticeDetails:' + body.noticeDetails);
-    console.log('notice board noticeFile:' + imagePath);
-    upload(req, res, async (err) => {
-      // Handle Multer errors
-      if (err instanceof multer.MulterError) {
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return res
-            .status(400)
-            .json({ error: 'File size too big. Max size is 5MB.' });
-        }
-        return res.status(400).json({ error: err.message });
-      } else if (err) {
-        return res.status(400).json({ error: err.message });
-      }
-
-      let imagePath = null;
-
-      if (req.file) {
-        const compressedImagePath = path.join(
-          UPLOADS_DIR,
-          `compressed-${req.file.filename}`
-        );
-
-        imagePath = compressedImagePath; // Store the path to the compressed image
-
-        // Optionally, clean up the original image after compression
-        fs.unlinkSync(req.file.path); // Delete the original uploaded image
-      }
-
-      await Notice.create({
-        date: body.date,
-        noticeTitle: body.noticeTitle,
-        noticeDetails: body.noticeDetails,
-        noticeFile: imagePath,
-        visibility: 'true',
+    await Notice.create({
+      date: body.date,
+      noticeTitle: body.noticeTitle,
+      noticeDetails: body.noticeDetails,
+      // noticeFile: imagePath,
+      visibility: 'true',
+    })
+      .then((notice) => {
+        //console.log("user created");
+        res.status(200).json('Notice has created successfully');
       })
-        .then((notice) => {
-          //console.log("user created");
-          res.status(200).json('Notice has created successfully');
-        })
-        .catch((err) => {
-          return res.status(500).json('Something error there ' + err);
-        });
-    });
+      .catch((err) => {
+        return res.status(500).json('Something error there ' + err);
+      });
   } catch (e) {
     return res.status(400).send({ error: e.message });
   }

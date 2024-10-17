@@ -84,7 +84,7 @@ const FormNoticeBoard = ({ history, location }) => {
                       onChange={(e) => setDescription(e.target.value)}
                     />
                   </CInputGroup>
-                  <CInputGroup className="mb-4">
+                  {/* <CInputGroup className="mb-4">
                     <CInputGroupPrepend>
                       <CInputGroupText>
                         {imagePreview ? imagePreview : 'File'}
@@ -96,7 +96,7 @@ const FormNoticeBoard = ({ history, location }) => {
                       name="file"
                       onChange={(e) => handleFileChange(e)}
                     />
-                  </CInputGroup>
+                  </CInputGroup> */}
                   <CButton type="submit" color="success" block>
                     Create Notice
                   </CButton>
