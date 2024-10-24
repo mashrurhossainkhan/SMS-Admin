@@ -28,6 +28,11 @@ module.exports = function (sequelize, DataTypes) {
         field: 'email',
       },
 
+      userType: {
+        type: DataTypes.BIGINT,
+        field: 'userType',
+      },
+
       visibility: {
         type: DataTypes.STRING,
         allowNull: false,

@@ -46,16 +46,13 @@ db.Sequelize = Sequelize;
 // Import models
 // New models
 db.notice_board = require('./notice_board')(sequelize, Sequelize);
-db.student = require('./student')(sequelize, Sequelize);
 db.user = require('./user')(sequelize, Sequelize);
+db.userType = require('./UserType')(sequelize, Sequelize);
 db.userMeta = require('./userMeta')(sequelize, Sequelize);
-db.teacher = require('./teacher')(sequelize, Sequelize);
-db.teacherMeta = require('./teacherMeta')(sequelize, Sequelize);
 db.teacherMetaAchievement = require('./teacherMetaAchievements')(
   sequelize,
   Sequelize
 );
-db.studentMeta = require('./studentmeta')(sequelize, Sequelize);
 db.welcomeNote = require('./welcomeNote')(sequelize, Sequelize);
 db.principalNote = require('./pricipalNote')(sequelize, Sequelize);
 db.achievements = require('./schoolAchievements')(sequelize, Sequelize);

@@ -1,6 +1,6 @@
 module.exports = function (sequelize, DataTypes) {
   return sequelize.define(
-    'Teacher',
+    'UserType',
     {
       id: {
         type: DataTypes.BIGINT,
@@ -10,29 +10,9 @@ module.exports = function (sequelize, DataTypes) {
         field: 'id',
       },
 
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'name',
-      },
-
-      designation: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'designation',
-      },
-
-      image: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'image',
-      },
-
-      visibility: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        default: false,
-        field: 'visibility',
+      userType: {
+        type: DataTypes.TEXT,
+        field: 'userType',
       },
 
       createdAt: {
@@ -54,7 +34,7 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
     {
-      tableName: 'teacher',
+      tableName: 'userType',
     }
   );
 };

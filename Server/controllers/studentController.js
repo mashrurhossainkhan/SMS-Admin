@@ -5,7 +5,7 @@ const Student = models.student;
 exports.studentSignup = async function (req, res) {
   let body = req.body;
   try {
-    let hashedPass = await bcrypt.hashSync(body.password, 8);
+    let hashedPass = bcrypt.hashSync(body.password, 8);
 
     await Student.create({
       password: hashedPass,

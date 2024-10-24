@@ -16,32 +16,19 @@ module.exports = function (sequelize, DataTypes) {
         field: 'userid',
       },
 
-      firstname: {
+      fieldName: {
         type: DataTypes.STRING,
-        allowNull: false,
-        field: 'firstname',
+        field: 'fieldName',
       },
 
-      middlename: {
+      fieldTitle: {
         type: DataTypes.STRING,
-        field: 'middlename',
-      },
 
-      lastname: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'lastname',
-      },
-
-      phnno: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'phnno',
+        field: 'fieldTitle',
       },
 
       createdAt: {
         type: DataTypes.DATE,
-        allowNull: true,
         field: 'createdAt',
       },
 
