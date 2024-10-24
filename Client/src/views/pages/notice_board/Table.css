@@ -1,7 +1,5 @@
 .table-container {
-  margin: 0px auto;
   width: 100%; /* Ensure full width */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .custom-table {

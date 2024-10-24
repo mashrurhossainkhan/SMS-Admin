@@ -36,10 +36,14 @@ const FormNoticeBoard = ({ history, location }) => {
 
     // Dispatch the action
     dispatch(addNotice(date, title, description, file));
+    setDate('');
+    setTitle('');
+    setDescription('');
+    alert('Notice submited');
   };
 
   return (
-    <div className="c-app c-default-layout flex-row align-items-center">
+    <div className="c-app c-default-layout flex-row">
       <CContainer>
         <CRow className="justify-content-center">
           <CCol>
@@ -97,7 +101,12 @@ const FormNoticeBoard = ({ history, location }) => {
                       onChange={(e) => handleFileChange(e)}
                     />
                   </CInputGroup> */}
-                  <CButton type="submit" color="success" block>
+                  <CButton
+                    type="submit"
+                    className="btnNoticeBoard"
+                    style={{ color: '#ffffff', backgroundColor: '#000000' }}
+                    block
+                  >
                     Create Notice
                   </CButton>
                 </CForm>

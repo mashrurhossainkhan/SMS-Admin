@@ -18,10 +18,9 @@ const AllNoticeTable = () => {
       <table className="custom-table">
         <thead>
           <tr>
-            <th>Id</th>
             <th>Date</th>
             <th>Title</th>
-            <th>View</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -36,12 +35,9 @@ const AllNoticeTable = () => {
           ) : (
             (allNoticesData || []).map((item, index) => (
               <tr key={index}>
-                <td>{item.id}</td>
                 <td>{item.date}</td>
                 <td>{item.noticeTitle}</td>
-                <td>
-                  <button>Click to View</button>
-                </td>
+                <td>{item.noticeDetails}</td>
               </tr>
             ))
           )}

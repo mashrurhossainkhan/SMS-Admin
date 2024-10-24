@@ -34,9 +34,12 @@ exports.addNotice = async function (req, res) {
 //http://localhost:5000/api/all/notice
 exports.getAllNotices = async function (req, res) {
   try {
-    await Notice.findAll()
-      .then((notice) => {
-        res.status(200).json(notice);
+    await Notice.findAll({
+      order: [['createdAt', 'DESC']], // Sort by 'createdAt' field in descending order
+      limit: 30,
+    })
+      .then((notices) => {
+        res.status(200).json(notices);
       })
       .catch((err) => {
         res.status(400).json(err);
