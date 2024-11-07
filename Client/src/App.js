@@ -29,6 +29,14 @@ const NoticeBoardCreate = React.lazy(() =>
   import('./views/pages/notice_board/Notice_board')
 );
 
+const StudentCreate = React.lazy(() =>
+  import('./views/pages/Student/CreateStudent')
+);
+
+const TeacherCreate = React.lazy(() =>
+  import('./views/pages/Teacherts/CreateTeacherts')
+);
+
 const AllNotices = React.lazy(() =>
   import('./views/pages/notice_board/GetAllNotices')
 );
@@ -57,6 +65,19 @@ class App extends Component {
               name="All Notices"
               render={(props) => <AllNotices {...props} />}
             />
+
+            <Route
+              path="/student/create"
+              name="Student Create"
+              render={(props) => <StudentCreate {...props} />}
+            />
+
+            <Route
+              path="/teacher/create"
+              name="Teacher Create"
+              render={(props) => <TeacherCreate {...props} />}
+            />
+
             <Route
               exact
               path="/forgetpassword"

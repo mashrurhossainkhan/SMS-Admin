@@ -55,6 +55,46 @@ const _nav = [
     ],
   },
 
+  //Students
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Sudents',
+    route: '/student',
+    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Create',
+        to: '/student/create',
+      },
+      // {
+      //   _tag: 'CSidebarNavItem',
+      //   name: 'Manage',
+      //   to: '/notice_board/manage/all',
+      // },
+    ],
+  },
+
+  //Students
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Teachers',
+    route: '/teacher',
+    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Create',
+        to: '/teacher/create',
+      },
+      // {
+      //   _tag: 'CSidebarNavItem',
+      //   name: 'Manage',
+      //   to: '/notice_board/manage/all',
+      // },
+    ],
+  },
+
   // User Group
   /*{
     _tag: "CSidebarNavDropdown",

@@ -17,27 +17,38 @@ import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../../actions/userActions';
 import CIcon from '@coreui/icons-react';
 
-const Register = ({ history, location }) => {
+const Register = ({ history, location, userTypeProps }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
+  const [userType, setUserType] = useState(1);
   const dispatch = useDispatch();
 
   const userRegister = useSelector((state) => state.userRegister);
   const { loading, error, userInfoFamous } = userRegister;
-  const redirect = location.search ? location.search.split('=')[1] : '/';
+  const redirect = location?.search ? location.search.split('=')[1] : '/';
   useEffect(() => {
-    if (userInfoFamous) {
+    if (userInfoFamous && !userTypeProps) {
       history.push(redirect);
     }
-  }, [history, userInfoFamous, redirect]);
+
+    if (userTypeProps) {
+      setUserType(parseInt(userTypeProps));
+    }
+
+    console.log('redirect = ' + redirect);
+  }, [history, userInfoFamous, redirect, userTypeProps]);
   const submit = async (e) => {
     e.preventDefault();
     if (password !== password2) {
       alert('Password Do Not Match');
     } else {
-      dispatch(register(name, email, password));
+      if (userTypeProps) {
+        setUserType(parseInt(userTypeProps));
+      }
+      dispatch(register(name, email, password, userType));
+      alert('Successfully Created!');
     }
   };
 
@@ -110,7 +121,7 @@ const Register = ({ history, location }) => {
                   </CButton>
                 </CForm>
               </CCardBody>
-              <CCardFooter className="p-4">
+              {/* <CCardFooter className="p-4">
                 <CRow>
                   <CCol xs="12" sm="6">
                     <CButton className="btn-facebook mb-1" block>
@@ -123,7 +134,7 @@ const Register = ({ history, location }) => {
                     </CButton>
                   </CCol>
                 </CRow>
-              </CCardFooter>
+              </CCardFooter> */}
             </CCard>
           </CCol>
         </CRow>

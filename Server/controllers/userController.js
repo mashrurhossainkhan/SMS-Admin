@@ -6,14 +6,15 @@ const User = models.user;
 // Signup user
 //http://localhost:5000/api/user/register
 exports.signup = async function (req, res) {
+  //signup as an admin
   let body = req.body;
-  console.log('body ==>', body);
   try {
     let hash = await bcrypt.hash(body.password, 10);
     await User.create({
       name: body.name,
       email: body.email,
       password: hash,
+      userType: body.userType,
       visibility: 1,
     })
       .then((user) => {
