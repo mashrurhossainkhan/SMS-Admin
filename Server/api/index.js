@@ -25,10 +25,11 @@ Admin registration API Starts
 */
 router.post('/api/user/register', userController.signup);
 router.post('/api/user/login', userController.login);
+router.get('/api/users/type/:userTypeId', userController.getUserByType);
 /*
 Admin registration API ends 
 */
- 
+
 //notice APIs start
 router.post('/api/create/notice', noticeController.addNotice);
 router.get('/api/all/notice', noticeController.getAllNotices);

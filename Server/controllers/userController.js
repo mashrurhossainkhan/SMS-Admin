@@ -88,3 +88,32 @@ exports.login = async function (req, res) {
     return res.status(400).send({ error: e.message });
   }
 };
+
+//get user by type ID
+// Get users by userType ID
+exports.getUserByType = async (req, res) => {
+  try {
+    const userTypeId = req.params.userTypeId;
+
+    const users = await User.findAll({
+      where: {
+        userType: userTypeId,
+        visibility: 1, // Assuming only visible users should be fetched
+      },
+      order: [['createdAt', 'DESC']], // Sort users by creation date in descending order
+    });
+
+    if (!users.length) {
+      return res
+        .status(404)
+        .json({ message: 'No users found for the given type ID' });
+    }
+
+    res.status(200).json(users);
+  } catch (error) {
+    console.error('Error fetching users by type ID:', error);
+    res
+      .status(500)
+      .json({ message: 'Internal server error', error: error.message });
+  }
+};
