@@ -58,6 +58,10 @@ router.post('/api/signup/teacher', teacherController.insertTeacherInfo);
 
 //subject controllers start
 router.get('/api/subjects/all/info', subjectController.getAllSubjectInfo);
+router.post(
+  '/api/assign/teacher/student/subject',
+  subjectController.addTeacherStSubjectAssociation
+);
 //subject controllers end
 
 router.use(function (err, req, res, next) {
