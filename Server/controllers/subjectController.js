@@ -1,7 +1,8 @@
 const models = require('../models');
 const Subject = models.subject;
+const User = models.user;
 const teacherStSubjectAssociation = models.TeacherStSubjectAssociation;
-
+const { sequelize } = require('../models');
 // Get all subject information
 const getAllSubjectInfo = async (req, res) => {
   try {
@@ -53,4 +54,53 @@ const addTeacherStSubjectAssociation = async (req, res) => {
   }
 };
 
-module.exports = { getAllSubjectInfo, addTeacherStSubjectAssociation };
+// Fetch all associations with user information
+const getAllAssociationsWithUserInfo = async (req, res) => {
+  try {
+    const query = `
+       SELECT 
+            assoc.id AS associationId,
+            assoc.subjectId,
+            assoc.createdAt,
+            assoc.updatedAt,
+            teacher.name AS teacherName,
+            teacher.email AS teacherEmail,
+            student.name AS studentName,
+            student.email AS studentEmail,
+            subject.name AS subjectName,
+            subject.section AS subjectSection,
+            subject.class AS subjectClass
+        FROM 
+            teacherStSubjectAssociation AS assoc
+        JOIN 
+            user AS teacher ON assoc.teacherId = teacher.id
+        JOIN 
+            user AS student ON assoc.stId = student.id
+        JOIN 
+            subject ON assoc.subjectId = subject.id
+        ORDER BY 
+            assoc.createdAt DESC;
+        `;
+
+    const associations = await sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    if (!associations.length) {
+      return res.status(404).json({ message: 'No associations found' });
+    }
+
+    res.status(200).json(associations);
+  } catch (error) {
+    console.error('Error fetching associations:', error);
+    res
+      .status(500)
+      .json({ message: 'Internal server error', error: error.message });
+  }
+};
+
+module.exports = {
+  getAllSubjectInfo,
+  addTeacherStSubjectAssociation,
+  getAllAssociationsWithUserInfo,
+};

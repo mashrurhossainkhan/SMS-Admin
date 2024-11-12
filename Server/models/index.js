@@ -64,6 +64,27 @@ db.TeacherStSubjectAssociation = require('./TeacherStSubjectAssociation')(
   sequelize,
   Sequelize
 );
+
+db.TeacherStSubjectAssociation.associate = (models) => {
+  db.TeacherStSubjectAssociation.belongsTo(models.User, {
+    foreignKey: 'teacherId',
+    as: 'teacher',
+  });
+  db.TeacherStSubjectAssociation.belongsTo(models.User, {
+    foreignKey: 'stId',
+    as: 'student',
+  });
+};
+
+db.user.hasMany(db.TeacherStSubjectAssociation, {
+  foreignKey: 'teacherId',
+  as: 'teachingAssociations',
+});
+db.user.hasMany(db.TeacherStSubjectAssociation, {
+  foreignKey: 'stId',
+  as: 'studentAssociations',
+});
+
 // All DB relation
 
 // Datasource syc

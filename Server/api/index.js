@@ -62,6 +62,10 @@ router.post(
   '/api/assign/teacher/student/subject',
   subjectController.addTeacherStSubjectAssociation
 );
+router.get(
+  '/api/st/teachers/subjects/association/all/info',
+  subjectController.getAllAssociationsWithUserInfo
+);
 //subject controllers end
 
 router.use(function (err, req, res, next) {
