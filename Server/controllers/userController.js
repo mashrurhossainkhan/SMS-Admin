@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 // Model import
 const models = require('../models');
 const User = models.user;
-
 // Signup user
 //http://localhost:5000/api/user/register
 exports.signup = async function (req, res) {

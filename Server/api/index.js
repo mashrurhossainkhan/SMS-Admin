@@ -10,6 +10,7 @@ const noticeController = require('../controllers/noticeBoardController');
 const studentController = require('../controllers/studentController');
 const teacherController = require('../controllers/teacherController');
 const userController = require('../controllers/userController');
+const subjectController = require('../controllers/subjectController');
 
 router.use(function (req, res, next) {
   res.header(
@@ -54,6 +55,10 @@ router.get('/api/signin/student', studentController.studentSignin);
 router.post('/api/signup/teacher', teacherController.insertTeacherInfo);
 //router.get('/api/signin/student', studentController.studentSignin);
 //techer APIs end
+
+//subject controllers start
+router.get('/api/subjects/all/info', subjectController.getAllSubjectInfo);
+//subject controllers end
 
 router.use(function (err, req, res, next) {
   if (err.name === 'ValidationError') {
