@@ -11,6 +11,7 @@ const studentController = require('../controllers/studentController');
 const teacherController = require('../controllers/teacherController');
 const userController = require('../controllers/userController');
 const subjectController = require('../controllers/subjectController');
+const attendanceController = require('../controllers/attendanceController');
 
 router.use(function (req, res, next) {
   res.header(
@@ -30,6 +31,10 @@ router.get('/api/users/type/:userTypeId', userController.getUserByType);
 /*
 Admin registration API ends 
 */
+
+//attandance controller start
+router.post('/api/attendance/insert', attendanceController.postAttendance);
+//attance controller end
 
 //notice APIs start
 router.post('/api/create/notice', noticeController.addNotice);
