@@ -33,7 +33,10 @@ Admin registration API ends
 */
 
 //attandance controller start
-router.post('/api/attendance/insert', attendanceController.postAttendance);
+router.post(
+  '/api/attendance/insert',
+  attendanceController.insertAttendanceRecords
+);
 //attance controller end
 
 //notice APIs start
