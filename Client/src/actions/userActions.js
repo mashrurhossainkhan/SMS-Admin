@@ -25,7 +25,11 @@ import {
   EMPLOYEE_REMOVE_REQUEST,
   EMPLOYEE_REMOVE_SUCCESS,
   EMPLOYEE_REMOVE_FAIL,
+  STUDENT_ATTENDANCE_GET_REQUEST,
+  STUDENT_ATTENDANCE_GET_SUCCESS,
+  STUDENT_ATTENDANCE_GET_FAIL,
 } from '../constants/userConstants';
+import { Typography } from '@material-ui/core';
 
 const API = 'http://localhost:5000';
 
@@ -316,6 +320,31 @@ export const removeEmployee = (userID) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: EMPLOYEE_REMOVE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const studentFetchForTeachers = (email) => async (dispatch) => {
+  try {
+    dispatch({
+      type: STUDENT_ATTENDANCE_GET_REQUEST,
+    });
+
+    const { data } = await axios.get(
+      API + '/api/st/teachers/subjects/association/all/info/' + email
+    );
+    console.log(data);
+    dispatch({
+      type: STUDENT_ATTENDANCE_GET_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: STUDENT_ATTENDANCE_GET_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

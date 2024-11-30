@@ -11,6 +11,9 @@ import {
   NEW_EMPLOYEE_META_SUCCESS,
   NEW_EMPLOYEE_REQUEST,
   NEW_EMPLOYEE_SUCCESS,
+  STUDENT_ATTENDANCE_GET_FAIL,
+  STUDENT_ATTENDANCE_GET_REQUEST,
+  STUDENT_ATTENDANCE_GET_SUCCESS,
   USER_FORGETPASSWORD_FAIL,
   USER_FORGETPASSWORD_REQUEST,
   USER_FORGETPASSWORD_SUCCESS,
@@ -24,7 +27,7 @@ import {
   USER_REGISTER_FAIL,
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
-} from "../constants/userConstants";
+} from '../constants/userConstants';
 
 export const userLoginReducer = (state = {}, action) => {
   switch (action.type) {
@@ -152,6 +155,23 @@ export const employeeRemoveReducer = (state = {}, action) => {
       };
 
     case EMPLOYEE_REMOVE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const studentInfoForAttendanceReducer = (state = {}, action) => {
+  switch (action.type) {
+    case STUDENT_ATTENDANCE_GET_REQUEST:
+      return { loading: true };
+    case STUDENT_ATTENDANCE_GET_SUCCESS:
+      return {
+        loading: false,
+        allStudentsInfo: action.payload,
+      };
+
+    case STUDENT_ATTENDANCE_GET_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

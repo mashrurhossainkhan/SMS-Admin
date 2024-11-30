@@ -1,0 +1,107 @@
+/* Attendance Container */
+.attendance-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.attendance-container h1 {
+  text-align: center;
+  color: #333333;
+  margin-bottom: 20px;
+}
+
+/* Student List */
+.student-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.student-list li {
+  margin-bottom: 15px;
+  padding: 15px;
+  background: #f9f9fc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.student-list li:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.student-list p {
+  margin: 5px 0;
+  color: #555555;
+}
+
+/* Checkboxes */
+.attendance-options label {
+  margin-right: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #333333;
+}
+
+.attendance-options input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #cccccc;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.attendance-options input[type='checkbox']:checked {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.attendance-options input[type='checkbox']:checked::before {
+  content: '✔';
+  display: block;
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  line-height: 18px;
+}
+
+/* Submit Button */
+.submit-button {
+  display: block;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.submit-button:active {
+  background-color: #3e8e41;
+}
+
+.submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}

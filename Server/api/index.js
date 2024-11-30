@@ -68,7 +68,7 @@ router.post(
   subjectController.addTeacherStSubjectAssociation
 );
 router.get(
-  '/api/st/teachers/subjects/association/all/info',
+  '/api/st/teachers/subjects/association/all/info/:email',
   subjectController.getAllAssociationsWithUserInfo
 );
 //subject controllers end

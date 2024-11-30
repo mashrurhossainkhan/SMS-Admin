@@ -54,40 +54,51 @@ const addTeacherStSubjectAssociation = async (req, res) => {
   }
 };
 
-// Fetch all associations with user information
+// Fetch all associations with user information filtered by email
 const getAllAssociationsWithUserInfo = async (req, res) => {
   try {
+    const { email } = req.params; // Extract email from route parameters
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email parameter is required' });
+    }
+
     const query = `
-       SELECT 
-            assoc.id AS associationId,
-            assoc.subjectId,
-            assoc.createdAt,
-            assoc.updatedAt,
-            teacher.name AS teacherName,
-            teacher.email AS teacherEmail,
-            student.name AS studentName,
-            student.email AS studentEmail,
-            subject.name AS subjectName,
-            subject.section AS subjectSection,
-            subject.class AS subjectClass
-        FROM 
-            teacherStSubjectAssociation AS assoc
-        JOIN 
-            user AS teacher ON assoc.teacherId = teacher.id
-        JOIN 
-            user AS student ON assoc.stId = student.id
-        JOIN 
-            subject ON assoc.subjectId = subject.id
-        ORDER BY 
-            assoc.createdAt DESC;
-        `;
+      SELECT 
+          assoc.id AS associationId,
+          assoc.subjectId,
+          assoc.createdAt,
+          assoc.updatedAt,
+          teacher.name AS teacherName,
+          teacher.email AS teacherEmail,
+          student.name AS studentName,
+          student.email AS studentEmail,
+          subject.name AS subjectName,
+          subject.section AS subjectSection,
+          subject.class AS subjectClass
+      FROM 
+          teacherStSubjectAssociation AS assoc
+      JOIN 
+          user AS teacher ON assoc.teacherId = teacher.id
+      JOIN 
+          user AS student ON assoc.stId = student.id
+      JOIN 
+          subject ON assoc.subjectId = subject.id
+      WHERE 
+          teacher.email = :email OR student.email = :email
+      ORDER BY 
+          assoc.createdAt DESC;
+    `;
 
     const associations = await sequelize.query(query, {
+      replacements: { email }, // Use parameter binding to inject email safely
       type: sequelize.QueryTypes.SELECT,
     });
 
     if (!associations.length) {
-      return res.status(404).json({ message: 'No associations found' });
+      return res
+        .status(404)
+        .json({ message: 'No associations found for the provided email' });
     }
 
     res.status(200).json(associations);

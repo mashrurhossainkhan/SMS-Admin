@@ -129,4 +129,23 @@ const _nav = [
 if (userInfo) {
   if (userInfo.isAdmin != 1) _nav.splice(1, 1);
 }
+
+// Adjust nav based on user information
+if (userInfo) {
+  // Remove User menu for non-admins
+  if (userInfo.isAdmin !== 1) {
+    _nav.splice(1, 1);
+  }
+
+  // Add "Attendance" for userType 3
+  if (userInfo.userType === 3) {
+    _nav.push({
+      _tag: 'CSidebarNavItem',
+      name: 'Attendance',
+      to: '/attendance',
+      icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+    });
+  }
+}
+
 export default _nav;

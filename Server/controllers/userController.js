@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt');
 // Model import
 const models = require('../models');
+const { name } = require('../strategies/jwt');
 const User = models.user;
 // Signup user
 //http://localhost:5000/api/user/register
@@ -74,7 +75,10 @@ exports.login = async function (req, res) {
 
     if (isMatch) {
       res.send({
-        email: body.email,
+        email: user.email,
+        userId: user.id,
+        name: user.name,
+        userType: user.userType,
         success: true,
         message: 'Login successful',
       });
