@@ -15,7 +15,7 @@ const insertAttendanceRecords = async (req, res) => {
       });
     }
 
-    // Prepare attendance records for bulk insert
+    // Prepare attendance records for bulk insevvccxxznvvvvvqqrt
     const recordsToInsert = attendanceData.map((record) => ({
       teacherStAssociationId: record.associationId,
       teacherId: record.teacherId,

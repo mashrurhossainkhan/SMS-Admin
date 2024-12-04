@@ -28,6 +28,9 @@ import {
   STUDENT_ATTENDANCE_GET_REQUEST,
   STUDENT_ATTENDANCE_GET_SUCCESS,
   STUDENT_ATTENDANCE_GET_FAIL,
+  STUDENT_ATTENDANCE_POST_REQUEST,
+  STUDENT_ATTENDANCE_POST_SUCCESS,
+  STUDENT_ATTENDANCE_POST_FAIL,
 } from '../constants/userConstants';
 import { Typography } from '@material-ui/core';
 
@@ -352,3 +355,30 @@ export const studentFetchForTeachers = (email) => async (dispatch) => {
     });
   }
 };
+
+// export const studentAttendanceBulkForTeachers =
+//   (attendance) => async (dispatch) => {
+//     try {
+//       dispatch({
+//         type: STUDENT_ATTENDANCE_POST_REQUEST,
+//       });
+
+//       const { data } = await axios.post(
+//         API + '/api/attendance/insert',
+//         attendance
+//       );
+//       console.log(data);
+//       dispatch({
+//         type: STUDENT_ATTENDANCE_POST_SUCCESS,
+//         payload: data,
+//       });
+//     } catch (error) {
+//       dispatch({
+//         type: STUDENT_ATTENDANCE_POST_FAIL,
+//         payload:
+//           error.response && error.response.data.message
+//             ? error.response.data.message
+//             : error.message,
+//       });
+//     }
+//   };
