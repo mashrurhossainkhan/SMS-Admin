@@ -153,6 +153,16 @@ if (userInfo) {
       icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
     });
   }
+
+  if (userInfo.userType === 1) {
+  }
+
+  _nav.push({
+    _tag: 'CSidebarNavItem',
+    name: 'Payments',
+    to: '/students/payments',
+    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+  });
 }
 
 export default _nav;

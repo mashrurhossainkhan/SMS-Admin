@@ -75,6 +75,10 @@ const Brand = React.lazy(() => import('./views/brand/brand'));
 
 const Category = React.lazy(() => import('./views/category/Category'));
 
+const StudentPayment = React.lazy(() =>
+  import('./views/Payments/StudentPayments')
+);
+
 const ManageSupplier = React.lazy(() =>
   import('./views/supplier/Manage_supplier')
 );
@@ -399,6 +403,13 @@ const routes = [
     exact: true,
     name: 'Setting',
     component: Setting,
+  },
+
+  {
+    path: '/students/payments',
+    exact: true,
+    name: 'Payments',
+    component: StudentPayment,
   },
 ];
 
