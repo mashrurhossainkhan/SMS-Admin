@@ -356,29 +356,28 @@ export const studentFetchForTeachers = (email) => async (dispatch) => {
   }
 };
 
-// export const studentAttendanceBulkForTeachers =
-//   (attendance) => async (dispatch) => {
-//     try {
-//       dispatch({
-//         type: STUDENT_ATTENDANCE_POST_REQUEST,
-//       });
-
-//       const { data } = await axios.post(
-//         API + '/api/attendance/insert',
-//         attendance
-//       );
-//       console.log(data);
-//       dispatch({
-//         type: STUDENT_ATTENDANCE_POST_SUCCESS,
-//         payload: data,
-//       });
-//     } catch (error) {
-//       dispatch({
-//         type: STUDENT_ATTENDANCE_POST_FAIL,
-//         payload:
-//           error.response && error.response.data.message
-//             ? error.response.data.message
-//             : error.message,
-//       });
-//     }
-//   };
+export const studentAttendanceBulkForTeachers =
+  (attendance) => async (dispatch) => {
+    try {
+      dispatch({
+        type: STUDENT_ATTENDANCE_POST_REQUEST,
+      });
+      const { data } = await axios.post(
+        API + '/api/attendance/insert',
+        attendance
+      );
+      console.log(data);
+      dispatch({
+        type: STUDENT_ATTENDANCE_POST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: STUDENT_ATTENDANCE_POST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };

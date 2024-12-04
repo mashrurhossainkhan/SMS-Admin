@@ -1,5 +1,4 @@
 const models = require('../models');
-const TeacherStSubjectAssociation = models.TeacherStSubjectAssociation;
 const Attendance = models.attendance;
 
 // Post attendance
@@ -7,7 +6,10 @@ const insertAttendanceRecords = async (req, res) => {
   try {
     const { attendanceData } = req.body;
 
-    console.log(`attendanceData: ${attendanceData}`);
+    console.log(`AttendanceData: ${JSON.stringify(attendanceData)}`);
+    console.log('Request Body:', JSON.stringify(req.body, null, 2));
+
+    // Validate the attendance data
     if (!attendanceData || !Array.isArray(attendanceData)) {
       return res.status(400).json({
         message:
@@ -15,18 +17,42 @@ const insertAttendanceRecords = async (req, res) => {
       });
     }
 
-    // Prepare attendance records for bulk insevvccxxznvvvvvqqrt
+    // Validate each record's required fields
+    const invalidRecords = attendanceData.filter((record) => {
+      const isValid =
+        record.teacherId &&
+        record.studentId &&
+        record.associationId &&
+        record.presentOrAbsent !== undefined;
+
+      if (!isValid) {
+        console.log('Invalid record:', record);
+      }
+
+      return !isValid;
+    });
+
+    if (invalidRecords.length > 0) {
+      return res.status(400).json({
+        message: 'Some attendance records are missing required fields.',
+        invalidRecords,
+      });
+    }
+
+    // Prepare attendance records for insertion
     const recordsToInsert = attendanceData.map((record) => ({
-      teacherStAssociationId: record.associationId,
       teacherId: record.teacherId,
       studentId: record.studentId,
-      presentOrAbsent: record.presentOrAbsent ? 1 : 0,
+      teacherStAssociationId: record.associationId,
+      presentOrAbsent: record.presentOrAbsent,
       visibility: true, // Default value
       createdAt: new Date(),
       updatedAt: new Date(),
     }));
 
-    // Bulk insert into Attendance model
+    console.log('Records to insert:', recordsToInsert);
+
+    // Bulk insert into Attendance table
     await Attendance.bulkCreate(recordsToInsert);
 
     res

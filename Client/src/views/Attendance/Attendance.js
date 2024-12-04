@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { studentFetchForTeachers } from '../../actions/userActions';
+import {
+  studentAttendanceBulkForTeachers,
+  studentFetchForTeachers,
+} from '../../actions/userActions';
 import './Attendance.css'; // Import the CSS file
 
 const Attendance = () => {
@@ -17,7 +20,7 @@ const Attendance = () => {
   );
   const { loading, error, allStudentsInfo } = studentInfoForAttendance;
 
-  const [attendance, setAttendance] = useState({});
+  const [attendance, setAttendance] = useState([]);
 
   useEffect(() => {
     if (email) {
@@ -25,15 +28,28 @@ const Attendance = () => {
     }
   }, [dispatch, email]);
 
-  const handleAttendanceChange = (studentId, status) => {
-    setAttendance((prev) => ({
-      ...prev,
-      [studentId]: status,
-    }));
+  const handleAttendanceChange = (
+    studentId,
+    status,
+    teacherId,
+    associationId
+  ) => {
+    setAttendance((prev) => {
+      const updatedAttendance = prev.filter(
+        (record) => record.studentId !== studentId
+      );
+      updatedAttendance.push({
+        studentId,
+        teacherId,
+        associationId,
+        presentOrAbsent: status === 'present' ? 1 : 0,
+      });
+      return updatedAttendance;
+    });
   };
 
   const handleSubmit = () => {
-    console.log('Attendance submitted:', attendance);
+    dispatch(studentAttendanceBulkForTeachers({ attendanceData: attendance }));
   };
 
   return (
@@ -50,7 +66,7 @@ const Attendance = () => {
             <form>
               <ul className="student-list">
                 {allStudentsInfo.map((student) => (
-                  <li key={student.id}>
+                  <li key={student.studentId}>
                     <p>
                       <strong>Name:</strong> {student.studentName}
                     </p>
@@ -61,14 +77,18 @@ const Attendance = () => {
                       <label>
                         <input
                           type="checkbox"
-                          name={`present-${student.studentEmail}`}
-                          checked={
-                            attendance[student.studentEmail] === 'present'
-                          }
+                          name={`present-${student.studentId}`}
+                          checked={attendance.find(
+                            (record) =>
+                              record.studentId === student.studentId &&
+                              record.presentOrAbsent === 1
+                          )}
                           onChange={() =>
                             handleAttendanceChange(
-                              student.studentEmail,
-                              'present'
+                              student.studentId,
+                              'present',
+                              student.teacherId,
+                              student.associationId
                             )
                           }
                         />
@@ -77,14 +97,18 @@ const Attendance = () => {
                       <label>
                         <input
                           type="checkbox"
-                          name={`absent-${student.studentEmail}`}
-                          checked={
-                            attendance[student.studentEmail] === 'absent'
-                          }
+                          name={`absent-${student.studentId}`}
+                          checked={attendance.find(
+                            (record) =>
+                              record.studentId === student.studentId &&
+                              record.presentOrAbsent === 0
+                          )}
                           onChange={() =>
                             handleAttendanceChange(
-                              student.studentEmail,
-                              'absent'
+                              student.studentId,
+                              'absent',
+                              student.teacherId,
+                              student.associationId
                             )
                           }
                         />

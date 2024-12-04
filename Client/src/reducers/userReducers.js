@@ -14,6 +14,9 @@ import {
   STUDENT_ATTENDANCE_GET_FAIL,
   STUDENT_ATTENDANCE_GET_REQUEST,
   STUDENT_ATTENDANCE_GET_SUCCESS,
+  STUDENT_ATTENDANCE_POST_FAIL,
+  STUDENT_ATTENDANCE_POST_REQUEST,
+  STUDENT_ATTENDANCE_POST_SUCCESS,
   USER_FORGETPASSWORD_FAIL,
   USER_FORGETPASSWORD_REQUEST,
   USER_FORGETPASSWORD_SUCCESS,
@@ -172,6 +175,23 @@ export const studentInfoForAttendanceReducer = (state = {}, action) => {
       };
 
     case STUDENT_ATTENDANCE_GET_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const postStudentForAttendanceReducer = (state = {}, action) => {
+  switch (action.type) {
+    case STUDENT_ATTENDANCE_POST_REQUEST:
+      return { loading: true };
+    case STUDENT_ATTENDANCE_POST_SUCCESS:
+      return {
+        loading: false,
+        postStudentsAttendance: action.payload,
+      };
+
+    case STUDENT_ATTENDANCE_POST_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

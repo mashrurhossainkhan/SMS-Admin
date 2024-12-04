@@ -11,6 +11,7 @@ import {
   employeeByCompanyIDReducer,
   employeeRemoveReducer,
   studentInfoForAttendanceReducer,
+  postStudentForAttendanceReducer,
 } from './reducers/userReducers';
 import { AllNoticeReducer, newNoticeReducer } from './reducers/noticeReducer';
 
@@ -26,6 +27,7 @@ const reducer = combineReducers({
   newNotice: newNoticeReducer,
   AllNotice: AllNoticeReducer,
   studentInfoForAttendance: studentInfoForAttendanceReducer,
+  postStudentForAttendance: postStudentForAttendanceReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem(

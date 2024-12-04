@@ -25,7 +25,7 @@ module.exports = function (sequelize, DataTypes) {
       presentOrAbsent: {
         type: DataTypes.BIGINT,
         allowNull: false,
-        field: 'studentId',
+        field: 'presentOrAbsent',
       },
       visibility: {
         type: DataTypes.STRING,
