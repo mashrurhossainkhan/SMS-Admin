@@ -31,10 +31,12 @@ import {
   STUDENT_ATTENDANCE_POST_REQUEST,
   STUDENT_ATTENDANCE_POST_SUCCESS,
   STUDENT_ATTENDANCE_POST_FAIL,
+  USER_GET_BY_USERTYPE_GET_REQUEST,
+  USER_GET_BY_USERTYPE_GET_SUCCESS,
+  USER_GET_BY_USERTYPE_GET_FAIL,
 } from '../constants/userConstants';
 import { Typography } from '@material-ui/core';
-
-const API = 'http://localhost:5000';
+import { API } from './api';
 
 /*
 export const detailsUserByCompanyId = (companyId) => {
@@ -381,3 +383,25 @@ export const studentAttendanceBulkForTeachers =
       });
     }
   };
+
+export const fetchUserByUserTypeActions = (userType) => async (dispatch) => {
+  try {
+    dispatch({
+      type: USER_GET_BY_USERTYPE_GET_REQUEST,
+    });
+    const { data } = await axios.post(API + 'api/users/type/' + userType);
+    console.log(data);
+    dispatch({
+      type: USER_GET_BY_USERTYPE_GET_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: USER_GET_BY_USERTYPE_GET_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};

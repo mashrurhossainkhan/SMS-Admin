@@ -20,6 +20,9 @@ import {
   USER_FORGETPASSWORD_FAIL,
   USER_FORGETPASSWORD_REQUEST,
   USER_FORGETPASSWORD_SUCCESS,
+  USER_GET_BY_USERTYPE_GET_FAIL,
+  USER_GET_BY_USERTYPE_GET_REQUEST,
+  USER_GET_BY_USERTYPE_GET_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -192,6 +195,23 @@ export const postStudentForAttendanceReducer = (state = {}, action) => {
       };
 
     case STUDENT_ATTENDANCE_POST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const userbyUserTypeReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_GET_BY_USERTYPE_GET_REQUEST:
+      return { loading: true };
+    case USER_GET_BY_USERTYPE_GET_SUCCESS:
+      return {
+        loading: false,
+        userTypeInfo: action.payload,
+      };
+
+    case USER_GET_BY_USERTYPE_GET_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

@@ -33,6 +33,12 @@ module.exports = function (sequelize, DataTypes) {
         default: true,
         field: 'visibility',
       },
+
+      // Date: {
+      //   type: DataTypes.DATE,
+      //   field: 'date',
+      // },
+
       createdAt: {
         type: DataTypes.DATE,
         allowNull: true,

@@ -8,6 +8,9 @@ const Tables = React.lazy(() => import('./views/base/tables/Tables'));
 const Breadcrumbs = React.lazy(() =>
   import('./views/base/breadcrumbs/Breadcrumbs')
 );
+const Association = React.lazy(() =>
+  import('./views/StTeacherSubjectAssigned/Associaiton')
+);
 const Cards = React.lazy(() => import('./views/base/cards/Cards'));
 const Carousels = React.lazy(() => import('./views/base/carousels/Carousels'));
 const Collapses = React.lazy(() => import('./views/base/collapses/Collapses'));
@@ -410,6 +413,13 @@ const routes = [
     exact: true,
     name: 'Payments',
     component: StudentPayment,
+  },
+
+  {
+    path: '/association/teacher/students/subjects',
+    exact: true,
+    name: 'Associations',
+    component: Association,
   },
 ];
 

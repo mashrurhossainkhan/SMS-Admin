@@ -15,26 +15,6 @@ const _nav = [
     },
   },
 
-  // User
-  {
-    _tag: 'CSidebarNavDropdown',
-    name: 'User',
-    route: '/user',
-    icon: 'cil-puzzle',
-    _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Add User',
-        to: '/user/add_user',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Manage Of User',
-        to: '/user/manage_user',
-      },
-    ],
-  },
-
   //notice_board
   {
     _tag: 'CSidebarNavDropdown',
@@ -51,6 +31,26 @@ const _nav = [
         _tag: 'CSidebarNavItem',
         name: 'Manage',
         to: '/notice_board/manage/all',
+      },
+    ],
+  },
+
+  //assign subjects to a teacher
+  {
+    _tag: 'CSidebarNavDropdown',
+    name: 'Subject Assigned',
+    route: '#',
+    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Create',
+        to: '/association/teacher/students/subjects',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Manage',
+        to: '/assigned/subject/manage/all',
       },
     ],
   },
@@ -126,16 +126,16 @@ const _nav = [
 */
 ];
 
-if (userInfo) {
-  if (userInfo.isAdmin != 1) _nav.splice(1, 1);
-}
+// if (userInfo) {
+//   if (userInfo.isAdmin != 1) _nav.splice(1, 1);
+// }
 
 // Adjust nav based on user information
 if (userInfo) {
   // Remove User menu for non-admins
-  if (userInfo.isAdmin !== 1) {
-    _nav.splice(1, 1);
-  }
+  // if (userInfo.isAdmin !== 1) {
+  //   _nav.splice(1, 1);
+  // }
 
   // Add "Attendance" for userType 3
   if (userInfo.userType === 3) {
@@ -154,8 +154,8 @@ if (userInfo) {
     });
   }
 
-  if (userInfo.userType === 1) {
-  }
+  // if (userInfo.userType === 1) {
+  // }
 
   _nav.push({
     _tag: 'CSidebarNavItem',
