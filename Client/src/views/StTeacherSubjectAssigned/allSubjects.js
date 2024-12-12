@@ -3,32 +3,33 @@ import { useDispatch, useSelector } from 'react-redux';
 import { allSubjectsActions } from '../../actions/subjectActions';
 import './AllSubjects.css'; // Import the CSS file
 
-const AllSubjects = () => {
+const AllSubjects = ({ onSelect }) => {
   const dispatch = useDispatch();
-
-  // Fetch subjects from Redux state
   const allSubjectsState = useSelector((state) => state.allSubjects);
   const { loading, error, subjects } = allSubjectsState;
 
   const [selectedSubject, setSelectedSubject] = useState('');
 
   useEffect(() => {
-    // Fetch all subjects when the component mounts
     dispatch(allSubjectsActions());
   }, [dispatch]);
 
   const handleSubjectChange = (e) => {
-    setSelectedSubject(e.target.value);
-    console.log('Selected Subject ID:', e.target.value);
+    const subjectId = e.target.value;
+    setSelectedSubject(subjectId);
+
+    if (onSelect) {
+      onSelect(subjectId); // Pass the selected subject ID to the parent
+    }
   };
 
   return (
     <div className="all-subjects-container">
       <h2>Select a Subject</h2>
       {loading ? (
-        <p className="loading-text">Loading subjects...</p>
+        <p>Loading subjects...</p>
       ) : error ? (
-        <p className="error-text">{error}</p>
+        <p style={{ color: 'red' }}>{error}</p>
       ) : (
         <select
           value={selectedSubject}
@@ -38,7 +39,8 @@ const AllSubjects = () => {
           <option value="">-- Select Subject --</option>
           {subjects.map((subject) => (
             <option key={subject.id} value={subject.id}>
-              {subject.name} ({subject.class} - {subject.section})
+              id: {subject.name} - name: {subject.name} - class: {subject.class}{' '}
+              - section: {subject.section}
             </option>
           ))}
         </select>

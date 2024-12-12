@@ -389,8 +389,8 @@ export const fetchUserByUserTypeActions = (userType) => async (dispatch) => {
     dispatch({
       type: USER_GET_BY_USERTYPE_GET_REQUEST,
     });
-    const { data } = await axios.post(API + 'api/users/type/' + userType);
-    console.log(data);
+
+    const { data } = await axios.get(API + '/api/users/type/' + userType);
     dispatch({
       type: USER_GET_BY_USERTYPE_GET_SUCCESS,
       payload: data,
