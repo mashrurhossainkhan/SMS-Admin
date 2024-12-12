@@ -206,11 +206,19 @@ export const userbyUserTypeReducer = (state = {}, action) => {
     case USER_GET_BY_USERTYPE_GET_REQUEST:
       return { loading: true };
     case USER_GET_BY_USERTYPE_GET_SUCCESS:
-      return {
-        loading: false,
-        userTypeInfo: action.payload,
-      };
-
+      // return {
+      //   loading: false,
+      //   userTypeInfo: action.payload,
+      // };
+      if (action.payload.userType === 2) {
+        // Store students
+        return { loading: false, students: action.payload.data };
+      } else if (action.payload.userType === 3) {
+        // Store teachers
+        return { loading: false, teachers: action.payload.data };
+      } else {
+        return { loading: false, userTypeInfo: action.payload.data };
+      }
     case USER_GET_BY_USERTYPE_GET_FAIL:
       return { loading: false, error: action.payload };
     default:

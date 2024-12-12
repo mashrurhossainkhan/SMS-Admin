@@ -391,9 +391,10 @@ export const fetchUserByUserTypeActions = (userType) => async (dispatch) => {
     });
 
     const { data } = await axios.get(API + '/api/users/type/' + userType);
+    //console.log(`data: ${JSON.stringify(data)} when userType is ${userType}`);
     dispatch({
       type: USER_GET_BY_USERTYPE_GET_SUCCESS,
-      payload: data,
+      payload: { userType, data },
     });
   } catch (error) {
     dispatch({

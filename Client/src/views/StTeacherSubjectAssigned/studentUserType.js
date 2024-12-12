@@ -8,14 +8,20 @@ const StudentUserType = ({ onSelect }) => {
 
   // Fetch the appropriate user type state from Redux
   const allUserTypeState = useSelector((state) => state.userbyUserType);
-  const { loading, error, userTypeInfo = [] } = allUserTypeState; // Default to empty array
+  const { loading, error, students: reduxStudents = [] } = allUserTypeState; // Default to empty array
 
   const [selectedUser, setSelectedUser] = useState('');
+  const [students, setStudents] = useState([]); // State to store students
 
   useEffect(() => {
+    // Dispatch action to fetch students
     dispatch(fetchUserByUserTypeActions(2));
-    console.log(userTypeInfo);
   }, [dispatch]);
+
+  useEffect(() => {
+    // Update the local state whenever Redux students data changes
+    setStudents(reduxStudents);
+  }, [reduxStudents]);
 
   const handleUserTypeChange = (e) => {
     const userId = e.target.value;
@@ -40,7 +46,7 @@ const StudentUserType = ({ onSelect }) => {
           className="all-subjects-container"
         >
           <option value="">-- Select --</option>
-          {userTypeInfo.map((user) => (
+          {students.map((user) => (
             <option key={user.id} value={user.id}>
               ID: {user.id}, Name: {user.name}, Email: {user.email}
             </option>
