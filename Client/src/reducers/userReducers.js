@@ -23,6 +23,12 @@ import {
   USER_GET_BY_USERTYPE_GET_FAIL,
   USER_GET_BY_USERTYPE_GET_REQUEST,
   USER_GET_BY_USERTYPE_GET_SUCCESS,
+  USER_GET_BY_USERTYPEST_GET_FAIL,
+  USER_GET_BY_USERTYPEST_GET_REQUEST,
+  USER_GET_BY_USERTYPEST_GET_SUCCESS,
+  USER_GET_BY_USERTYPETEACHER_GET_FAIL,
+  USER_GET_BY_USERTYPETEACHER_GET_REQUEST,
+  USER_GET_BY_USERTYPETEACHER_GET_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -201,25 +207,26 @@ export const postStudentForAttendanceReducer = (state = {}, action) => {
   }
 };
 
-export const userbyUserTypeReducer = (state = {}, action) => {
+export const studentbyUserTypeReducer = (state = {}, action) => {
   switch (action.type) {
-    case USER_GET_BY_USERTYPE_GET_REQUEST:
+    case USER_GET_BY_USERTYPEST_GET_REQUEST:
       return { loading: true };
-    case USER_GET_BY_USERTYPE_GET_SUCCESS:
-      // return {
-      //   loading: false,
-      //   userTypeInfo: action.payload,
-      // };
-      if (action.payload.userType === 2) {
-        // Store students
-        return { loading: false, students: action.payload.data };
-      } else if (action.payload.userType === 3) {
-        // Store teachers
-        return { loading: false, teachers: action.payload.data };
-      } else {
-        return { loading: false, userTypeInfo: action.payload.data };
-      }
-    case USER_GET_BY_USERTYPE_GET_FAIL:
+    case USER_GET_BY_USERTYPEST_GET_SUCCESS:
+      return { loading: false, studentsStore: action.payload.data };
+    case USER_GET_BY_USERTYPEST_GET_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const teacherbyUserTypeReducer = (state = {}, action) => {
+  switch (action.type) {
+    case USER_GET_BY_USERTYPETEACHER_GET_REQUEST:
+      return { loading: true };
+    case USER_GET_BY_USERTYPETEACHER_GET_SUCCESS:
+      return { loading: false, teachersStore: action.payload.data };
+    case USER_GET_BY_USERTYPETEACHER_GET_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;

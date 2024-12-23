@@ -34,6 +34,12 @@ import {
   USER_GET_BY_USERTYPE_GET_REQUEST,
   USER_GET_BY_USERTYPE_GET_SUCCESS,
   USER_GET_BY_USERTYPE_GET_FAIL,
+  USER_GET_BY_USERTYPEST_GET_FAIL,
+  USER_GET_BY_USERTYPEST_GET_SUCCESS,
+  USER_GET_BY_USERTYPEST_GET_REQUEST,
+  USER_GET_BY_USERTYPETEACHER_GET_REQUEST,
+  USER_GET_BY_USERTYPETEACHER_GET_SUCCESS,
+  USER_GET_BY_USERTYPETEACHER_GET_FAIL,
 } from '../constants/userConstants';
 import { Typography } from '@material-ui/core';
 import { API } from './api';
@@ -384,21 +390,19 @@ export const studentAttendanceBulkForTeachers =
     }
   };
 
-export const fetchUserByUserTypeActions = (userType) => async (dispatch) => {
+export const fetchStudentByUserTypeActions = (userType) => async (dispatch) => {
   try {
     dispatch({
-      type: USER_GET_BY_USERTYPE_GET_REQUEST,
+      type: USER_GET_BY_USERTYPEST_GET_REQUEST,
     });
-
     const { data } = await axios.get(API + '/api/users/type/' + userType);
-    //console.log(`data: ${JSON.stringify(data)} when userType is ${userType}`);
     dispatch({
-      type: USER_GET_BY_USERTYPE_GET_SUCCESS,
+      type: USER_GET_BY_USERTYPEST_GET_SUCCESS,
       payload: { userType, data },
     });
   } catch (error) {
     dispatch({
-      type: USER_GET_BY_USERTYPE_GET_FAIL,
+      type: USER_GET_BY_USERTYPEST_GET_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
@@ -406,3 +410,56 @@ export const fetchUserByUserTypeActions = (userType) => async (dispatch) => {
     });
   }
 };
+
+export const fetchTeachersByUserTypeActions =
+  (userType) => async (dispatch) => {
+    try {
+      dispatch({
+        type: USER_GET_BY_USERTYPETEACHER_GET_REQUEST,
+      });
+      const { data } = await axios.get(API + '/api/users/type/' + userType);
+      dispatch({
+        type: USER_GET_BY_USERTYPETEACHER_GET_SUCCESS,
+        payload: { userType, data },
+      });
+    } catch (error) {
+      dispatch({
+        type: USER_GET_BY_USERTYPETEACHER_GET_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+// export const fetchUserByUserTypeActions = (userType) => async (dispatch) => {
+//   try {
+//     dispatch({
+//       type:
+//         userType === 3
+//           ? USER_GET_BY_USERTYPE_GET_REQUEST
+//           : USER_GET_BY_USERTYPEST_GET_FAIL,
+//     });
+//     const { data } = await axios.get(API + '/api/users/type/' + userType);
+//     //console.log(`data: ${JSON.stringify(data)} when userType is ${userType}`);
+//     dispatch({
+//       type:
+//         userType === 3
+//           ? USER_GET_BY_USERTYPE_GET_SUCCESS
+//           : USER_GET_BY_USERTYPEST_GET_SUCCESS,
+//       payload: { userType, data },
+//     });
+//   } catch (error) {
+//     dispatch({
+//       type:
+//         userType === 3
+//           ? USER_GET_BY_USERTYPE_GET_FAIL
+//           : USER_GET_BY_USERTYPEST_GET_FAIL,
+//       payload:
+//         error.response && error.response.data.message
+//           ? error.response.data.message
+//           : error.message,
+//     });
+//   }
+// };

@@ -13,6 +13,8 @@ import {
   studentInfoForAttendanceReducer,
   postStudentForAttendanceReducer,
   userbyUserTypeReducer,
+  studentbyUserTypeReducer,
+  teacherbyUserTypeReducer,
 } from './reducers/userReducers';
 import { AllNoticeReducer, newNoticeReducer } from './reducers/noticeReducer';
 import { allSubjectsReducer } from './reducers/subjectReducer';
@@ -31,7 +33,8 @@ const reducer = combineReducers({
   studentInfoForAttendance: studentInfoForAttendanceReducer,
   postStudentForAttendance: postStudentForAttendanceReducer,
   allSubjects: allSubjectsReducer,
-  userbyUserType: userbyUserTypeReducer,
+  studentbyUserType: studentbyUserTypeReducer,
+  teacherbyUserType: teacherbyUserTypeReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem(
