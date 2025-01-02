@@ -12,6 +12,7 @@ const teacherController = require('../controllers/teacherController');
 const userController = require('../controllers/userController');
 const subjectController = require('../controllers/subjectController');
 const attendanceController = require('../controllers/attendanceController');
+const AssociationController = require("../controllers/associationController")
 
 router.use(function (req, res, next) {
   res.header(
@@ -21,6 +22,10 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+//Association Controller Starts
+router.post('/api/teacher-subject-association', AssociationController.insertAssociationRecords);
+//Associaition Controller ends
 
 /* 
 Admin registration API Starts
