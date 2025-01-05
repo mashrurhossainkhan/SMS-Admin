@@ -1,6 +1,6 @@
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define(
-      'Payment',
+      'STPayment',
       {
         id: {
           type: DataTypes.BIGINT,
@@ -36,7 +36,7 @@ module.exports = function (sequelize, DataTypes) {
         },
       },
       {
-        tableName: 'payments',
+        tableName: 'stpayments',
         timestamps: true,
         paranoid: true, // Enables soft delete by using `deletedAt`
       }

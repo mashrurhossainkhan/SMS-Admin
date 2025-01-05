@@ -13,6 +13,7 @@ const userController = require('../controllers/userController');
 const subjectController = require('../controllers/subjectController');
 const attendanceController = require('../controllers/attendanceController');
 const AssociationController = require("../controllers/associationController")
+const paymentController = require("../controllers/paymentController")
 
 router.use(function (req, res, next) {
   res.header(
@@ -22,6 +23,10 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+//paymentController
+router.get('/api/payments/all/students', paymentController.getStudentAmounts);
+//payment controllers
 
 //Association Controller Starts
 router.post('/api/teacher-subject-association', AssociationController.insertAssociationRecords);
