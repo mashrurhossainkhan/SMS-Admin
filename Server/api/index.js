@@ -26,6 +26,8 @@ router.use(function (req, res, next) {
 
 //paymentController
 router.get('/api/payments/all/students', paymentController.getStudentAmounts);
+router.post('/api/payments/add/credit', paymentController.addCredit);
+router.post('/api/payments/add/debit', paymentController.addDedit);
 //payment controllers
 
 //Association Controller Starts

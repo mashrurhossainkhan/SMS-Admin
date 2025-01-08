@@ -62,6 +62,8 @@ db.alumni = require('./alumni')(sequelize, Sequelize);
 db.jobPosts = require('./jobPosts')(sequelize, Sequelize);
 db.subject = require('./subject')(sequelize, Sequelize);
 db.STPayment = require('./stPayments')(sequelize, Sequelize);
+db.credit = require('./Credit')(sequelize, Sequelize);
+db.debit = require('./Debit')(sequelize, Sequelize);
 db.TeacherStSubjectAssociation = require('./TeacherStSubjectAssociation')(
   sequelize,
   Sequelize

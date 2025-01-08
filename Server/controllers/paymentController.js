@@ -3,6 +3,8 @@ const TeacherStSubjectAssociation = models.TeacherStSubjectAssociation;
 const User = models.user;
 const Subject = models.subject;
 const STPayment = models.STPayment;
+const Credit = models.credit;
+const Debit = models.debit;
 
 
 exports.getStudentAmounts = async function (req, res) {
@@ -90,6 +92,68 @@ exports.getStudentAmounts = async function (req, res) {
       });
     } catch (error) {
       console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+
+  exports.addCredit = async function (req, res) {
+    try {
+      // Extract data from req.body
+      const { userId, amount, type, comment } = req.body;
+  
+      // Validate required fields
+      if (!userId || !amount || !type) {
+        return res.status(400).json({ error: 'userId, amount, and type are required' });
+      }
+  
+      // Insert the new credit entry
+      const newCredit = await Credit.create({
+        userId,
+        amount,
+        type,
+        comment: comment || null, // Optional comment
+        date: new Date(), // Set date to today
+      });
+  
+      // Respond with the created entry
+      res.status(201).json({
+        message: 'Credit entry added successfully',
+        data: newCredit,
+      });
+    } catch (error) {
+      console.error('Error adding credit:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+
+  exports.addDedit = async function (req, res) {
+    try {
+      // Extract data from req.body
+      const { userId, amount, type, comment } = req.body;
+  
+      // Validate required fields
+      if (!userId || !amount || !type) {
+        return res.status(400).json({ error: 'userId, amount, and type are required' });
+      }
+  
+      // Insert the new credit entry
+      const newDedit = await Debit.create({
+        userId,
+        amount,
+        type,
+        comment: comment || null, // Optional comment
+        date: new Date().toISOString().split('T')[0], 
+      });
+  
+      // Respond with the created entry
+      res.status(201).json({
+        message: 'Debit entry added successfully',
+        data: newDedit,
+      });
+    } catch (error) {
+      console.error('Error adding credit:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
