@@ -14,6 +14,7 @@ const subjectController = require('../controllers/subjectController');
 const attendanceController = require('../controllers/attendanceController');
 const AssociationController = require("../controllers/associationController")
 const paymentController = require("../controllers/paymentController")
+const resultController = require("../controllers/resultController")
 
 router.use(function (req, res, next) {
   res.header(
@@ -23,6 +24,13 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+//result constrollers
+router.get('/api/get/all/result/types', resultController.getResultTypes);
+router.post('/api/add/result/type', resultController.createResultType);
+router.put('/api/update/result/type/:id', resultController.updateResultType);
+router.delete('/api/delete/result/type/:id', resultController.deleteResultType);
+//result controllers
 
 //paymentController
 router.get('/api/payments/all/students', paymentController.getStudentAmounts);
