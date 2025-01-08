@@ -1,6 +1,10 @@
 const models = require('../models');
 const ResultType = models.resultType;
+const Result  = models.result;
+const User  = models.user;
+const TeacherStSubjectAssociation = models.TeacherStSubjectAssociation;
 
+//result type starts
 exports.createResultType = async (req, res) => {
   try {
     const { type } = req.body;
@@ -89,4 +93,221 @@ exports.updateResultType = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+//result type ends
+
+//result starts
+exports.createResult = async (req, res) => {
+    try {
+      const { resultType, stId, teacherId, associationId, marks, remarks } = req.body;
   
+      // Validate required fields
+      if (!resultType || !stId || !teacherId || !associationId || marks === undefined) {
+        return res.status(400).json({ error: 'Required fields are missing' });
+      }
+  
+      const newResult = await Result.create({
+        resultType,
+        stId,
+        teacherId,
+        associationId,
+        marks,
+        remarks: remarks || null, // Optional
+      });
+  
+      res.status(201).json({
+        message: 'Result created successfully',
+        data: newResult,
+      });
+    } catch (error) {
+      console.error('Error creating result:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  exports.updateResult = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { resultType, stId, teacherId, associationId, marks, remarks } = req.body;
+  
+      const result = await Result.findByPk(id);
+  
+      if (!result) {
+        return res.status(404).json({ error: 'Result not found' });
+      }
+  
+      // Update fields
+      if (resultType) result.resultType = resultType;
+      if (stId) result.stId = stId;
+      if (teacherId) result.teacherId = teacherId;
+      if (associationId) result.associationId = associationId;
+      if (marks !== undefined) result.marks = marks;
+      if (remarks !== undefined) result.remarks = remarks;
+  
+      await result.save();
+  
+      res.status(200).json({
+        message: 'Result updated successfully',
+        data: result,
+      });
+    } catch (error) {
+      console.error('Error updating result:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  exports.deleteResult = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      const result = await Result.findByPk(id);
+  
+      if (!result) {
+        return res.status(404).json({ error: 'Result not found' });
+      }
+  
+      await result.destroy(); // Soft delete since `paranoid: true` is enabled
+  
+      res.status(200).json({
+        message: 'Result deleted successfully',
+      });
+    } catch (error) {
+      console.error('Error deleting result:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  
+  exports.getResults = async (req, res) => {
+    try {
+      const { Result, ResultType, User, TeacherStSubjectAssociation } = require('../models');
+  
+      const results = await Result.findAll({
+        include: [
+          { model: ResultType, attributes: ['type'] },
+          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
+          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
+          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+        ],
+      });
+  
+      res.status(200).json({
+        message: 'Results retrieved successfully',
+        data: results,
+      });
+    } catch (error) {
+      console.error('Error fetching results:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+
+  exports.getResultsByStudentId = async (req, res) => {
+    try {
+      const { stId } = req.params;
+  
+      // Validate the input
+      if (!stId) {
+        return res.status(400).json({ error: 'Student ID (stId) is required' });
+      }
+  
+      // Fetch results for the specified student ID
+      const results = await Result.findAll({
+        where: { stId },
+        include: [
+          { model: ResultType, attributes: ['type'] },
+          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
+          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
+          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+        ],
+      });
+  
+      // If no results are found, return an appropriate response
+      if (!results.length) {
+        return res.status(404).json({ message: `No results found for student ID ${stId}` });
+      }
+  
+      res.status(200).json({
+        message: 'Results retrieved successfully',
+        data: results,
+      });
+    } catch (error) {
+      console.error('Error fetching results by stId:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+exports.getResultsByTeacherId = async (req, res) => {
+    try {
+      const { teacherId } = req.params;
+  
+      // Validate the input
+      if (!teacherId) {
+        return res.status(400).json({ error: 'Teacher ID (teacherId) is required' });
+      }
+  
+  
+      // Fetch results for the specified teacher ID
+      const results = await Result.findAll({
+        where: { teacherId },
+        include: [
+          { model: ResultType, attributes: ['type'] },
+          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
+          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
+          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+        ],
+      });
+  
+      // If no results are found, return an appropriate response
+      if (!results.length) {
+        return res.status(404).json({ message: `No results found for teacher ID ${teacherId}` });
+      }
+  
+      res.status(200).json({
+        message: 'Results retrieved successfully',
+        data: results,
+      });
+    } catch (error) {
+      console.error('Error fetching results by teacherId:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+
+  exports.getResultsByAssociationId = async (req, res) => {
+    try {
+      const { associationId } = req.params;
+  
+      // Validate the input
+      if (!associationId) {
+        return res.status(400).json({ error: 'Association ID (associationId) is required' });
+      }
+  
+      // Fetch results for the specified association ID
+      const results = await Result.findAll({
+        where: { associationId },
+        include: [
+          { model: ResultType, attributes: ['type'] },
+          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
+          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
+          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+        ],
+      });
+  
+      // If no results are found, return an appropriate response
+      if (!results.length) {
+        return res.status(404).json({ message: `No results found for association ID ${associationId}` });
+      }
+  
+      res.status(200).json({
+        message: 'Results retrieved successfully',
+        data: results,
+      });
+    } catch (error) {
+      console.error('Error fetching results by associationId:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+  
+
+  
+//result ends
