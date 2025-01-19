@@ -91,6 +91,27 @@ db.user.hasMany(db.TeacherStSubjectAssociation, {
   as: 'studentAssociations',
 });
 
+db.result.belongsTo(db.resultType, {
+  foreignKey: 'resultType', // Foreign key in Result table
+  as: 'resultTypeDetails', // Alias for the association
+});
+
+db.result.belongsTo(db.user, {
+  foreignKey: 'stId', // Foreign key in Result table
+  as: 'studentDetails', // Alias for the association
+});
+
+db.result.belongsTo(db.user, {
+  foreignKey: 'teacherId', // Foreign key in Result table
+  as: 'teacherDetails', // Alias for the association
+});
+
+db.result.belongsTo(db.TeacherStSubjectAssociation, {
+  foreignKey: 'associationId', // The foreign key in the Result table
+  as: 'associationDetails', // Alias for the association
+});
+
+
 // All DB relation
 
 // Datasource syc

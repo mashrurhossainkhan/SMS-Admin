@@ -179,8 +179,6 @@ exports.createResult = async (req, res) => {
   
   exports.getResults = async (req, res) => {
     try {
-      const { Result, ResultType, User, TeacherStSubjectAssociation } = require('../models');
-  
       const results = await Result.findAll({
         include: [
           { model: ResultType, attributes: ['type'] },
@@ -286,10 +284,27 @@ exports.getResultsByTeacherId = async (req, res) => {
       const results = await Result.findAll({
         where: { associationId },
         include: [
-          { model: ResultType, attributes: ['type'] },
-          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
-          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
-          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+          {
+            model: ResultType,
+            as: 'resultTypeDetails', // Alias for the relation
+            attributes: ['id', 'type'], // Fetch only specific fields
+          },
+          {
+            model: User,
+            as: 'studentDetails', // Alias for student association
+            attributes: ['id', 'name', 'email'], // Fields to fetch from User for student
+          },
+          {
+            model: User,
+            as: 'teacherDetails', // Alias for teacher association
+            attributes: ['id', 'name', 'email'], // Fields to fetch from User for teacher
+          },
+
+          {
+            model: TeacherStSubjectAssociation,
+            as: 'associationDetails', // Alias for the association
+            attributes: ['id', 'subjectId', 'stId', 'teacherId'], // Fetch relevant fields
+          },
         ],
       });
   

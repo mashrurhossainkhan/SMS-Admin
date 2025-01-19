@@ -26,8 +26,12 @@ router.use(function (req, res, next) {
 });
 
 //result constrollers
+router.get('/api/get/result/associate/:associationId', resultController.getResultsByAssociationId);
+router.get('/api/get/result/teacher/:id', resultController.getResultsByTeacherId);
+router.get('/api/get/result/student/:id', resultController.getResultsByStudentId);
 router.get('/api/get/all/result/types', resultController.getResultTypes);
 router.post('/api/add/result/type', resultController.createResultType);
+router.post('/api/add/result', resultController.createResult);
 router.put('/api/update/result/type/:id', resultController.updateResultType);
 router.delete('/api/delete/result/type/:id', resultController.deleteResultType);
 //result controllers
