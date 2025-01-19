@@ -61,6 +61,7 @@ exports.updateResultType = async (req, res) => {
       const { id } = req.params;
   
       const resultType = await ResultType.findByPk(id);
+      console.log(resultType)
   
       if (!resultType) {
         return res.status(404).json({ error: 'Result type not found' });
@@ -212,10 +213,27 @@ exports.createResult = async (req, res) => {
       const results = await Result.findAll({
         where: { stId },
         include: [
-          { model: ResultType, attributes: ['type'] },
-          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
-          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
-          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+          {
+            model: ResultType,
+            as: 'resultTypeDetails', // Alias for the relation
+            attributes: ['id', 'type'], // Fetch only specific fields
+          },
+          {
+            model: User,
+            as: 'studentDetails', // Alias for student association
+            attributes: ['id', 'name', 'email'], // Fields to fetch from User for student
+          },
+          {
+            model: User,
+            as: 'teacherDetails', // Alias for teacher association
+            attributes: ['id', 'name', 'email'], // Fields to fetch from User for teacher
+          },
+
+          {
+            model: TeacherStSubjectAssociation,
+            as: 'associationDetails', // Alias for the association
+            attributes: ['id', 'subjectId', 'stId', 'teacherId'], // Fetch relevant fields
+          },
         ],
       });
   
@@ -248,10 +266,27 @@ exports.getResultsByTeacherId = async (req, res) => {
       const results = await Result.findAll({
         where: { teacherId },
         include: [
-          { model: ResultType, attributes: ['type'] },
-          { model: User, as: 'Student', attributes: ['id', 'name', 'email'] },
-          { model: User, as: 'Teacher', attributes: ['id', 'name', 'email'] },
-          { model: TeacherStSubjectAssociation, attributes: ['id'] },
+          {
+            model: ResultType,
+            as: 'resultTypeDetails', // Alias for the relation
+            attributes: ['id', 'type'], // Fetch only specific fields
+          },
+          {
+            model: User,
+            as: 'studentDetails', // Alias for student association
+            attributes: ['id', 'name', 'email'], // Fields to fetch from User for student
+          },
+          {
+            model: User,
+            as: 'teacherDetails', // Alias for teacher association
+            attributes: ['id', 'name', 'email'], // Fields to fetch from User for teacher
+          },
+
+          {
+            model: TeacherStSubjectAssociation,
+            as: 'associationDetails', // Alias for the association
+            attributes: ['id', 'subjectId', 'stId', 'teacherId'], // Fetch relevant fields
+          },
         ],
       });
   
