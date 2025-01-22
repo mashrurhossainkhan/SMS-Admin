@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const models = require('../models');
 const { name } = require('../strategies/jwt');
 const User = models.user;
+const TeacherStSubjectAssociation = models.TeacherStSubjectAssociation;
 // Signup user
 //http://localhost:5000/api/user/register
 exports.signup = async function (req, res) {
@@ -98,12 +99,23 @@ exports.getUserByType = async (req, res) => {
   try {
     const userTypeId = req.params.userTypeId;
 
+    // Fetch users and include related data from TeacherStSubjectAssociation
     const users = await User.findAll({
       where: {
         userType: userTypeId,
-        visibility: 1, // Assuming only visible users should be fetched
+        visibility: 1, // Only fetch visible users
       },
       order: [['createdAt', 'DESC']], // Sort users by creation date in descending order
+      include: [
+        {
+          model: TeacherStSubjectAssociation,
+          as: 'subjectAssociations', // Alias for the association
+          where: {
+            stId: 2, // Only fetch associations where stId = 2
+          },
+          required: false, // Allow users without associations to be included
+        },
+      ],
     });
 
     if (!users.length) {
@@ -120,3 +132,4 @@ exports.getUserByType = async (req, res) => {
       .json({ message: 'Internal server error', error: error.message });
   }
 };
+

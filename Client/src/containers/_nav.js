@@ -159,7 +159,7 @@ if (userInfo) {
 
   _nav.push({
     _tag: 'CSidebarNavItem',
-    name: 'Payments',
+    name: 'Payments (Credit)',
     to: '/students/payments',
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
   });

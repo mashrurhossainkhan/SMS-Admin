@@ -112,6 +112,19 @@ db.result.belongsTo(db.TeacherStSubjectAssociation, {
 });
 
 
+db.TeacherStSubjectAssociation.belongsTo(db.user, {
+  foreignKey: 'stId',
+  as: 'student', // Alias for reverse association
+});
+
+
+db.user.hasMany(db.TeacherStSubjectAssociation, {
+  foreignKey: 'stId',
+  as: 'subjectAssociations', // Alias for this association
+});
+
+
+
 // All DB relation
 
 // Datasource syc

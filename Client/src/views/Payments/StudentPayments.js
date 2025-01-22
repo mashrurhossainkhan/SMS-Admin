@@ -1,33 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './StudentPayment.css'; // Import the CSS file for styling
+import { API } from '../../actions/api';
 
 const StudentPayment = () => {
-  const students = [
-    {
-      id: 1,
-      name: 'John Doe',
-      class: '10',
-      section: 'A',
-      roll: '5',
-      parentDetails: 'Mr. and Mrs. Doe',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      class: '9',
-      section: 'B',
-      roll: '12',
-      parentDetails: 'Mr. and Mrs. Smith',
-    },
-    {
-      id: 3,
-      name: 'Emily Johnson',
-      class: '8',
-      section: 'C',
-      roll: '20',
-      parentDetails: 'Ms. Johnson',
-    },
-  ];
+  const [students, setStudents] = useState([]);
+
+  // Fetch students data from the API
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(API+'/api/users/type/2');
+        // Assuming the response data contains the array of students
+        setStudents(response.data);
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    };
+
+    fetchStudents();
+  }, []);
 
   const handlePaid = (studentId) => {
     console.log(`Paid for student ID: ${studentId}`);
@@ -37,29 +29,30 @@ const StudentPayment = () => {
     <div className="student-payment-container">
       <h1>Student Payment</h1>
       <div className="student-card-list">
-        {students.map((student) => (
-          <div key={student.id} className="student-card">
-            <h2>{student.name}</h2>
-            <p>
-              <strong>Class:</strong> {student.class}
-            </p>
-            <p>
-              <strong>Section:</strong> {student.section}
-            </p>
-            <p>
-              <strong>Roll:</strong> {student.roll}
-            </p>
-            <p>
-              <strong>Parent Details:</strong> {student.parentDetails}
-            </p>
-            <button
-              className="paid-button"
-              onClick={() => handlePaid(student.id)}
-            >
-              Paid
-            </button>
-          </div>
-        ))}
+        {students.length > 0 ? (
+          students.map((student) => (
+            <div key={student.id} className="student-card">
+              <h2>{student.name}</h2>
+              <p>
+                <strong>Student Software ID:</strong> {student.id}
+              </p>
+              <p>
+                <strong>Email:</strong> {student.email}
+              </p>
+              <p>
+                <strong>Created At:</strong> {new Date(student.createdAt).toLocaleDateString()}
+              </p>
+              <button
+                className="paid-button"
+                onClick={() => handlePaid(student.id)}
+              >
+                Paid
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>Loading students...</p>
+        )}
       </div>
     </div>
   );
