@@ -4,6 +4,7 @@ import './StudentPayment.css'; // Import the CSS file for styling
 import { API } from '../../actions/api';
 
 const StudentPayment = () => {
+  const [activeTab, setActiveTab] = useState('students'); // State to control the active tab
   const [students, setStudents] = useState([]);
   const [amounts, setAmounts] = useState({}); // State to store amounts for each student
   const [history, setHistory] = useState([]); // State to store payment history
@@ -12,17 +13,19 @@ const StudentPayment = () => {
 
   // Fetch students data from the API
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await axios.get(`${API}/api/users/type/2`);
-        setStudents(response.data);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    };
+    if (activeTab === 'students') {
+      const fetchStudents = async () => {
+        try {
+          const response = await axios.get(`${API}/api/users/type/2`);
+          setStudents(response.data);
+        } catch (error) {
+          console.error('Error fetching students:', error);
+        }
+      };
 
-    fetchStudents();
-  }, []);
+      fetchStudents();
+    }
+  }, [activeTab]);
 
   const handlePaid = async (studentId) => {
     const amount = amounts[studentId];
@@ -45,7 +48,7 @@ const StudentPayment = () => {
 
       console.log('Payment successful:', response.data);
       alert('Payment successful!');
-      setAmounts("");
+      setAmounts('');
     } catch (error) {
       console.error('Error making payment:', error);
       alert('Failed to make payment. Please try again.');
@@ -95,52 +98,81 @@ const StudentPayment = () => {
 
   return (
     <div className="student-payment-container">
-      <h1>Student Payment</h1>
-      <div className="student-card-list">
-        {students.length > 0 ? (
-          students.map((student) => (
-            <div key={student.id} className="student-card">
-              <h2>{student.name}</h2>
-              <p>
-                <strong>Student Software ID:</strong> {student.id}
-              </p>
-              <p>
-                <strong>Email:</strong> {student.email}
-              </p>
-              <p>
-                <strong>Created At:</strong> {new Date(student.createdAt).toLocaleDateString()}
-              </p>
-              <div className="amount-input">
-                <label>
-                  <strong>Amount:</strong>
-                  <input
-                    type="number"
-                    value={amounts[student.id] || ''}
-                    onChange={(e) => handleAmountChange(student.id, e.target.value)}
-                    placeholder="Enter amount"
-                    required
-                  />
-                </label>
-              </div>
-              <button
-                className="paid-button"
-                onClick={() => handlePaid(student.id)}
-                disabled={!amounts[student.id]}
-              >
-                Paid
-              </button>
-              <button
-                className="history-button"
-                onClick={() => fetchHistory(student.id)}
-              >
-                Previous History
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>Loading students...</p>
-        )}
+      {/* Tab Buttons */}
+      <div className="tabs">
+        <button
+          className={`tab-button ${activeTab === 'students' ? 'active' : ''}`}
+          onClick={() => setActiveTab('students')}
+        >
+          Students Payments
+        </button>
+        <button
+          className={`tab-button ${activeTab === 'others' ? 'active' : ''}`}
+          onClick={() => setActiveTab('others')}
+        >
+          Others
+        </button>
       </div>
+
+      {/* Students Payments Page */}
+      {activeTab === 'students' && (
+        <div className="student-payments-page">
+          <h1>Student Payment</h1>
+          <div className="student-card-list">
+            {students.length > 0 ? (
+              students.map((student) => (
+                <div key={student.id} className="student-card">
+                  <h2>{student.name}</h2>
+                  <p>
+                    <strong>Student Software ID:</strong> {student.id}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {student.email}
+                  </p>
+                  <p>
+                    <strong>Created At:</strong> {new Date(student.createdAt).toLocaleDateString()}
+                  </p>
+                  <div className="amount-input">
+                    <label>
+                      <strong>Amount:</strong>
+                      <input
+                        type="number"
+                        value={amounts[student.id] || ''}
+                        onChange={(e) => handleAmountChange(student.id, e.target.value)}
+                        placeholder="Enter amount"
+                        required
+                      />
+                    </label>
+                  </div>
+                  <button
+                    className="paid-button"
+                    onClick={() => handlePaid(student.id)}
+                    disabled={!amounts[student.id]}
+                  >
+                    Paid
+                  </button>
+                  <button
+                    className="paid-button"
+                    onClick={() => fetchHistory(student.id)}
+                  >
+                    Previous History
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>Loading students...</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Others Page */}
+      {activeTab === 'others' && (
+        <div className="others-page">
+          <h1>Others</h1>
+          <p>This is the "Others" page content.</p>
+        </div>
+      )}
 
       {/* Modal for Payment History */}
       {isModalOpen && (
