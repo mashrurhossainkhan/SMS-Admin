@@ -96,6 +96,58 @@ exports.getStudentAmounts = async function (req, res) {
     }
   };
   
+  exports.deleteCreditsById = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Validate the `id`
+      if (!id) {
+        return res.status(400).json({ error: 'Credit ID is required' });
+      }
+  
+      // Check if the credit exists
+      const credit = await Credit.findByPk(id);
+      if (!credit) {
+        return res.status(404).json({ error: 'Credit not found' });
+      }
+  
+      // Delete the credit (soft delete if `paranoid` is enabled)
+      await credit.destroy();
+  
+      res.status(200).json({ message: 'Credit deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting credit:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+  exports.getCreditsByUserId = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      // Validate `userId`
+      if (!userId) {
+        return res.status(400).json({ error: 'UserId is required' });
+      }
+  
+      // Fetch credits by userId
+      const credits = await Credit.findAll({
+        where: { userId },
+        order: [['date', 'DESC']], // Optional: Order by date descending
+      });
+  
+      // Return the result
+      if (credits.length === 0) {
+        return res.status(404).json({ message: 'No credits found for this user' });
+      }
+  
+      res.status(200).json(credits);
+    } catch (error) {
+      console.error('Error fetching credits:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
 
   exports.addCredit = async function (req, res) {
     try {

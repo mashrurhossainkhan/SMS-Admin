@@ -41,6 +41,8 @@ router.delete('/api/delete/result/:id', resultController.deleteResult);
 //paymentController
 router.get('/api/payments/all/students', paymentController.getStudentAmounts);
 router.post('/api/payments/add/credit', paymentController.addCredit);
+router.get('/api/payments/history/:userId', paymentController.getCreditsByUserId);
+router.delete('/api/credits/:id', paymentController.deleteCreditsById);
 router.post('/api/payments/add/debit', paymentController.addDedit);
 //payment controllers
 
