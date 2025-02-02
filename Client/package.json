@@ -1,9 +1,10 @@
 {
-  "name": "@coreui/coreui-free-react-admin-template",
+  "name": "stam",
+  "homepage": "https://stam.frontend.khanmashrur.com",
   "version": "3.2.0",
   "description": "CoreUI React Open Source Bootstrap 4 Admin Template",
   "author": {
-    "name": "CoreUI",
+    "name": "Mashrur",
     "url": "https://coreui.io",
     "github": "https://github.com/coreui",
     "twitter": "https://twitter.com/core_ui"
