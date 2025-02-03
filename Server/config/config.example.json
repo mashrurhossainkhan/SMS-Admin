@@ -1,0 +1,17 @@
+{
+    "development": {
+      "host": "localhost",
+      "database": "SMS",
+      "username": "root",
+      "password": "",
+      "dialect": "mysql"
+    },
+    "production": {
+      "host": "localhost",
+      "database": "SMS",
+      "username": "root",
+      "password": "",
+      "dialect": "mysql"
+    }
+  }
+  

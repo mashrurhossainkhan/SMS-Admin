@@ -1,16 +1,16 @@
 {
   "development": {
     "host": "localhost",
-    "database": "SMS",
-    "username": "root",
-    "password": "",
+    "database": "khanmash_shahid_titumir_academy_manikganj",
+    "username": "khanmash_sms",
+    "password": "Khanmashrur@SMS",
     "dialect": "mysql"
   },
   "production": {
     "host": "localhost",
-    "database": "SMS",
-    "username": "root",
-    "password": "",
+    "database": "khanmash_shahid_titumir_academy_manikganj",
+    "username": "khanmash_sms",
+    "password": "Khanmashrur@SMS",
     "dialect": "mysql"
   }
 }
