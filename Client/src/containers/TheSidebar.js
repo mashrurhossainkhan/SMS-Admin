@@ -28,7 +28,7 @@ const TheSidebar = () => {
       onShowChange={(val) => dispatch({ type: "set", sidebarShow: val })}
     >
       <CSidebarBrand className="d-md-down-none" to="/">
-        <h2>Gallery Studio</h2>
+        <h2>Shahid Titumir Academy Manikganj</h2>
       </CSidebarBrand>
       <CSidebarNav>
         <CCreateElement

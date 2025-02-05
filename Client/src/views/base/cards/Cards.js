@@ -287,7 +287,7 @@ const Cards = () => {
                   Integer posuere erat a ante.
                 </p>
                 <footer>
-                  Someone famous in{' '}
+                  Someone  in{' '}
                   <cite title="Source Title">Source Title</cite>
                 </footer>
               </blockquote>
@@ -303,7 +303,7 @@ const Cards = () => {
                   Integer posuere erat a ante.
                 </p>
                 <footer>
-                  Someone famous in{' '}
+                  Someone  in{' '}
                   <cite title="Source Title">Source Title</cite>
                 </footer>
               </blockquote>
@@ -319,7 +319,7 @@ const Cards = () => {
                   Integer posuere erat a ante.
                 </p>
                 <footer>
-                  Someone famous in{' '}
+                  Someone  in{' '}
                   <cite title="Source Title">Source Title</cite>
                 </footer>
               </blockquote>
@@ -335,7 +335,7 @@ const Cards = () => {
                   Integer posuere erat a ante.
                 </p>
                 <footer>
-                  Someone famous in{' '}
+                  Someone  in{' '}
                   <cite title="Source Title">Source Title</cite>
                 </footer>
               </blockquote>
@@ -351,7 +351,7 @@ const Cards = () => {
                   Integer posuere erat a ante.
                 </p>
                 <footer>
-                  Someone famous in{' '}
+                  Someone in{' '}
                   <cite title="Source Title">Source Title</cite>
                 </footer>
               </blockquote>
@@ -367,7 +367,7 @@ const Cards = () => {
                   Integer posuere erat a ante.
                 </p>
                 <footer>
-                  Someone famous in{' '}
+                  Someone  in{' '}
                   <cite title="Source Title">Source Title</cite>
                 </footer>
               </blockquote>

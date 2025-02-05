@@ -3,6 +3,53 @@ const Subject = models.subject;
 const User = models.user;
 const teacherStSubjectAssociation = models.TeacherStSubjectAssociation;
 const { sequelize } = require('../models');
+
+
+// Get all subject information
+const createSubject = async (req, res) => {
+  try {
+    const { name, class: className, section, shift } = req.body;
+
+    // Validate required fields
+    if (!name || !className || !section || !shift) {
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    // Create subject
+    const newSubject = await Subject.create({
+      name,
+      class: className, // Using alias because `class` is a reserved keyword
+      section,
+      shift,
+      visibility : true, // Default to true
+    });
+
+    res.status(201).json({ message: 'Subject created successfully', subject: newSubject });
+  } catch (error) {
+    console.error('Error creating subject:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+
+const getAllSubjects = async (req, res) => {
+  try {
+    const subjects = await Subject.findAll();
+    
+    res.status(200).json({
+      success: true,
+      data: subjects,
+    });
+  } catch (error) {
+    console.error("Error fetching subjects:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Could not fetch subjects.",
+      error: error.message,
+    });
+  }
+};
+
 // Get all subject information
 const getAllSubjectInfo = async (req, res) => {
   try {
@@ -112,8 +159,35 @@ const getAllAssociationsWithUserInfo = async (req, res) => {
   }
 };
 
+
+const deleteSubject = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Check if subject exists
+    const subject = await Subject.findByPk(id);
+    if (!subject) {
+      return res.status(404).json({ success: false, message: "Subject not found" });
+    }
+
+    // If using soft delete (update `deletedAt` instead of actual deletion)
+    // await subject.update({ deletedAt: new Date() });
+
+    // Hard delete the subject
+    await subject.destroy();
+
+    res.status(200).json({ success: true, message: "Subject deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting subject:", error);
+    res.status(500).json({ success: false, message: "Server error", error: error.message });
+  }
+};
+
 module.exports = {
   getAllSubjectInfo,
   addTeacherStSubjectAssociation,
   getAllAssociationsWithUserInfo,
+  createSubject,
+  getAllSubjects,
+  deleteSubject
 };

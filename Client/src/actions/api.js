@@ -1,1 +1,1 @@
-export const API = 'https://stam.backend.khanmashrur.com';
+export const API = 'http://localhost:5000';

@@ -27,6 +27,12 @@ module.exports = function (sequelize, DataTypes) {
         field: 'section',
       },
 
+      shift: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        field: 'shift',
+      },
+
       visibility: {
         type: DataTypes.STRING,
         allowNull: false,

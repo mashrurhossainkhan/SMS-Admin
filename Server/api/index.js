@@ -94,6 +94,9 @@ router.post('/api/signup/teacher', teacherController.insertTeacherInfo);
 
 //subject controllers start
 router.get('/api/subjects/all/info', subjectController.getAllSubjectInfo);
+router.post('/api/subjects/create', subjectController.createSubject);
+router.get('/api/subjects/get', subjectController.getAllSubjects);
+router.delete('/api/subjects/delete/:id', subjectController.deleteSubject);
 router.post(
   '/api/assign/teacher/student/subject',
   subjectController.addTeacherStSubjectAssociation

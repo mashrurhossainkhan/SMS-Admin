@@ -38,10 +38,15 @@ const _nav = [
   //assign subjects to a teacher
   {
     _tag: 'CSidebarNavDropdown',
-    name: 'Subject Assigned',
+    name: 'Subject',
     route: '#',
     icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
     _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Subject Create',
+        to: '/subject/create',
+      },
       {
         _tag: 'CSidebarNavItem',
         name: 'Create',
@@ -138,24 +143,38 @@ if (userInfo) {
   // }
 
   // Add "Attendance" for userType 3
-  if (userInfo.userType === 3) {
-    _nav.push({
-      _tag: 'CSidebarNavItem',
-      name: 'Attendance',
-      to: '/attendance',
-      icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
-    });
+  // if (userInfo.userType === 3) {
+  //   _nav.push({
+  //     _tag: 'CSidebarNavItem',
+  //     name: 'Attendance',
+  //     to: '/attendance',
+  //     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+  //   });
 
-    _nav.push({
-      _tag: 'CSidebarNavItem',
-      name: 'Result',
-      to: '/report',
-      icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
-    });
-  }
+  //   _nav.push({
+  //     _tag: 'CSidebarNavItem',
+  //     name: 'Result',
+  //     to: '/report',
+  //     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+  //   });
+  // }
 
   // if (userInfo.userType === 1) {
   // }
+
+  _nav.push({
+    _tag: 'CSidebarNavItem',
+    name: 'Attendance',
+    to: '/attendance',
+    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+  });
+
+  _nav.push({
+    _tag: 'CSidebarNavItem',
+    name: 'Result',
+    to: '/report',
+    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+  });
 
   _nav.push({
     _tag: 'CSidebarNavItem',

@@ -6,7 +6,7 @@ const TheFooter = () => {
     <CFooter fixed={false}>
       <div>
         <a href="#" target="_blank" rel="noopener noreferrer">
-          Famouse Auto
+          Eduflex BD
         </a>
         <span className="ml-1">&copy; 2021 All Rights Reserved.</span>
       </div>
