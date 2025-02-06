@@ -47,16 +47,16 @@ const _nav = [
         name: 'Subject Create',
         to: '/subject/create',
       },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Create',
-        to: '/association/teacher/students/subjects',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Manage',
-        to: '/assigned/subject/manage/all',
-      },
+      // {
+      //   _tag: 'CSidebarNavItem',
+      //   name: 'Create',
+      //   to: '/association/teacher/students/subjects',
+      // },
+      // {
+      //   _tag: 'CSidebarNavItem',
+      //   name: 'Manage',
+      //   to: '/assigned/subject/manage/all',
+      // },
     ],
   },
 

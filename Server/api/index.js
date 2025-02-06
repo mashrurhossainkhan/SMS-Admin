@@ -85,6 +85,14 @@ router.put(
 //Student APIs start
 router.post('/api/signup/student', studentController.studentSignup);
 router.get('/api/signin/student', studentController.studentSignin);
+router.get('/api/student/all', studentController.getAllStudents);
+router.put('/api/student/:id', studentController.updateStudentById);
+router.delete('/api/student/:id', studentController.deleteStudentById);
+
+
+router.post('/api/student/meta/create', studentController.createStudentMeta);
+router.get('/api/student/meta/get/:userid', studentController.getStudentMetaById);
+router.put('/api/student/meta/:userid', studentController.updateStudentMetaById);
 //Student APIs end
 
 //techer APIs start

@@ -53,18 +53,20 @@ const Register = ({ history, location, userTypeProps }) => {
   };
 
   return (
-    <div className="c-app c-default-layout flex-row align-items-center">
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md="9" lg="7" xl="6">
-            <CCard className="mx-4">
-              <CCardBody className="p-4">
+            <CCard className="shadow-lg rounded-lg border border-gray-200">
+              <CCardBody className="p-6">
                 <CForm onSubmit={submit}>
-                  <h1>Register</h1>
-                  <p className="text-muted">Create your account</p>
+                  <h1 className="text-xl font-semibold text-gray-700">Register</h1>
+                  <p className="text-gray-500 mb-4">Create your account</p>
+  
+                  {/* Username Input */}
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-                      <CInputGroupText>
+                      <CInputGroupText className="bg-gray-200">
                         <CIcon name="cil-user" />
                       </CInputGroupText>
                     </CInputGroupPrepend>
@@ -72,25 +74,31 @@ const Register = ({ history, location, userTypeProps }) => {
                       type="text"
                       placeholder="Username"
                       autoComplete="username"
+                      className="border rounded-md px-3 py-2 w-full"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </CInputGroup>
+  
+                  {/* Email Input */}
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-                      <CInputGroupText>@</CInputGroupText>
+                      <CInputGroupText className="bg-gray-200">@</CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
                       type="text"
                       placeholder="Email"
                       autoComplete="email"
+                      className="border rounded-md px-3 py-2 w-full"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </CInputGroup>
+  
+                  {/* Password Input */}
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-                      <CInputGroupText>
+                      <CInputGroupText className="bg-gray-200">
                         <CIcon name="cil-lock-locked" />
                       </CInputGroupText>
                     </CInputGroupPrepend>
@@ -98,13 +106,16 @@ const Register = ({ history, location, userTypeProps }) => {
                       type="password"
                       placeholder="Password"
                       autoComplete="new-password"
+                      className="border rounded-md px-3 py-2 w-full"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </CInputGroup>
+  
+                  {/* Confirm Password Input */}
                   <CInputGroup className="mb-4">
                     <CInputGroupPrepend>
-                      <CInputGroupText>
+                      <CInputGroupText className="bg-gray-200">
                         <CIcon name="cil-lock-locked" />
                       </CInputGroupText>
                     </CInputGroupPrepend>
@@ -112,35 +123,23 @@ const Register = ({ history, location, userTypeProps }) => {
                       type="password"
                       placeholder="Repeat password"
                       autoComplete="new-password"
+                      className="border rounded-md px-3 py-2 w-full"
                       value={password2}
                       onChange={(e) => setPassword2(e.target.value)}
                     />
                   </CInputGroup>
-                  <CButton type="submit" color="success" block>
+  
+                  <CButton type="submit" color="primary" block className="py-2 text-lg">
                     Create Account
                   </CButton>
                 </CForm>
               </CCardBody>
-              {/* <CCardFooter className="p-4">
-                <CRow>
-                  <CCol xs="12" sm="6">
-                    <CButton className="btn-facebook mb-1" block>
-                      <span>facebook</span>
-                    </CButton>
-                  </CCol>
-                  <CCol xs="12" sm="6">
-                    <CButton className="btn-twitter mb-1" block>
-                      <span>twitter</span>
-                    </CButton>
-                  </CCol>
-                </CRow>
-              </CCardFooter> */}
             </CCard>
           </CCol>
         </CRow>
       </CContainer>
     </div>
-  );
+  );  
 };
 
 export default Register;

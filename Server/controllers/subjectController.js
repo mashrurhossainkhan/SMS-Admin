@@ -1,6 +1,7 @@
 const models = require('../models');
 const Subject = models.subject;
 const User = models.user;
+const StudentMeta = models.studentMeta;
 const teacherStSubjectAssociation = models.TeacherStSubjectAssociation;
 const { sequelize } = require('../models');
 
@@ -182,6 +183,9 @@ const deleteSubject = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error", error: error.message });
   }
 };
+
+
+
 
 module.exports = {
   getAllSubjectInfo,

@@ -15,7 +15,7 @@ const secret = require('../../config/secret');
 // Model import
 const models = require('../../models');
 const User = models.user;
-const UserMeta = models.user_meta;
+//const UserMeta = models.user_meta;
 
 // Signup user
 //http://localhost:5000/api/user/register
@@ -52,25 +52,25 @@ exports.signup = async function (req, res) {
 };
 
 exports.user_meta_data = async function (req, res) {
-  let body = req.body;
-  try {
-    await UserMeta.create({
-      employee_id: `00${body.userId}`,
-      designation: body.designation,
-      userId: body.userId,
-      first_nm: body.fName,
-      middle_nm: body.mName,
-      last_nm: body.lName,
-      visibility: 1,
-    })
-      .then((user) => {
-        res.status(200).json('User has created successfully');
-      })
-      .catch((err) => {
-        return res.status(500).json('Something error there ' + err);
-      });
-    //exports.authenticate(req, res);
-  } catch (e) {
-    return res.status(400).send({ error: e.message });
-  }
+  // let body = req.body;
+  // try {
+  //   await UserMeta.create({
+  //     employee_id: `00${body.userId}`,
+  //     designation: body.designation,
+  //     userId: body.userId,
+  //     first_nm: body.fName,
+  //     middle_nm: body.mName,
+  //     last_nm: body.lName,
+  //     visibility: 1,
+  //   })
+  //     .then((user) => {
+  //       res.status(200).json('User has created successfully');
+  //     })
+  //     .catch((err) => {
+  //       return res.status(500).json('Something error there ' + err);
+  //     });
+  //   //exports.authenticate(req, res);
+  // } catch (e) {
+  //   return res.status(400).send({ error: e.message });
+  // }
 };

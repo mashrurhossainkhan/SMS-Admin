@@ -49,7 +49,7 @@ db.notice_board = require('./notice_board')(sequelize, Sequelize);
 db.user = require('./user')(sequelize, Sequelize);
 db.userType = require('./UserType')(sequelize, Sequelize);
 db.attendance = require('./attendance')(sequelize, Sequelize);
-db.userMeta = require('./userMeta')(sequelize, Sequelize);
+db.studentMeta = require('./studentMeta')(sequelize, Sequelize);
 db.teacherMetaAchievement = require('./teacherMetaAchievements')(
   sequelize,
   Sequelize
