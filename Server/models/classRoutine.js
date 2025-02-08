@@ -42,10 +42,21 @@ module.exports = function (sequelize, DataTypes) {
   
         teacherId: {
           type: DataTypes.BIGINT,
-          allowNull: false,
           field: "teacherId",
         },
   
+        class: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            field: "class",
+          },
+
+          section: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            field: "section",
+          },
+
         roomNumber: {
           type: DataTypes.STRING,
           allowNull: true,

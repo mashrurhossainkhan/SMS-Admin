@@ -74,6 +74,9 @@ db.TeacherStSubjectAssociation = require('./TeacherStSubjectAssociation')(
 );
 
 db.TeacherStSubjectAssociation.associate = (models) => {
+
+  db.classRoutine.belongsTo(db.subject, { foreignKey: "subjectId", as: "subject" });
+  
   db.TeacherStSubjectAssociation.belongsTo(models.User, {
     foreignKey: 'teacherId',
     as: 'teacher',

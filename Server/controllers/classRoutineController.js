@@ -1,5 +1,6 @@
 const models = require('../models');
 const ClassRoutine = models.classRoutine;
+const Subject = models.subject;
 
 // 📌 Create Class Routine
 exports.createClassRoutine = async (req, res) => {
@@ -22,21 +23,36 @@ exports.createClassRoutine = async (req, res) => {
 
 // 📌 Get All Class Routines
 exports.getAllClassRoutines = async (req, res) => {
-  try {
-    const classRoutines = await ClassRoutine.findAll();
-    res.status(200).json({
-      success: true,
-      data: classRoutines,
-    });
-  } catch (error) {
-    console.error("Error fetching class routines:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error. Could not fetch class routines.",
-      error: error.message,
-    });
-  }
-};
+    try {
+      const classRoutines = await ClassRoutine.findAll({
+        include: [
+          {
+            model: Subject, // Join with Subject model
+            as: "subject", // This alias must match your association
+            attributes: ["id", "name"], // Fetch subject name
+          },
+        ],
+      });
+  
+      // Transform response to replace subjectId with subjectName
+      const formattedRoutines = classRoutines.map((routine) => ({
+        ...routine.toJSON(),
+        subjectName: routine.subject ? routine.subject.name : "Unknown Subject",
+      }));
+  
+      res.status(200).json({
+        success: true,
+        data: formattedRoutines,
+      });
+    } catch (error) {
+      console.error("Error fetching class routines:", error);
+      res.status(500).json({
+        success: false,
+        message: "Server error. Could not fetch class routines.",
+        error: error.message,
+      });
+    }
+}
 
 // 📌 Get Class Routine by ID
 exports.getClassRoutineById = async (req, res) => {

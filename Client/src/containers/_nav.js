@@ -38,7 +38,7 @@ const _nav = [
   //assign subjects to a teacher
   {
     _tag: 'CSidebarNavDropdown',
-    name: 'Subject',
+    name: 'Routine',
     route: '#',
     icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
     _children: [
@@ -46,6 +46,11 @@ const _nav = [
         _tag: 'CSidebarNavItem',
         name: 'Subject Create',
         to: '/subject/create',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Routine Create',
+        to: '/routine/create',
       },
       // {
       //   _tag: 'CSidebarNavItem',

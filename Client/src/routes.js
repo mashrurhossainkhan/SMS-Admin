@@ -116,6 +116,7 @@ const DepositReport = React.lazy(() => import('./views/report/deposit_report'));
 
 const Company = React.lazy(() => import('./views/Company/Company'));
 const Subject = React.lazy(() => import('./views/Subject/SubjectCreate'));
+const ClassRoutine = React.lazy(() => import('./views/ClassRoutine/ClassRoutineTable'));
 
 const CompanyProfile = React.lazy(() =>
   import('./views/company_profile/company_profile')
@@ -259,6 +260,13 @@ const routes = [
     exact: true,
     name: 'Subject',
     component: Subject,
+  },
+
+  {
+    path: '/routine/create',
+    exact: true,
+    name: 'Routine',
+    component: ClassRoutine,
   },
   // supplier
   {
