@@ -50,6 +50,7 @@ db.user = require('./user')(sequelize, Sequelize);
 db.userType = require('./UserType')(sequelize, Sequelize);
 db.attendance = require('./attendance')(sequelize, Sequelize);
 db.studentMeta = require('./studentMeta')(sequelize, Sequelize);
+db.teacherMeta = require('./teacherMeta')(sequelize, Sequelize);
 db.teacherMetaAchievement = require('./teacherMetaAchievements')(
   sequelize,
   Sequelize

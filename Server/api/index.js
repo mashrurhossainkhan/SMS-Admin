@@ -9,6 +9,7 @@ passport.use(jwtStrategry);
 const noticeController = require('../controllers/noticeBoardController');
 const studentController = require('../controllers/studentController');
 const teacherController = require('../controllers/teacherController');
+const teacherMetaController = require('../controllers/teacherMetaController');
 const userController = require('../controllers/userController');
 const subjectController = require('../controllers/subjectController');
 const attendanceController = require('../controllers/attendanceController');
@@ -88,8 +89,6 @@ router.get('/api/signin/student', studentController.studentSignin);
 router.get('/api/student/all', studentController.getAllStudents);
 router.put('/api/student/:id', studentController.updateStudentById);
 router.delete('/api/student/:id', studentController.deleteStudentById);
-
-
 router.post('/api/student/meta/create', studentController.createStudentMeta);
 router.get('/api/student/meta/get/:userid', studentController.getStudentMetaById);
 router.put('/api/student/meta/:userid', studentController.updateStudentMetaById);
@@ -97,6 +96,9 @@ router.put('/api/student/meta/:userid', studentController.updateStudentMetaById)
 
 //techer APIs start
 router.post('/api/signup/teacher', teacherController.insertTeacherInfo);
+router.post("/api/create/meta", teacherMetaController.createTeacherMeta);
+router.get("/api/get/:userid", teacherMetaController.getTeacherMetaById);
+router.put("/api/update/:userid", teacherMetaController.updateTeacherMetaById);
 //router.get('/api/signin/student', studentController.studentSignin);
 //techer APIs end
 
