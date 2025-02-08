@@ -40,7 +40,7 @@ const Register = ({ history, location, userTypeProps }) => {
     console.log('redirect = ' + redirect);
   }, [history, userInfoFamous, redirect, userTypeProps]);
   const submit = async (e) => {
-    e.preventDefault();
+    //e.preventDefault();
     if (password !== password2) {
       alert('Password Do Not Match');
     } else {

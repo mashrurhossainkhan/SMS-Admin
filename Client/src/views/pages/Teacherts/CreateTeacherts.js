@@ -1,5 +1,6 @@
 import { TheSidebar, TheFooter, TheHeader } from '../../../containers/index';
 import Register from '../register/Register';
+import TeacherTable from './TeacherTable';
 
 const CreateTeachers = () => {
   return (
@@ -9,6 +10,7 @@ const CreateTeachers = () => {
         <TheHeader />
         <div className="c-body">
           <Register userTypeProps="3" />
+          <TeacherTable/>
         </div>
         <TheFooter />
       </div>

@@ -97,8 +97,10 @@ router.put('/api/student/meta/:userid', studentController.updateStudentMetaById)
 //techer APIs start
 router.post('/api/signup/teacher', teacherController.insertTeacherInfo);
 router.post("/api/create/meta", teacherMetaController.createTeacherMeta);
+router.get('/api/teacher/all', teacherController.getAllTeachers);
 router.get("/api/get/:userid", teacherMetaController.getTeacherMetaById);
 router.put("/api/update/:userid", teacherMetaController.updateTeacherMetaById);
+router.delete('/api/teacher/:id', studentController.deleteStudentById);
 //router.get('/api/signin/student', studentController.studentSignin);
 //techer APIs end
 
