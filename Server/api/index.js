@@ -16,6 +16,7 @@ const attendanceController = require('../controllers/attendanceController');
 const AssociationController = require("../controllers/associationController")
 const paymentController = require("../controllers/paymentController")
 const resultController = require("../controllers/resultController")
+const routineController = require("../controllers/classRoutineController")
 
 router.use(function (req, res, next) {
   res.header(
@@ -25,6 +26,14 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+//Routine Controllers starts
+router.post("/api/create/routine", routineController.createClassRoutine);
+router.get("/api/all/routine", routineController.getAllClassRoutines);
+router.get("/api/get/:id", routineController.getClassRoutineById);
+router.put("/api/get/:id", routineController.updateClassRoutineById);
+router.delete("/api/delete/:id", routineController.deleteClassRoutineById);
+//Routine controllers ends
 
 //result constrollers
 router.get('/api/get/result/associate/:associationId', resultController.getResultsByAssociationId);

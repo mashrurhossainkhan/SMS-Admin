@@ -9,19 +9,11 @@ const { sequelize } = require('../models');
 // Get all subject information
 const createSubject = async (req, res) => {
   try {
-    const { name, class: className, section, shift } = req.body;
-
-    // Validate required fields
-    if (!name || !className || !section || !shift) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
+    const { name} = req.body;
 
     // Create subject
     const newSubject = await Subject.create({
       name,
-      class: className, // Using alias because `class` is a reserved keyword
-      section,
-      shift,
       visibility : true, // Default to true
     });
 

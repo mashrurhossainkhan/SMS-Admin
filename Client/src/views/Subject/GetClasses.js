@@ -62,9 +62,6 @@ const GetClasses = () => {
 
   const fields = [
     { key: "name", label: "Subject Name" },
-    { key: "class", label: "Class" },
-    { key: "section", label: "Section" },
-    { key: "shift", label: "Shift" },
     { key: "actions", label: "Actions" }, // New column for delete button
   ];
 

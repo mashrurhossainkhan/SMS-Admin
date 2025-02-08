@@ -48,6 +48,7 @@ db.Sequelize = Sequelize;
 db.notice_board = require('./notice_board')(sequelize, Sequelize);
 db.user = require('./user')(sequelize, Sequelize);
 db.userType = require('./UserType')(sequelize, Sequelize);
+db.classRoutine = require('./classRoutine')(sequelize, Sequelize);
 db.attendance = require('./attendance')(sequelize, Sequelize);
 db.studentMeta = require('./studentMeta')(sequelize, Sequelize);
 db.teacherMeta = require('./teacherMeta')(sequelize, Sequelize);

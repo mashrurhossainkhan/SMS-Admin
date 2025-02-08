@@ -15,24 +15,6 @@ module.exports = function (sequelize, DataTypes) {
         field: 'name',
       },
 
-      class: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'class',
-      },
-
-      section: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'section',
-      },
-
-      shift: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        field: 'shift',
-      },
-
       visibility: {
         type: DataTypes.STRING,
         allowNull: false,
