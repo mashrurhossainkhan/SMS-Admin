@@ -88,6 +88,11 @@ module.exports = function (sequelize, DataTypes) {
         field: 'phoneNumber',
       },
 
+      rollNo: {
+        type: DataTypes.STRING,
+        field: 'rollNo',
+      },
+
       createdAt: {
         type: DataTypes.DATE,
         field: 'createdAt',

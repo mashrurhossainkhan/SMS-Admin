@@ -38,6 +38,7 @@ const StudentTable = () => {
     nationalIdCard: "",
     birthCertificate: "",
     phoneNumber: "",
+    rollNo: ""
   });
 
   useEffect(() => {
@@ -143,6 +144,7 @@ const openMetaModal = async (student) => {
             nationalIdCard: "",
             birthCertificate: "",
             phoneNumber: "",
+            rollNo: ""
           });
         } else {
           alert(createResult.message || "Failed to create student meta.");
