@@ -1,6 +1,6 @@
 const models = require('../models');
 const ClassRoutine = models.classRoutine;
-const Subject = models.subject;
+const { sequelize } = require("../models");
 
 // 📌 Create Class Routine
 exports.createClassRoutine = async (req, res) => {
@@ -21,38 +21,60 @@ exports.createClassRoutine = async (req, res) => {
   }
 };
 
-// 📌 Get All Class Routines
 exports.getAllClassRoutines = async (req, res) => {
-    try {
-      const classRoutines = await ClassRoutine.findAll({
-        include: [
-          {
-            model: Subject, // Join with Subject model
-            as: "subject", // This alias must match your association
-            attributes: ["id", "name"], // Fetch subject name
-          },
-        ],
-      });
-  
-      // Transform response to replace subjectId with subjectName
-      const formattedRoutines = classRoutines.map((routine) => ({
-        ...routine.toJSON(),
-        subjectName: routine.subject ? routine.subject.name : "Unknown Subject",
-      }));
-  
-      res.status(200).json({
-        success: true,
-        data: formattedRoutines,
-      });
-    } catch (error) {
-      console.error("Error fetching class routines:", error);
-      res.status(500).json({
-        success: false,
-        message: "Server error. Could not fetch class routines.",
-        error: error.message,
-      });
-    }
-}
+  try {
+    const { teacherId, class: classFilter, day, subjectId } = req.query; // Accept filters from frontend
+
+    // Dynamically build the WHERE clause
+    let whereConditions = [];
+    if (teacherId) whereConditions.push(`cr.teacherId = ${teacherId}`);
+    if (classFilter) whereConditions.push(`cr.class = '${classFilter}'`);
+    if (day) whereConditions.push(`cr.day = '${day.toUpperCase()}'`);
+    if (subjectId) whereConditions.push(`cr.subjectId = ${subjectId}`);
+
+    // Combine conditions if any exist
+    let whereClause = whereConditions.length > 0 ? `WHERE ${whereConditions.join(" AND ")}` : "";
+
+    const query = `
+      SELECT 
+        cr.id,
+        cr.day,
+        cr.startTime,
+        cr.endTime,
+        cr.class,
+        cr.section,
+        cr.roomNumber,
+        cr.subjectId,
+        s.name AS subjectName,
+        cr.teacherId,
+        u.name AS teacherName
+      FROM classRoutine cr
+      LEFT JOIN subject s ON cr.subjectId = s.id
+      LEFT JOIN user u ON cr.teacherId = u.id
+      ${whereClause}  -- Apply filters dynamically
+      ORDER BY 
+        FIELD(cr.day, 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'),
+        cr.startTime ASC;
+    `;
+
+    const classRoutines = await sequelize.query(query, {
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: classRoutines,
+    });
+  } catch (error) {
+    console.error("Error fetching class routines:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error. Could not fetch class routines.",
+      error: error.message,
+    });
+  }
+};
+
 
 // 📌 Get Class Routine by ID
 exports.getClassRoutineById = async (req, res) => {

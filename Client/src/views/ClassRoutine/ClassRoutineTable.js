@@ -20,10 +20,17 @@ import {
 import { API } from "../../actions/api";
 
 const ClassRoutineTable = () => {
+  const [filters, setFilters] = useState({
+    teacherId: "",
+    class: "",
+    day: "",
+    subjectId: "",
+  });
   const [routines, setRoutines] = useState([]);
   const [subjects, setSubjects] = useState([]); // Store subjects
   const [teachers, setTeacher] = useState([]); // Store subjects
   const [loading, setLoading] = useState(true);
+  const [selectedTeacher, setSelectedTeacher] = useState(""); 
   const [modal, setModal] = useState(false);
   const [currentRoutine, setCurrentRoutine] = useState({
     day: "MONDAY",
@@ -42,12 +49,12 @@ const ClassRoutineTable = () => {
     fetchTeachers();
   }, []);
 
-  // Fetch All Class Routines
   const fetchRoutines = async () => {
+    setLoading(true);
+    const queryParams = new URLSearchParams(filters).toString();
     try {
-      const response = await fetch(API + "/api/all/routine");
+      const response = await fetch(`${API}/api/all/routine?${queryParams}`);
       const result = await response.json();
-
       if (response.ok) {
         setRoutines(result.data || []);
       } else {
@@ -115,7 +122,11 @@ const ClassRoutineTable = () => {
       alert("Server error! Try again.");
     }
   };
-
+  const handleTeacherChange = (e) => {
+    const teacherId = e.target.value;
+    setSelectedTeacher(teacherId);
+    fetchRoutines(teacherId); // Fetch filtered routines
+  };
   // Open Add/Edit Modal
   const openModal = (routine = null) => {
     if (routine) {
@@ -170,7 +181,7 @@ const ClassRoutineTable = () => {
     { key: "day", label: "Day" },
     { key: "startTime", label: "Start Time" },
     { key: "endTime", label: "End Time" },
-    { key: "subjectId", label: "Subject" },
+    { key: "subjectName", label: "subject Name" },
     { key: "teacherName", label: "Teacher Name" },
     { key: "class", label: "Class" },
     { key: "section", label: "Section" },
@@ -185,10 +196,64 @@ const ClassRoutineTable = () => {
           <CCardBody className="p-6">
             <h2 className="text-xl font-semibold text-gray-700 mb-3">Class Routine</h2>
 
+            <div style={{display: "flex"}}>
             <CButton color="primary" onClick={() => openModal(null)} className="mb-3">
               Add New Routine
             </CButton>
+            </div>
 
+
+            <div>
+              
+                {/* ✅ Teacher Dropdown for Filtering */}
+                <CRow className="mb-3">
+              <CCol md="3">
+                <CSelect value={filters.teacherId} onChange={(e) => setFilters({ ...filters, teacherId: e.target.value })}>
+                  <option value="">All Teachers</option>
+                  {teachers.map((teacher) => (
+                    <option key={teacher.id} value={teacher.id}>
+                      {teacher.name}
+                    </option>
+                  ))}
+                </CSelect>
+              </CCol>
+              <CCol md="3">
+                <CSelect value={filters.subjectId} onChange={(e) => setFilters({ ...filters, subjectId: e.target.value })}>
+                  <option value="">All Subjects</option>
+                  {subjects.map((subject) => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </option>
+                  ))}
+                </CSelect>
+              </CCol>
+              <CCol md="3">
+                <CSelect value={filters.day} onChange={(e) => setFilters({ ...filters, day: e.target.value })}>
+                  <option value="">All Days</option>
+                  {["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"].map((day) => (
+                    <option key={day} value={day}>
+                      {day}
+                    </option>
+                  ))}
+                </CSelect>
+              </CCol>
+              <CCol md="3">
+                <CSelect value={filters.class} onChange={(e) => setFilters({ ...filters, class: e.target.value })}>
+                  <option value="">All Class</option>
+                  {[1,2,3,4,5,6,7,8,9,10,11,12].map((clas) => (
+                    <option key={clas} value={clas}>
+                      {clas}
+                    </option>
+                  ))}
+                </CSelect>
+              </CCol>
+              <CCol md="3">
+                <CButton color="primary" onClick={fetchRoutines}>
+                  Apply Filters
+                </CButton>
+              </CCol>
+            </CRow>
+            </div>
             {loading ? (
               <CSpinner color="primary" />
             ) : (
@@ -309,6 +374,9 @@ const ClassRoutineTable = () => {
                 value={currentRoutine.teacherId}
                 onChange={(e) => setCurrentRoutine({ ...currentRoutine, teacherId: e.target.value })}
               >
+                <option >
+                     Assign Teacher
+                    </option>
                 {teachers.length > 0 ? (
                   teachers.map((teacher) => (
                     <option key={teacher.id} value={teacher.id}>
