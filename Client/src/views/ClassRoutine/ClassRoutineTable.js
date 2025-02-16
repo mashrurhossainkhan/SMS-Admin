@@ -179,13 +179,13 @@ const ClassRoutineTable = () => {
 
   const fields = [
     { key: "day", label: "Day" },
-    { key: "startTime", label: "Start Time" },
-    { key: "endTime", label: "End Time" },
     { key: "subjectName", label: "subject Name" },
     { key: "teacherName", label: "Teacher Name" },
     { key: "class", label: "Class" },
     { key: "section", label: "Section" },
     { key: "roomNumber", label: "Room" },
+    { key: "startTime", label: "Start Time" },
+    { key: "endTime", label: "End Time" },
     { key: "actions", label: "Actions" },
   ];
 
@@ -305,19 +305,9 @@ const ClassRoutineTable = () => {
             </CFormGroup>
 
             <CFormGroup>
-              <CLabel>Room Number</CLabel>
-              <CInput
-                type="text"
-                value={currentRoutine.roomNumber}
-                onChange={(e) => setCurrentRoutine({ ...currentRoutine, roomNumber: e.target.value })}
-              />
-            </CFormGroup>
-
-
-            <CFormGroup>
               <CLabel>Class</CLabel>
               <CInput
-                type="number"
+                type="text"
                 value={currentRoutine.class}
                 onChange={(e) => setCurrentRoutine({ ...currentRoutine, class: e.target.value })}
               />
@@ -330,6 +320,33 @@ const ClassRoutineTable = () => {
                 type="text"
                 value={currentRoutine.section.toUpperCase()}
                 onChange={(e) => setCurrentRoutine({ ...currentRoutine, section: e.target.value.toUpperCase() })}
+              />
+            </CFormGroup>
+
+            <CFormGroup>
+              <CLabel>Subject</CLabel>
+              <CSelect
+                value={currentRoutine.subjectId}
+                onChange={(e) => setCurrentRoutine({ ...currentRoutine, subjectId: e.target.value })}
+              >
+                {subjects.length > 0 ? (
+                  subjects.map((subject) => (
+                    <option key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No subjects available</option>
+                )}
+              </CSelect>
+            </CFormGroup>
+
+            <CFormGroup>
+              <CLabel>Room Number</CLabel>
+              <CInput
+                type="text"
+                value={currentRoutine.roomNumber}
+                onChange={(e) => setCurrentRoutine({ ...currentRoutine, roomNumber: e.target.value })}
               />
             </CFormGroup>
 
@@ -349,23 +366,6 @@ const ClassRoutineTable = () => {
                 value={currentRoutine.endTime}
                 onChange={(e) => setCurrentRoutine({ ...currentRoutine, endTime: e.target.value })}
               />
-            </CFormGroup>
-            <CFormGroup>
-              <CLabel>Subject</CLabel>
-              <CSelect
-                value={currentRoutine.subjectId}
-                onChange={(e) => setCurrentRoutine({ ...currentRoutine, subjectId: e.target.value })}
-              >
-                {subjects.length > 0 ? (
-                  subjects.map((subject) => (
-                    <option key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No subjects available</option>
-                )}
-              </CSelect>
             </CFormGroup>
 
             <CFormGroup>

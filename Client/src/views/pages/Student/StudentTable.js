@@ -25,6 +25,10 @@ const StudentTable = () => {
   const [metaModal, setMetaModal] = useState(false);
   const [currentStudent, setCurrentStudent] = useState({ id: "", name: "", email: "" });
   const [studentMeta, setStudentMeta] = useState({
+    class: "",
+    section: "",
+    rollNo: "",
+    phoneNumber: "",
     fatherName: "",
     fatherOccupation: "",
     fatherPhoneNumer: "",
@@ -37,8 +41,8 @@ const StudentTable = () => {
     relationWithLocalguardian: "",
     nationalIdCard: "",
     birthCertificate: "",
-    phoneNumber: "",
-    rollNo: ""
+    presentAddress: "",
+    permanentAddress: ""
   });
 
   useEffect(() => {
@@ -109,6 +113,10 @@ const openMetaModal = async (student) => {
           },
           body: JSON.stringify({
             userid: student.id,
+            class: "",
+            section: "",
+            rollNo: "",
+            phoneNumber: "",
             fatherName: "",
             fatherOccupation: "",
             fatherPhoneNumer: "",
@@ -121,7 +129,8 @@ const openMetaModal = async (student) => {
             relationWithLocalguardian: "",
             nationalIdCard: "",
             birthCertificate: "",
-            phoneNumber: "",
+            presentAddress: "",
+            permanentAddress: ""
           }),
         });
   
@@ -131,6 +140,10 @@ const openMetaModal = async (student) => {
           //alert("Student meta data created successfully!");
           setStudentMeta({
             userid: student.id, // Ensure userId is stored in the state
+            class: "",
+            section: "",
+            rollNo: "",
+            phoneNumber: "",
             fatherName: "",
             fatherOccupation: "",
             fatherPhoneNumer: "",
@@ -143,8 +156,8 @@ const openMetaModal = async (student) => {
             relationWithLocalguardian: "",
             nationalIdCard: "",
             birthCertificate: "",
-            phoneNumber: "",
-            rollNo: ""
+            presentAddress: "",
+            permanentAddress:""
           });
         } else {
           alert(createResult.message || "Failed to create student meta.");
@@ -262,14 +275,20 @@ const handleMetaSubmit = async () => {
         <CModalBody>
           <CForm>
           {Object.keys(studentMeta)
-                .filter((key) => !["id", "userid", "createdAt", "updatedAt", "deletedAt"].includes(key)) // Exclude fields
+                .filter((key) => !["id", "createdAt", "updatedAt", "deletedAt"].includes(key)) // Exclude fields
                 .map((key) => (
                     <CFormGroup key={key}>
                     <CLabel>{key.replace(/([A-Z])/g, " $1").trim()}</CLabel>
                     <CInput
                         type="text"
                         value={studentMeta[key]}
-                        onChange={(e) => setStudentMeta({ ...studentMeta, [key]: e.target.value })}
+                        onChange={(e) =>
+                          setStudentMeta({
+                            ...studentMeta,
+                            [key]: key === "section" ? e.target.value.toUpperCase() : e.target.value,
+                          })
+                        }
+                        disabled={key === "userid"} // Disable the userid field
                     />
                     </CFormGroup>
                 ))}

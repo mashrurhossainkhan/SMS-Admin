@@ -84,8 +84,8 @@ const TeacherTable = () => {
       // Check if teacher meta already exists
       const response = await fetch(API + `/api/get/${teacher.id}`);
       const result = await response.json();
-
-      if (response.ok && result.data) {
+      console.log(result)
+      if (result.data) {
         // If data exists, set it in the state
         setTeacherMeta(result.data);
       } else {

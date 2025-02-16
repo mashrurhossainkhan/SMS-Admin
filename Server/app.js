@@ -5,14 +5,13 @@ const logger = require('morgan');
 const expessFormData = require('express-form-data');
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const upload = multer();
 const cors = require('cors');
-
 const api = require('./api');
 
 // Application
 const app = express();
-
+// Headers For API Accessing
+app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -53,7 +52,6 @@ app.use(function (req, res, next) {
 // Using all API
 app.use(api);
 
-// Headers For API Accessing
-app.use(cors());
+
 
 module.exports = app;

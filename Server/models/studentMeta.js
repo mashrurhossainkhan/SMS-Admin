@@ -10,6 +10,21 @@ module.exports = function (sequelize, DataTypes) {
         field: 'id',
       },
 
+      rollNo: {
+        type: DataTypes.STRING,
+        field: 'rollNo',
+      },
+
+      class: {
+        type: DataTypes.STRING,
+        field: 'class',
+      },
+
+      section: {
+        type: DataTypes.STRING,
+        field: 'section',
+      },
+
       userid: {
         type: DataTypes.BIGINT,
         allowNull: false,
@@ -63,6 +78,16 @@ module.exports = function (sequelize, DataTypes) {
         field: 'localGuardianPhoneNumber',
       },
 
+      presentAddress: {
+        type: DataTypes.STRING,
+        field: 'presentAddress',
+      },
+
+      permanentAddress: {
+        type: DataTypes.STRING,
+        field: 'permanentAddress',
+      },
+
       relationWithLocalguardian:{
         type: DataTypes.STRING,
         field: 'relationWithLocalguardian',
@@ -86,11 +111,6 @@ module.exports = function (sequelize, DataTypes) {
       phoneNumber: {
         type: DataTypes.STRING,
         field: 'phoneNumber',
-      },
-
-      rollNo: {
-        type: DataTypes.STRING,
-        field: 'rollNo',
       },
 
       createdAt: {

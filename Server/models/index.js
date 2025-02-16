@@ -125,10 +125,6 @@ db.user.hasMany(db.TeacherStSubjectAssociation, {
   as: 'subjectAssociations', // Alias for this association
 });
 
-
-
-// All DB relation
-
 // Datasource syc
 db.sequelize.sync();
 
