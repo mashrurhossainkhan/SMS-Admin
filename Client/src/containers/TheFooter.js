@@ -12,13 +12,8 @@ const TheFooter = () => {
       </div>
       <div className="mfs-auto">
         <span className="mr-1">Developed by</span>
-        <a
-          href="http://softronixs.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Softronixs Ltd.
-        </a>
+       
+      Eduflex
       </div>
     </CFooter>
   );

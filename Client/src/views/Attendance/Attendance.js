@@ -1,138 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  studentAttendanceBulkForTeachers,
-  studentFetchForTeachers,
-} from '../../actions/userActions';
-import './Attendance.css'; // Import the CSS file
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { API } from "../../actions/api";
 
-const Attendance = () => {
-  const dispatch = useDispatch();
-
-  const userInfo = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK')
-    ? JSON.parse(localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK'))
-    : null;
-
-  const email = userInfo?.email;
-
-  const studentInfoForAttendance = useSelector(
-    (state) => state.studentInfoForAttendance
-  );
-  const { loading, error, allStudentsInfo } = studentInfoForAttendance;
-
-  const [attendance, setAttendance] = useState([]);
+const ClassCards = () => {
+  const [classes, setClasses] = useState([]);
+  const [openClass, setOpenClass] = useState(null);
+  const [sections, setSections] = useState({});
+  const [loading, setLoading] = useState({});
 
   useEffect(() => {
-    if (email) {
-      dispatch(studentFetchForTeachers(email));
-    }
-  }, [dispatch, email]);
-
-  const handleAttendanceChange = (
-    studentId,
-    status,
-    teacherId,
-    associationId
-  ) => {
-    setAttendance((prev) => {
-      const updatedAttendance = prev.filter(
-        (record) => record.studentId !== studentId
-      );
-      updatedAttendance.push({
-        studentId,
-        teacherId,
-        associationId,
-        presentOrAbsent: status === 'present' ? 1 : 0,
+    axios
+      .get(`${API}/api/get/all/class/attendace`)
+      .then((response) => {
+        setClasses(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching classes:", error);
       });
-      return updatedAttendance;
-    });
-  };
+  }, []);
 
-  const handleSubmit = () => {
-    dispatch(studentAttendanceBulkForTeachers({ attendanceData: attendance }));
+  const fetchSections = (classNumber) => {
+    if (openClass === classNumber) {
+      setOpenClass(null); // Close dropdown if already open
+      return;
+    }
+
+    setOpenClass(classNumber);
+    setLoading((prev) => ({ ...prev, [classNumber]: true }));
+
+    axios
+      .get(`${API}/api/get/all/section/by/class/${classNumber}`)
+      .then((response) => {
+        setSections((prev) => ({ ...prev, [classNumber]: response.data }));
+        setLoading((prev) => ({ ...prev, [classNumber]: false }));
+      })
+      .catch((error) => {
+        console.error("Error fetching sections:", error);
+        setLoading((prev) => ({ ...prev, [classNumber]: false }));
+      });
   };
 
   return (
-    <div className="attendance-container">
-      <h1>Attendance</h1>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : error ? (
-        <p style={{ color: 'red' }}>{error}</p>
-      ) : (
-        <div>
-          {allStudentsInfo && allStudentsInfo.length > 0 ? (
-            <form>
-              <ul className="student-list">
-                {allStudentsInfo.map((student) => (
-                  <li key={student.studentId}>
-                    <p>
-                      <strong>Name:</strong> {student.studentName}
-                    </p>
-                    <p>
-                      <strong>Email:</strong> {student.studentEmail}
-                    </p>
-                    <div className="attendance-options">
-                      <label>
-                        <input
-                          type="checkbox"
-                          name={`present-${student.studentId}`}
-                          checked={attendance.find(
-                            (record) =>
-                              record.studentId === student.studentId &&
-                              record.presentOrAbsent === 1
-                          )}
-                          onChange={() =>
-                            handleAttendanceChange(
-                              student.studentId,
-                              'present',
-                              student.teacherId,
-                              student.associationId
-                            )
-                          }
-                        />
-                        Present
-                      </label>
-                      <label>
-                        <input
-                          type="checkbox"
-                          name={`absent-${student.studentId}`}
-                          checked={attendance.find(
-                            (record) =>
-                              record.studentId === student.studentId &&
-                              record.presentOrAbsent === 0
-                          )}
-                          onChange={() =>
-                            handleAttendanceChange(
-                              student.studentId,
-                              'absent',
-                              student.teacherId,
-                              student.associationId
-                            )
-                          }
-                        />
-                        Absent
-                      </label>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                className="submit-button"
-                onClick={handleSubmit}
-              >
-                Submit Attendance
-              </button>
-            </form>
-          ) : (
-            <p>No students found.</p>
-          )}
+    <div className="grid grid-cols-3 gap-4 p-5">
+      {classes.map((classNumber) => (
+        <div
+          key={classNumber}
+          className="p-4 border rounded-lg shadow-lg bg-blue-100 text-center text-xl font-semibold cursor-pointer"
+          onClick={() => fetchSections(classNumber)}
+        >
+          <div className="flex flex-col items-center">
+            <span>Class {classNumber}</span>
+            {openClass === classNumber && (
+              <div className="mt-2 w-full bg-white border rounded-lg shadow-md p-2">
+                {loading[classNumber] ? (
+                  <p className="text-gray-500 text-sm">Loading sections...</p>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {sections[classNumber]?.map((section) => (
+                      <Link
+                        key={section}
+                        to={`/students/${classNumber}/${section}`}
+                        className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
+                      >
+                        Section {section}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };
 
-export default Attendance;
+export default ClassCards;

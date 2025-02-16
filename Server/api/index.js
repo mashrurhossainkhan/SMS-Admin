@@ -71,10 +71,15 @@ Admin registration API ends
 */
 
 //attandance controller start
-router.post(
-  '/api/attendance/insert',
-  attendanceController.insertAttendanceRecords
-);
+// router.post(
+//   '/api/attendance/insert',
+//   attendanceController.insertAttendanceRecords
+// );
+//getRollNumbersByClassAndSection
+router.get("/api/get/all/class/attendace", attendanceController.getAllUniqueClassesOrdered)
+router.get("/api/get/all/section/by/class/:classNumber", attendanceController.getSectionsByClass)
+router.get("/api/attendace/:classNumber/:section", attendanceController.getRollNumbersByClassAndSection)
+router.post("/mark-or-update-attendance", attendanceController.markOrUpdateAttendance);
 //attance controller end
 
 //notice APIs start

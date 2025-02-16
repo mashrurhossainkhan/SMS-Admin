@@ -41,6 +41,10 @@ const AllNotices = React.lazy(() =>
   import('./views/pages/notice_board/GetAllNotices')
 );
 
+const AllStudentsByClassSection = React.lazy(() =>
+  import('./views/Attendance/StudentList')
+);
+
 class App extends Component {
   render() {
     return (
@@ -52,6 +56,12 @@ class App extends Component {
               path="/login"
               name="Login Page"
               render={(props) => <Login {...props} />}
+            />
+
+            <Route
+              path="/students/:classNumber/:section"
+              name="studentList"
+              render={(props) => <AllStudentsByClassSection {...props} />}
             />
 
             <Route

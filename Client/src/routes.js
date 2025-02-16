@@ -118,6 +118,10 @@ const Company = React.lazy(() => import('./views/Company/Company'));
 const Subject = React.lazy(() => import('./views/Subject/SubjectCreate'));
 const ClassRoutine = React.lazy(() => import('./views/ClassRoutine/ClassRoutineTable'));
 
+const AllStudentsByClassSection = React.lazy(() =>
+  import('./views/Attendance/StudentList')
+);
+
 const CompanyProfile = React.lazy(() =>
   import('./views/company_profile/company_profile')
 );
@@ -134,6 +138,9 @@ const routes = [
   { path: '/base', name: 'Base', component: Cards, exact: true },
   { path: '/base/breadcrumbs', name: 'Breadcrumbs', component: Breadcrumbs },
   { path: '/base/cards', name: 'Cards', component: Cards },
+
+  { path: '/students/:classNumber/:section', name: 'studentList', component: AllStudentsByClassSection },
+
   { path: '/base/carousels', name: 'Carousel', component: Carousels },
   { path: '/base/collapses', name: 'Collapse', component: Collapses },
   { path: '/base/forms', name: 'Forms', component: BasicForms },

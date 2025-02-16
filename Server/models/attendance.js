@@ -9,9 +9,20 @@ module.exports = function (sequelize, DataTypes) {
         autoIncrement: true,
         field: 'id',
       },
-      teacherStAssociationId: {
-        type: DataTypes.BIGINT,
-        field: 'teacherStAssociationId',
+      date: {
+        type: DataTypes.STRING,
+        field: 'date',
+      },
+
+      class: {
+        type: DataTypes.STRING,
+        field: 'class',
+      },
+
+      
+      section: {
+        type: DataTypes.STRING,
+        field: 'section',
       },
       teacherId: {
         type: DataTypes.BIGINT,

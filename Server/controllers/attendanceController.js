@@ -1,95 +1,169 @@
 const models = require('../models');
+const { Sequelize } = require('sequelize'); 
+const { sequelize } = require('../models'); // Ensure this path is correct
+const StudentMeta = models.studentMeta;
+const User = models.user;
 const Attendance = models.attendance;
 
-const isSameDate = (recordDate, todayDate) => {
-  const recordDateOnly = recordDate.toISOString().split('T')[0]; // Extract date part
-  return recordDateOnly === todayDate;
-};
-// Post attendance
-const insertAttendanceRecords = async (req, res) => {
+
+exports.getAllUniqueClassesOrdered = async function (req, res) {
   try {
-    const { attendanceData } = req.body;
-
-    // Validate the attendance data
-    if (!attendanceData || !Array.isArray(attendanceData)) {
-      return res.status(400).json({
-        message:
-          'Invalid data format. Expected an array of attendance records.',
-      });
-    }
-
-    // Validate each record's required fields
-    const invalidRecords = attendanceData.filter((record) => {
-      const isValid =
-        record.teacherId &&
-        record.studentId &&
-        record.associationId &&
-        record.presentOrAbsent !== undefined;
-
-      if (!isValid) {
-        console.log('Invalid record:', record);
-      }
-
-      return !isValid;
+    const uniqueClasses = await StudentMeta.findAll({
+      attributes: [[sequelize.fn('DISTINCT', sequelize.col('class')), 'class']],
+      raw: true,
     });
 
-    if (invalidRecords.length > 0) {
-      return res.status(400).json({
-        message: 'Some attendance records are missing required fields.',
-        invalidRecords,
-      });
-    }
+    // Extract class values and sort numerically
+    const sortedClasses = uniqueClasses
+      .map(item => parseInt(item.class, 10)) // Convert to number
+      .filter(num => !isNaN(num)) // Ensure valid numbers
+      .sort((a, b) => a - b); // Numeric sorting
 
-    // Get today's date in YYYY-MM-DD format
-    const todayDate = new Date().toISOString().split('T')[0];
-
-    // Loop through attendance records and update or insert as necessary
-    for (const record of attendanceData) {
-      const existingRecord = await Attendance.findOne({
-        where: {
-          studentId: record.studentId,
-          //createdAt.toISOString().split('T')[0]: todayDate, // Only check for records with today's date
-        },
-      });
-   
-      if (existingRecord && isSameDate(existingRecord.createdAt, todayDate)) {
-        // Update the existing record
-        await existingRecord.update({
-          teacherId: record.teacherId,
-          teacherStAssociationId: record.associationId,
-          presentOrAbsent: record.presentOrAbsent,
-          updatedAt: new Date(),
-        });
-        console.log(
-          `Updated record for studentId: ${record.studentId}, createdAt: ${todayDate}`
-        );
-      } else {
-        // Insert a new record
-        await Attendance.create({
-          teacherId: record.teacherId,
-          studentId: record.studentId,
-          teacherStAssociationId: record.associationId,
-          presentOrAbsent: record.presentOrAbsent,
-          visibility: true,
-          createdAt: todayDate, // Only the date part
-          updatedAt: new Date(),
-        });
-        console.log(
-          `Inserted record for studentId: ${record.studentId}, createdAt: ${todayDate}`
-        );
-      }
-    }
-
-    res
-      .status(201)
-      .json({ message: 'Attendance records processed successfully.' });
+    res.send(sortedClasses);
   } catch (error) {
-    console.error('Error inserting/updating attendance records:', error);
-    res.status(500).json({
-      message: 'Internal server error',
-      error: error.message,
-    });
+    console.error('Error fetching unique classes:', error);
+    res.status(500).send({ error: 'Internal Server Error' });
   }
 };
 
-module.exports = { insertAttendanceRecords };
+
+
+// Get Sections by Class
+exports.getSectionsByClass = async function (req, res) {
+  try {
+    const classNumber = req.params.classNumber; // Get class from URL param
+
+    if (!classNumber) {
+      return res.status(400).json({ error: "Class number is required" });
+    }
+
+    const sections = await StudentMeta.findAll({
+      attributes: [[sequelize.fn("DISTINCT", sequelize.col("section")), "section"]],
+      where: { class: classNumber },
+      raw: true,
+    });
+
+    const sectionList = sections.map((item) => item.section); // Extract section values
+    res.json(sectionList);
+  } catch (error) {
+    console.error("Error fetching sections:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+// Get roll numbers and user names by class and section
+exports.getRollNumbersByClassAndSection = async function (req, res) {
+  try {
+    const { classNumber, section } = req.params;
+
+    if (!classNumber || !section) {
+      return res.status(400).json({ error: "Class and section are required" });
+    }
+
+    // Fetch roll numbers and corresponding user IDs
+    const students = await StudentMeta.findAll({
+      attributes: ["rollNo", "userid"],
+      where: { class: classNumber, section: section },
+      raw: true,
+    });
+
+    if (students.length === 0) {
+      return res.json([]); // Return an empty array if no students found
+    }
+
+    // Extract unique user IDs
+    const userIds = students.map((student) => student.userid);
+
+    // Fetch user names based on user IDs
+    const users = await User.findAll({
+      attributes: ["id", "name"],
+      where: { id: userIds }, // Get users with matching IDs
+      raw: true,
+    });
+
+    // Convert users array into an object for quick lookup
+    const userMap = {};
+    users.forEach((user) => {
+      userMap[user.id] = user.name;
+    });
+
+    // Merge roll numbers with user names
+    const result = students.map((student) => ({
+      rollNo: student.rollNo,
+      userId: student.userid,
+      name: userMap[student.userid] || "Unknown", // Default to "Unknown" if no match found
+    }));
+
+    console.log(result)
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching roll numbers and user names:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.markOrUpdateAttendance = async function (req, res) {
+  try {
+    const { teacherId, classNumber, section, attendanceData } = req.body;
+
+    if (!teacherId || !classNumber || !section || !attendanceData) {
+      return res.status(400).json({ error: "All fields are required." });
+    }
+
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
+
+    // Iterate through the attendance data and update or create records
+    for (const student of attendanceData) {
+      const studentId = student.studentId; // Directly use studentId
+
+      if (!studentId) continue; // Skip if student ID is missing
+
+      const existingRecord = await Attendance.findOne({
+        where: { date: today, studentId: studentId, class: classNumber, section: section },
+      });
+
+      if (existingRecord) {
+        // Update existing record
+        await Attendance.update(
+          { presentOrAbsent: student.present ? 1 : 0, teacherId },
+          { where: { id: existingRecord.id } }
+        );
+      } else {
+        // Create new record
+        await Attendance.create({
+          date: today,
+          teacherId: teacherId,
+          studentId: studentId,
+          class: classNumber,
+          section: section,
+          presentOrAbsent: student.present ? 1 : 0,
+          visibility: 1
+        });
+      }
+    }
+
+    res.json({ message: "Attendance recorded successfully." });
+  } catch (error) {
+    console.error("Error updating attendance:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
