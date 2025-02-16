@@ -177,6 +177,13 @@ if (userInfo) {
 
   _nav.push({
     _tag: 'CSidebarNavItem',
+    name: 'Attendance History',
+    to: '/attendance',
+    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+  });
+
+  _nav.push({
+    _tag: 'CSidebarNavItem',
     name: 'Result',
     to: '/report',
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,

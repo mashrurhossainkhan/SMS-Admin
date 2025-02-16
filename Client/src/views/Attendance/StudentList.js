@@ -68,7 +68,6 @@ const StudentList = () => {
       present: attendance[student.userId],
     }));
 
-    console.log(attendanceData)
     axios
       .post(`${API}/mark-or-update-attendance`, {
         teacherId,
@@ -87,7 +86,7 @@ const StudentList = () => {
 
   return (
     <>
-        <TheSidebar/>
+    <TheSidebar/>
     <div style={{textAlign:"center"}} className="flex min-h-screen bg-gray-100 flex-col items-center">
       <h2 className="text-xl font-semibold text-gray-700 mb-2">{today}</h2>
       <h1 className="text-3xl font-bold text-blue-600 mb-6">
@@ -103,9 +102,9 @@ const StudentList = () => {
           <table  className="w-full border-collapse border border-gray-300 bg-white shadow-lg">
             <thead>
               <tr className="bg-blue-500 text-white text-lg">
-                <th className="border p-4">Roll No</th>
-                <th className="border p-4">Name</th>
-                <th className="border p-4">Present</th>
+                <th style={{color: "black"}}  className="border p-4">Roll No</th>
+                <th  style={{color: "black"}}  className="border p-4">Name</th>
+                <th style={{color: "black"}} className="border p-4">Present</th>
               </tr>
             </thead>
             <tbody>
@@ -132,7 +131,8 @@ const StudentList = () => {
       {!loading && students.length > 0 && (
         <button
           onClick={submitAttendance}
-          className="mt-6 px-6 py-3 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition"
+          className="mt-6 px-6 py-3 bg-green-500 text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition"
+          style={{color: "black", marginTop: "30px"}} 
         >
           Submit Attendance
         </button>
