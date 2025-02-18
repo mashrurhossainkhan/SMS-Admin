@@ -10,6 +10,8 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const [teacherId, setTeacherId] = useState(null);
 
+  const [allSubjects, setAllSubjects] = useState([]);
+  const [selectedSubject, setSelectedSubjct] = useState();
   // Fetch teacherId from localStorage
   useEffect(() => {
     const teacherData = JSON.parse(localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK")); // Adjust key if needed
@@ -21,7 +23,10 @@ const Results = () => {
   // Fetch student details based on class & section
   useEffect(() => {
     setLoading(true);
-
+    //get all subjects
+    axios.get(`${API}/api/subjects/all/info`).then((response) => {
+      setAllSubjects(response.data)
+    })
     // Fetch student list
     axios
       .get(`${API}/api/result/student/list/${classNumber}/${section}`)
@@ -54,14 +59,14 @@ const Results = () => {
 
   // Fetch existing marks for each student and update input fields
   useEffect(() => {
-    if (students.length > 0 && resultTypes.length > 0) {
+    if (students.length > 0 && resultTypes.length > 0 && selectedSubject) {
       const fetchResults = async () => {
         const updatedStudents = [...students];
 
         for (let student of updatedStudents) {
           for (let type of resultTypes) {
             try {
-              const response = await axios.get(`${API}/api/result/check/${student.userId}/${type.id}`);
+              const response = await axios.get(`${API}/api/result/check/${student.userId}/${type.id}/${selectedSubject}`);
               
               if (response.data.exists) {
                 student.scores[type.type] = response.data.marks; // Set existing marks
@@ -81,7 +86,7 @@ const Results = () => {
 
       fetchResults();
     }
-  }, [students.length, resultTypes.length]);
+  }, [students.length, resultTypes.length, selectedSubject]);
 
   // Handle input change & auto-save result
   const handleInputChange = async (studentIndex, type, value) => {
@@ -96,11 +101,12 @@ const Results = () => {
     // **Auto-save the result**
     try {
       const student = updatedStudents[studentIndex];
-      const existingResult = await axios.get(`${API}/api/result/check/${student.userId}/${type.id}`);
+      const existingResult = await axios.get(`${API}/api/result/check/${student.userId}/${type.id}/${selectedSubject}`);
       const resultData = {
         resultType: type.type,
         stId: student.userId,
         teacherId: teacherId,
+        selectedSubject,
         //associationId: 1, // Placeholder, adjust if needed
         marks: student.scores[type.type] || 0,
         remarks: student.scores[type.type] >= 75 ? "Good" : "",
@@ -111,6 +117,7 @@ const Results = () => {
         resultType: type.id,
         stId: student.userId,
         teacherId: teacherId,
+        selectedSubject,
         //associationId: 1, // Placeholder, adjust if needed
         marks: student.scores[type.type] || 0,
         remarks: student.scores[type.type] >= 75 ? "Good" : "",
@@ -140,39 +147,73 @@ const Results = () => {
       ) : students.length === 0 ? (
         <p className="text-center text-red-500">No students found.</p>
       ) : (
-        <div style={{overflowX: "scroll"}} className="mt-6 w-full max-w-5xl mx-auto overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-300 bg-white shadow-lg">
-            <thead>
-              <tr style={{color: "black"}} className="bg-blue-500 text-lg">
-                <th className="border p-3">Roll No</th>
-                <th className="border p-3">Name</th>
-                {resultTypes.map((type, index) => (
-                  <th key={index} className="border p-3">{type.type}</th>
-                ))}
-                <th className="border p-3">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.map((student, index) => (
-                <tr key={index} className="text-center text-lg bg-gray-50 hover:bg-gray-200">
-                  <td className="border p-3">{student.rollNo}</td>
-                  <td className="border p-3">{student.name}</td>
-                  {resultTypes.map((type, idx) => (
-                    <td key={idx} className="border p-3">
-                      <input
-                        type="number"
-                        className="w-full p-1 text-center border rounded"
-                        value={student.scores[type.type] || ""}
-                        onChange={(e) => handleInputChange(index, type, e.target.value)}
-                      />
-                    </td>
-                  ))}
-                  <td className="border p-3 font-bold">{student.total}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <>
+         <div className="p-6">
+      <h1 className="text-2xl font-bold text-center mb-4">Subjects</h1>
+
+      {allSubjects.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {allSubjects.map((subject) => (
+            <button
+              key={subject.id}
+              className={`p-4 border border-gray-300 rounded-lg text-center font-semibold shadow-md transition ${
+                selectedSubject === subject.id
+                  ? "bg-blue-500 text-#732439" // Selected Subject Styling
+                  : "bg-blue-100 hover:bg-blue-300"
+              }`}
+              onClick={() => setSelectedSubjct(subject.id)}
+            >
+              {subject.name}
+            </button>
+          ))}
         </div>
+      ) : (
+        <p className="text-center text-gray-500">No subjects available.</p>
+      )}
+
+      {/* Display Selected Subject */}
+      {selectedSubject && (
+        <p className="mt-6 text-center text-lg font-bold text-blue-600">
+          Selected Subject: {allSubjects.find(sub => sub.id === selectedSubject)?.name}
+        </p>
+      )}
+    </div>
+       {selectedSubject &&
+        <div style={{overflowX: "scroll"}} className="mt-6 w-full max-w-5xl mx-auto overflow-x-auto">
+        <table className="w-full border-collapse border border-gray-300 bg-white shadow-lg">
+          <thead>
+            <tr style={{color: "black"}} className="bg-blue-500 text-lg">
+              <th className="border p-3">Roll No</th>
+              <th className="border p-3">Name</th>
+              {resultTypes.map((type, index) => (
+                <th key={index} className="border p-3">{type.type}</th>
+              ))}
+              <th className="border p-3">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students.map((student, index) => (
+              <tr key={index} className="text-center text-lg bg-gray-50 hover:bg-gray-200">
+                <td className="border p-3">{student.rollNo}</td>
+                <td className="border p-3">{student.name}</td>
+                {resultTypes.map((type, idx) => (
+                  <td key={idx} className="border p-3">
+                    <input
+                      type="number"
+                      className="w-full p-1 text-center border rounded"
+                      value={student.scores[type.type] || ""}
+                      onChange={(e) => handleInputChange(index, type, e.target.value)}
+                    />
+                  </td>
+                ))}
+                <td className="border p-3 font-bold">{student.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+       }
+        </>
       )}
     </div>
   );

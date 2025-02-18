@@ -111,10 +111,10 @@ exports.updateResultType = async (req, res) => {
 
 exports.createResult = async (req, res) => {
   try {
-    let { resultType, stId, teacherId, marks, remarks } = req.body;
+    let { resultType, stId, teacherId,selectedSubject, marks, remarks } = req.body;
 
     // **Check for missing fields**
-    if (!resultType || !stId || !teacherId || marks === undefined) {
+    if (!resultType || !stId || !teacherId ||!selectedSubject || marks === undefined) {
       return res.status(400).json({
         error: "❌ Missing required fields",
         details: { resultType, stId, teacherId, marks },
@@ -141,6 +141,7 @@ exports.createResult = async (req, res) => {
     const newResult = await Result.create({
       resultType,
       stId,
+      subjectId: selectedSubject,
       teacherId,
       marks,
       remarks: remarks || null,
@@ -159,7 +160,7 @@ exports.createResult = async (req, res) => {
   exports.updateResult = async (req, res) => {
     try {
       const { id } = req.params;
-      const { resultType, stId, teacherId, marks, remarks } = req.body;
+      const { resultType, stId, teacherId,selectedSubject, marks, remarks } = req.body;
   
       const result = await Result.findByPk(id);
   
@@ -171,6 +172,7 @@ exports.createResult = async (req, res) => {
       if (resultType) result.resultType = resultType;
       if (stId) result.stId = stId;
       if (teacherId) result.teacherId = teacherId;
+      if (selectedSubject) result.subjectId = selectedSubject;
       if (marks !== undefined) result.marks = marks;
       if (remarks !== undefined) result.remarks = remarks;
   
@@ -189,10 +191,10 @@ exports.createResult = async (req, res) => {
 
   exports.checkExistingResult = async (req, res) => {
     try {
-        const { stId, resultType } = req.params;
+        const { stId, resultType,subjectid } = req.params;
 
         const result = await Result.findOne({
-            where: { stId, resultType },
+            where: { stId, resultType, subjectid },
             attributes: ["id", "marks"], // Fetch marks along with the result ID
         });
 

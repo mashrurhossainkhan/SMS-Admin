@@ -46,7 +46,7 @@ router.post('/api/add/result', resultController.createResult);
 router.put('/api/update/result/:id', resultController.updateResult);
 
 // Add this to your router
-router.get("/api/result/check/:stId/:resultType", resultController.checkExistingResult);
+router.get("/api/result/check/:stId/:resultType/:subjectid", resultController.checkExistingResult);
 
 // router.put('/api/update/result/type/:id', resultController.updateResultType);
 

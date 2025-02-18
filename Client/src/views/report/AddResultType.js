@@ -41,8 +41,8 @@ const AddResultType = () => {
     try {
       await axios.post(`${API}/api/add/result/type`, { type });
       alert("✅ Result type added successfully!");
-      setType(""); // Reset input field
-      fetchResultTypes(); // Refresh the list
+      setType(""); 
+      fetchResultTypes();
     } catch (error) {
       console.error("Error:", error);
       setMessage("❌ Server error. Please try again.");
