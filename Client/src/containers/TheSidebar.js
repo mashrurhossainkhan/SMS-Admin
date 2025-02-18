@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CCreateElement,
@@ -12,21 +12,22 @@ import {
   CSidebarNavItem,
 } from "@coreui/react";
 
-// import CIcon from "@coreui/icons-react";
-
-// sidebar nav config
+// Sidebar navigation config
 import navigation from "./_nav";
 
 const TheSidebar = () => {
   const dispatch = useDispatch();
-  const show = useSelector((state) => state.sidebarShow);
+  const sidebarShow = useSelector((state) => state.sidebarShow);
 
- 
+  
+  // Handle sidebar state change
+  const handleSidebarChange = (val) => {
+    dispatch({ type: "set", sidebarShow: val });
+  };
+
   return (
-    <CSidebar
-      show={show}
-      onShowChange={(val) => dispatch({ type: "set", sidebarShow: val })}
-    >
+    <>
+    <CSidebar>
       <CSidebarBrand className="d-md-down-none" to="/">
         <h2>Shahid Titumir Academy Manikganj</h2>
       </CSidebarBrand>
@@ -43,6 +44,7 @@ const TheSidebar = () => {
       </CSidebarNav>
       <CSidebarMinimizer className="c-d-md-down-none" />
     </CSidebar>
+    </>
   );
 };
 

@@ -1,11 +1,51 @@
 const models = require('../models');
 const ClassRoutine = models.classRoutine;
 const { sequelize } = require("../models");
+const { Op } = require("sequelize");
 
 // 📌 Create Class Routine
+
 exports.createClassRoutine = async (req, res) => {
   try {
+    const { day, startTime, endTime, class: classNumber, section } = req.body;
+
+    // Convert time strings to Date objects for comparison
+    const start = new Date(`1970-01-01T${startTime}`);
+    const end = new Date(`1970-01-01T${endTime}`);
+
+    if (start >= end) {
+      return res.status(400).json({
+        success: false,
+        message: "Start time must be before end time.",
+      });
+    }
+
+    // Check for existing routines that overlap
+    const existingRoutine = await ClassRoutine.findOne({
+      where: {
+        day,
+        class: classNumber,
+        section,
+        [Op.or]: [
+          {
+            startTime: { [Op.lt]: endTime }, // Existing start time is before the new end time
+            endTime: { [Op.gt]: startTime }, // Existing end time is after the new start time
+          },
+        ],
+      },
+    });
+
+    if (existingRoutine) {
+      return res.status(409).json({
+        success: false,
+        message: "Class routine clashes with an existing schedule.",
+        existingRoutine,
+      });
+    }
+
+    // If no clash, create a new routine
     const classRoutine = await ClassRoutine.create(req.body);
+
     res.status(201).json({
       success: true,
       message: "Class routine created successfully",
@@ -15,11 +55,12 @@ exports.createClassRoutine = async (req, res) => {
     console.error("Error creating class routine:", error);
     res.status(500).json({
       success: false,
-      message: "Server error. Could not create class routine.",
+      message: error.message,
       error: error.message,
     });
   }
 };
+
 
 exports.getAllClassRoutines = async (req, res) => {
   try {

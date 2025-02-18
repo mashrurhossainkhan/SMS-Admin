@@ -167,7 +167,7 @@ const ClassRoutineTable = () => {
       if (response.ok) {
         alert(currentRoutine.id ? "Routine updated successfully!" : "Routine added successfully!");
         fetchRoutines();
-        setModal(false);
+        //setModal(false);
       } else {
         alert(result.message || "Failed to save class routine.");
       }

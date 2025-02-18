@@ -4,6 +4,7 @@ import axios from "axios";
 import { API } from "../../actions/api";
 
 const ClassCards = () => {
+  const currentPath = window.location.pathname;
   const [classes, setClasses] = useState([]);
   const [openClass, setOpenClass] = useState(null);
   const [sections, setSections] = useState({});
@@ -57,16 +58,24 @@ const ClassCards = () => {
                   <p className="text-gray-500 text-sm">Loading sections...</p>
                 ) : (
                   <div className="grid grid-cols-2 gap-2">
-                    {sections[classNumber]?.map((section) => (
-                      <Link
-                        key={section}
-                        to={`/students/${classNumber}/${section}`}
-                        className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
-                      >
-                        Section {section}
-                      </Link>
-                    ))}
-                  </div>
+      {sections[classNumber]?.map((section) => {
+        // Determine navigation path based on current location
+        const targetPath =
+          currentPath === "/attendance/history"
+            ? "/attendance/history/dates"
+            : `/students/${classNumber}/${section}`;
+
+        return (
+          <div
+            key={section}
+            className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
+            onClick={() => (window.location.href = targetPath)} // Navigate on click
+          >
+            Section {section}
+          </div>
+        );
+      })}
+    </div>
                 )}
               </div>
             )}

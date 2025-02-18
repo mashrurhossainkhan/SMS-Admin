@@ -18,6 +18,7 @@ import {
 } from './reducers/userReducers';
 import { AllNoticeReducer, newNoticeReducer } from './reducers/noticeReducer';
 import { allSubjectsReducer } from './reducers/subjectReducer';
+import sidebarReducer from './reducers/sidebarReducer';
 
 const reducer = combineReducers({
   userVerificationCode: userForgetPasswordReducer,
@@ -35,6 +36,7 @@ const reducer = combineReducers({
   allSubjects: allSubjectsReducer,
   studentbyUserType: studentbyUserTypeReducer,
   teacherbyUserType: teacherbyUserTypeReducer,
+  sidebarShow: sidebarReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem(

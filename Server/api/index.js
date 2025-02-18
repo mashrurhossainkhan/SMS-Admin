@@ -80,6 +80,8 @@ router.get("/api/get/all/class/attendace", attendanceController.getAllUniqueClas
 router.get("/api/get/all/section/by/class/:classNumber", attendanceController.getSectionsByClass)
 router.get("/api/attendace/:classNumber/:section", attendanceController.getRollNumbersByClassAndSection)
 router.post("/mark-or-update-attendance", attendanceController.markOrUpdateAttendance);
+router.get("/api/get/all/history/date", attendanceController.getAllAttendanceDates)
+router.get("/api/get/class-sections/:date", attendanceController.getClassSectionsAndStudentsByDate);
 //attance controller end
 
 //notice APIs start

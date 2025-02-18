@@ -167,3 +167,79 @@ exports.markOrUpdateAttendance = async function (req, res) {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+//for attendance history
+exports.getAllAttendanceDates = async function (req, res) {
+  try {
+    const dates = await Attendance.findAll({
+      attributes: [[sequelize.fn("DISTINCT", sequelize.col("date")), "date"]],
+      order: [["date", "DESC"]], // Order by latest dates
+      limit: 1, // Get only the last 90 records
+      raw: true,
+    });
+
+    const uniqueDates = dates.map((entry) => entry.date);
+
+    res.json(uniqueDates);
+  } catch (error) {
+    console.error("Error fetching attendance dates:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+exports.getClassSectionsAndStudentsByDate = async function (req, res) {
+  try {
+    const { date } = req.params;
+
+    if (!date) {
+      return res.status(400).json({ error: "Date is required." });
+    }
+
+    // Get all unique class-section pairs for the given date
+    const classSectionsQuery = `
+      SELECT DISTINCT class, section 
+      FROM Attendance 
+      WHERE date = :date;
+    `;
+    const classSections = await sequelize.query(classSectionsQuery, {
+      replacements: { date },
+      type: sequelize.QueryTypes.SELECT,
+    });
+
+    const result = [];
+
+    for (const record of classSections) {
+      const { class: classNumber, section } = record;
+
+      // Fetch student attendance using raw SQL
+      const studentQuery = `
+        SELECT a.studentId, u.name AS studentName, sm.rollNo, a.presentOrAbsent
+        FROM Attendance a
+        JOIN user u ON a.studentId = u.id  -- Get name from User table
+        JOIN studentmeta sm ON u.id = sm.userid  -- Get rollNo from studentmeta
+        WHERE a.date = :date
+        AND a.class = :classNumber
+        AND a.section = :section;
+      `;
+
+      const students = await sequelize.query(studentQuery, {
+        replacements: { date, classNumber, section },
+        type: sequelize.QueryTypes.SELECT,
+      });
+
+      result.push({
+        class: classNumber,
+        section,
+        students,
+      });
+    }
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching class, sections, and students by date:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

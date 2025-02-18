@@ -178,7 +178,7 @@ if (userInfo) {
   _nav.push({
     _tag: 'CSidebarNavItem',
     name: 'Attendance History',
-    to: '/attendance',
+    to: '/attendance/history',
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
   });
 

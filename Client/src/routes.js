@@ -377,6 +377,14 @@ const routes = [
     component: Attendance,
   },
 
+
+  {
+    path: '/attendance/history',
+    exact: true,
+    name: 'Attendance',
+    component: Attendance,
+  },
+
   // report
   {
     path: '/report',
