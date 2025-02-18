@@ -26,8 +26,6 @@ exports.getAllUniqueClassesOrdered = async function (req, res) {
   }
 };
 
-
-
 // Get Sections by Class
 exports.getSectionsByClass = async function (req, res) {
   try {
@@ -105,22 +103,6 @@ exports.getRollNumbersByClassAndSection = async function (req, res) {
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 exports.markOrUpdateAttendance = async function (req, res) {
   try {
     const { teacherId, classNumber, section, attendanceData } = req.body;
@@ -175,7 +157,7 @@ exports.getAllAttendanceDates = async function (req, res) {
     const dates = await Attendance.findAll({
       attributes: [[sequelize.fn("DISTINCT", sequelize.col("date")), "date"]],
       order: [["date", "DESC"]], // Order by latest dates
-      limit: 1, // Get only the last 90 records
+      limit: 90, // Get only the last 90 records
       raw: true,
     });
 

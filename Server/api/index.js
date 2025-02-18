@@ -41,11 +41,20 @@ router.get('/api/get/result/teacher/:teacherId', resultController.getResultsByTe
 router.get('/api/get/result/student/:stId', resultController.getResultsByStudentId);
 router.get('/api/get/all/result/types', resultController.getResultTypes);
 router.post('/api/add/result/type', resultController.createResultType);
-router.post('/api/add/result', resultController.createResult);
-// router.put('/api/update/result/type/:id', resultController.updateResultType);
 router.delete('/api/delete/result/type/:id', resultController.deleteResultType);
+router.post('/api/add/result', resultController.createResult);
 router.put('/api/update/result/:id', resultController.updateResult);
+
+// Add this to your router
+router.get("/api/result/check/:stId/:resultType", resultController.checkExistingResult);
+
+// router.put('/api/update/result/type/:id', resultController.updateResultType);
+
 router.delete('/api/delete/result/:id', resultController.deleteResult);
+
+
+
+router.get("/api/result/student/list/:classNumber/:section", attendanceController.getRollNumbersByClassAndSection)
 //result controllers
 
 //paymentController

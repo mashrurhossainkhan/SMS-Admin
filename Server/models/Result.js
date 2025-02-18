@@ -24,11 +24,11 @@ module.exports = (sequelize, DataTypes) => {
           allowNull: false,
           field: 'teacherId',
         },
-        associationId: {
-          type: DataTypes.BIGINT,
-          allowNull: false,
-          field: 'associationId',
-        },
+        // associationId: {
+        //   type: DataTypes.BIGINT,
+        //   allowNull: false,
+        //   field: 'associationId',
+        // },
         marks: {
           type: DataTypes.BIGINT,
           allowNull: false,

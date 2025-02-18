@@ -138,9 +138,7 @@ const routes = [
   { path: '/base', name: 'Base', component: Cards, exact: true },
   { path: '/base/breadcrumbs', name: 'Breadcrumbs', component: Breadcrumbs },
   { path: '/base/cards', name: 'Cards', component: Cards },
-
   { path: '/students/:classNumber/:section', name: 'studentList', component: AllStudentsByClassSection },
-
   { path: '/base/carousels', name: 'Carousel', component: Carousels },
   { path: '/base/collapses', name: 'Collapse', component: Collapses },
   { path: '/base/forms', name: 'Forms', component: BasicForms },
@@ -379,6 +377,14 @@ const routes = [
 
 
   {
+    path: '/result/all/class',
+    exact: true,
+    name: 'Attendance',
+    component: Attendance,
+  },
+
+
+  {
     path: '/attendance/history',
     exact: true,
     name: 'Attendance',
@@ -387,7 +393,7 @@ const routes = [
 
   // report
   {
-    path: '/report',
+    path: '/report/:classNumber/:section',
     exact: true,
     name: 'report',
     component: Results,

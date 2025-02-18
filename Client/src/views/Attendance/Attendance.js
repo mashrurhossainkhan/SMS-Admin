@@ -61,10 +61,15 @@ const ClassCards = () => {
       {sections[classNumber]?.map((section) => {
         // Determine navigation path based on current location
         const targetPath =
-          currentPath === "/attendance/history"
-            ? "/attendance/history/dates"
-            : `/students/${classNumber}/${section}`;
-
+        currentPath === "/attendance/history"
+          ? "/attendance/history/dates"
+          : currentPath === "/attendance"
+          ? `/attendance/students/${classNumber}/${section}`
+          : currentPath === "/result/all/class"
+          ? `/report/${classNumber}/${section}`
+          : `/attendance/students/${classNumber}/${section}`;
+      
+      
         return (
           <div
             key={section}
@@ -74,8 +79,8 @@ const ClassCards = () => {
             Section {section}
           </div>
         );
-      })}
-    </div>
+            })}
+          </div>
                 )}
               </div>
             )}

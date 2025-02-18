@@ -11,20 +11,33 @@ exports.createResultType = async (req, res) => {
 
     // Validate the type
     if (!type) {
-      return res.status(400).json({ error: 'Type is required' });
+      return res.status(400).json({ error: "Type is required" });
     }
 
+    // Check if the result type already exists (case-insensitive)
+    const existingResultType = await ResultType.findOne({
+      where: { type },
+    });
+
+    if (existingResultType) {
+      return res.status(400).json({
+        error: `Result type '${type}' already exists.`,
+      });
+    }
+
+    // Create new result type if not found
     const newResultType = await ResultType.create({ type });
 
     res.status(201).json({
-      message: 'Result type created successfully',
+      message: "Result type created successfully",
       data: newResultType,
     });
   } catch (error) {
-    console.error('Error creating result type:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error creating result type:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 exports.updateResultType = async (req, res) => {
     try {
@@ -96,39 +109,57 @@ exports.updateResultType = async (req, res) => {
   };
 //result type ends
 
-//result starts
 exports.createResult = async (req, res) => {
-    try {
-      const { resultType, stId, teacherId, associationId, marks, remarks } = req.body;
-  
-      // Validate required fields
-      if (!resultType || !stId || !teacherId || !associationId || marks === undefined) {
-        return res.status(400).json({ error: 'Required fields are missing' });
-      }
-  
-      const newResult = await Result.create({
-        resultType,
-        stId,
-        teacherId,
-        associationId,
-        marks,
-        remarks: remarks || null, // Optional
+  try {
+    let { resultType, stId, teacherId, marks, remarks } = req.body;
+
+    // **Check for missing fields**
+    if (!resultType || !stId || !teacherId || marks === undefined) {
+      return res.status(400).json({
+        error: "❌ Missing required fields",
+        details: { resultType, stId, teacherId, marks },
       });
-  
-      res.status(201).json({
-        message: 'Result created successfully',
-        data: newResult,
-      });
-    } catch (error) {
-      console.error('Error creating result:', error);
-      res.status(500).json({ error: 'Internal server error' });
     }
-  };
+
+    // 🔹 **Fetch the resultType ID from result_types table**
+    const resultTypeRecord = await ResultType.findOne({
+      attributes: ["id"],
+      where: { type: resultType },
+      raw: true,
+    });
+
+    if (!resultTypeRecord) {
+      return res.status(400).json({
+        error: `❌ Result type '${resultType}' does not exist`,
+      });
+    }
+
+    // 🔹 Use the resultType ID instead of name
+    resultType = resultTypeRecord.id;
+
+    // 🔹 Insert the result
+    const newResult = await Result.create({
+      resultType,
+      stId,
+      teacherId,
+      marks,
+      remarks: remarks || null,
+    });
+
+    res.status(201).json({
+      message: "✅ Result created successfully",
+      data: newResult,
+    });
+  } catch (error) {
+    console.error("❌ Error creating result:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
   exports.updateResult = async (req, res) => {
     try {
       const { id } = req.params;
-      const { resultType, stId, teacherId, associationId, marks, remarks } = req.body;
+      const { resultType, stId, teacherId, marks, remarks } = req.body;
   
       const result = await Result.findByPk(id);
   
@@ -140,7 +171,6 @@ exports.createResult = async (req, res) => {
       if (resultType) result.resultType = resultType;
       if (stId) result.stId = stId;
       if (teacherId) result.teacherId = teacherId;
-      if (associationId) result.associationId = associationId;
       if (marks !== undefined) result.marks = marks;
       if (remarks !== undefined) result.remarks = remarks;
   
@@ -155,6 +185,28 @@ exports.createResult = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+
+  exports.checkExistingResult = async (req, res) => {
+    try {
+        const { stId, resultType } = req.params;
+
+        const result = await Result.findOne({
+            where: { stId, resultType },
+            attributes: ["id", "marks"], // Fetch marks along with the result ID
+        });
+
+        if (result) {
+            res.json({ exists: true, resultId: result.id, marks: result.marks });
+        } else {
+            res.json({ exists: false, marks: 0 }); // Default marks to 0 if no result exists
+        }
+    } catch (error) {
+        console.error("Error checking result:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 
   exports.deleteResult = async (req, res) => {
     try {

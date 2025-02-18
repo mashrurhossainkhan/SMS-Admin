@@ -1,185 +1,179 @@
-import React, { useState } from 'react';
-import './EditableResult.css'; // Import the CSS file for styling
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { API } from "../../actions/api";
+import { useParams } from "react-router-dom";
 
 const Results = () => {
-  // Initial state for results
-  const [results, setResults] = useState([
-    {
-      roll: 1,
-      name: 'Student 1',
-      term1: 0,
-      term2: 0,
-      final: 0,
-      assignment1: 0,
-      assignment2: 0,
-      assignment3: 0,
-      assignment4: 0,
-      assignment5: 0,
-      attendance: 0,
-      total: 0,
-    },
-    {
-      roll: 2,
-      name: 'Student 2',
-      term1: 0,
-      term2: 0,
-      final: 0,
-      assignment1: 0,
-      assignment2: 0,
-      assignment3: 0,
-      assignment4: 0,
-      assignment5: 0,
-      attendance: 0,
-      total: 0,
-    },
-  ]);
+  const { classNumber, section } = useParams(); // Get class & section from URL
+  const [students, setStudents] = useState([]);
+  const [resultTypes, setResultTypes] = useState([]); // Dynamic columns
+  const [loading, setLoading] = useState(true);
+  const [teacherId, setTeacherId] = useState(null);
 
-  // Update a specific field for a student
-  const handleInputChange = (index, field, value) => {
-    const newResults = [...results];
-    newResults[index][field] = parseFloat(value) || 0; // Ensure numeric values
-    newResults[index].total = calculateTotal(newResults[index]); // Update total
-    setResults(newResults);
-  };
+  // Fetch teacherId from localStorage
+  useEffect(() => {
+    const teacherData = JSON.parse(localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK")); // Adjust key if needed
+    if (teacherData?.userId) {
+      setTeacherId(teacherData.userId);
+    }
+  }, []);
 
-  // Calculate total for a student
-  const calculateTotal = (student) => {
-    return (
-      student.term1 +
-      student.term2 +
-      student.final +
-      student.assignment1 +
-      student.assignment2 +
-      student.assignment3 +
-      student.assignment4 +
-      student.assignment5 +
-      student.attendance
-    );
-  };
+  // Fetch student details based on class & section
+  useEffect(() => {
+    setLoading(true);
 
-  // Sort by total and assign roll numbers
-  const sortAndAssignRoll = () => {
-    const sortedResults = [...results].sort((a, b) => b.total - a.total);
-    sortedResults.forEach((student, index) => {
-      student.roll = index + 1; // Assign roll based on position
-    });
-    setResults(sortedResults);
+    // Fetch student list
+    axios
+      .get(`${API}/api/result/student/list/${classNumber}/${section}`)
+      .then((response) => {
+        const updatedStudents = response.data.map((student) => ({
+          ...student,
+          scores: {},
+          total: 0,
+        }));
+        setStudents(updatedStudents);
+      })
+      .catch((error) => {
+        console.error("Error fetching student details:", error);
+        setStudents([]);
+      });
+
+    // Fetch result types for table headers
+    axios
+      .get(`${API}/api/get/all/result/types`)
+      .then((response) => {
+        if (Array.isArray(response.data.data)) {
+          setResultTypes(response.data.data);
+          console.log(response.data.data)
+        }
+      })
+      .catch((error) => console.error("Error fetching result types:", error));
+    setLoading(false);
+  }, [classNumber, section]);
+
+
+  // Fetch existing marks for each student and update input fields
+  useEffect(() => {
+    if (students.length > 0 && resultTypes.length > 0) {
+      const fetchResults = async () => {
+        const updatedStudents = [...students];
+
+        for (let student of updatedStudents) {
+          for (let type of resultTypes) {
+            try {
+              const response = await axios.get(`${API}/api/result/check/${student.userId}/${type.id}`);
+              
+              if (response.data.exists) {
+                student.scores[type.type] = response.data.marks; // Set existing marks
+              } else {
+                student.scores[type.type] = 0; // Default value if no result exists
+              }
+            } catch (error) {
+              console.error(`Error fetching result for ${student.name} (${type.type}):`, error);
+            }
+          }
+          student.total = Object.values(student.scores).reduce((acc, val) => acc + val, 0);
+        }
+        
+        setStudents(updatedStudents);
+        setLoading(false);
+      };
+
+      fetchResults();
+    }
+  }, [students.length, resultTypes.length]);
+
+  // Handle input change & auto-save result
+  const handleInputChange = async (studentIndex, type, value) => {
+    const updatedStudents = [...students];
+    updatedStudents[studentIndex].scores[type.type] = parseFloat(value) || 0;
+    // Recalculate total
+    updatedStudents[studentIndex].total = Object.values(updatedStudents[studentIndex].scores)
+      .reduce((acc, val) => acc + val, 0);
+
+    setStudents(updatedStudents);
+
+    // **Auto-save the result**
+    try {
+      const student = updatedStudents[studentIndex];
+      const existingResult = await axios.get(`${API}/api/result/check/${student.userId}/${type.id}`);
+      const resultData = {
+        resultType: type.type,
+        stId: student.userId,
+        teacherId: teacherId,
+        //associationId: 1, // Placeholder, adjust if needed
+        marks: student.scores[type.type] || 0,
+        remarks: student.scores[type.type] >= 75 ? "Good" : "",
+      };
+
+
+      const resultDataUpdate = {
+        resultType: type.id,
+        stId: student.userId,
+        teacherId: teacherId,
+        //associationId: 1, // Placeholder, adjust if needed
+        marks: student.scores[type.type] || 0,
+        remarks: student.scores[type.type] >= 75 ? "Good" : "",
+      };
+      //console.log(existingResult.data.exists)
+
+      if (existingResult.data.exists) {
+        // If result exists, update it
+        await axios.put(`${API}/api/update/result/${existingResult.data.resultId}`, resultDataUpdate);
+      } else {
+        // If result doesn't exist, create it
+        await axios.post(`${API}/api/add/result`, resultData);
+      }
+    } catch (error) {
+      console.error("Error auto-saving result:", error);
+    }
   };
 
   return (
-    <div className="result-container">
-      <h1>School Results</h1>
-      <table className="result-table">
-        <thead>
-          <tr>
-            <th>Roll</th>
-            <th>Name</th>
-            <th>1st Term</th>
-            <th>2nd Term</th>
-            <th>Final</th>
-            <th>Assignment 1</th>
-            <th>Assignment 2</th>
-            <th>Assignment 3</th>
-            <th>Assignment 4</th>
-            <th>Assignment 5</th>
-            <th>Attendance</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {results.map((student, index) => (
-            <tr key={index}>
-              <td>{student.roll}</td>
-              <td>{student.name}</td>
-              <td>
-                <input
-                  type="number"
-                  value={student.term1}
-                  onChange={(e) =>
-                    handleInputChange(index, 'term1', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.term2}
-                  onChange={(e) =>
-                    handleInputChange(index, 'term2', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.final}
-                  onChange={(e) =>
-                    handleInputChange(index, 'final', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.assignment1}
-                  onChange={(e) =>
-                    handleInputChange(index, 'assignment1', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.assignment2}
-                  onChange={(e) =>
-                    handleInputChange(index, 'assignment2', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.assignment3}
-                  onChange={(e) =>
-                    handleInputChange(index, 'assignment3', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.assignment4}
-                  onChange={(e) =>
-                    handleInputChange(index, 'assignment4', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.assignment5}
-                  onChange={(e) =>
-                    handleInputChange(index, 'assignment5', e.target.value)
-                  }
-                />
-              </td>
-              <td>
-                <input
-                  type="number"
-                  value={student.attendance}
-                  onChange={(e) =>
-                    handleInputChange(index, 'attendance', e.target.value)
-                  }
-                />
-              </td>
-              <td>{student.total}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <button className="sort-button" onClick={sortAndAssignRoll}>
-        Sort by Total and Assign Roll
-      </button>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-center">
+        Results for Class {classNumber} - Section {section}
+      </h1>
+
+      {loading ? (
+        <p className="text-center text-gray-600">Loading students...</p>
+      ) : students.length === 0 ? (
+        <p className="text-center text-red-500">No students found.</p>
+      ) : (
+        <div style={{overflowX: "scroll"}} className="mt-6 w-full max-w-5xl mx-auto overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300 bg-white shadow-lg">
+            <thead>
+              <tr style={{color: "black"}} className="bg-blue-500 text-lg">
+                <th className="border p-3">Roll No</th>
+                <th className="border p-3">Name</th>
+                {resultTypes.map((type, index) => (
+                  <th key={index} className="border p-3">{type.type}</th>
+                ))}
+                <th className="border p-3">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {students.map((student, index) => (
+                <tr key={index} className="text-center text-lg bg-gray-50 hover:bg-gray-200">
+                  <td className="border p-3">{student.rollNo}</td>
+                  <td className="border p-3">{student.name}</td>
+                  {resultTypes.map((type, idx) => (
+                    <td key={idx} className="border p-3">
+                      <input
+                        type="number"
+                        className="w-full p-1 text-center border rounded"
+                        value={student.scores[type.type] || ""}
+                        onChange={(e) => handleInputChange(index, type, e.target.value)}
+                      />
+                    </td>
+                  ))}
+                  <td className="border p-3 font-bold">{student.total}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

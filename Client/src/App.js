@@ -50,6 +50,11 @@ const DatesForAttendanceHistory = React.lazy(() =>
   import('./views/Attendance/HistoryCards')
 );
 
+
+const AddResultType = React.lazy(() =>
+  import('./views/report/AddResultType')
+);
+
 class App extends Component {
   render() {
     return (
@@ -64,7 +69,7 @@ class App extends Component {
             />
 
             <Route
-              path="/students/:classNumber/:section"
+              path="/attendance/students/:classNumber/:section"
               name="studentList"
               render={(props) => <AllStudentsByClassSection {...props} />}
             />
@@ -73,6 +78,13 @@ class App extends Component {
               path="/notice_board/create"
               name="Notice Board Create"
               render={(props) => <NoticeBoardCreate {...props} />}
+            />
+
+
+          <Route
+              path="/add/result/type"
+              name="Add Result Type"
+              render={(props) => <AddResultType {...props} />}
             />
 
             <Route

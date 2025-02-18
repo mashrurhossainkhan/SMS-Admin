@@ -168,25 +168,41 @@ if (userInfo) {
   // }
 
   _nav.push({
-    _tag: 'CSidebarNavItem',
+    _tag: 'CSidebarNavDropdown',
     name: 'Attendance',
-    to: '/attendance',
+    to: '#',
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
-  });
-  
+    _children: [
+      {
+        _tag: "CSidebarNavItem",
+        name: "Add Attendance",
+        to: "/attendance",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "Attendance History",
+        to: '/attendance/history/dates',
+      },
+    ]
+  })
 
   _nav.push({
-    _tag: 'CSidebarNavItem',
-    name: 'Attendance History',
-    to: '/attendance/history',
-    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
-  });
-
-  _nav.push({
-    _tag: 'CSidebarNavItem',
+    _tag: 'CSidebarNavDropdown',
     name: 'Result',
-    to: '/report',
+    to: '#',
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+    _children: [
+      {
+        _tag: "CSidebarNavItem",
+        name: "Result Type",
+        to: "/add/result/type",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "Result",
+        to: '/result/all/class',
+      },
+    ]
   });
 
   _nav.push({
