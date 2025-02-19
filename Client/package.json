@@ -35,6 +35,8 @@
     "classnames": "^2.2.6",
     "core-js": "^3.8.1",
     "enzyme": "^3.11.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "material-table": "^1.69.2",
     "node-sass": "^4.14.1",
     "nodemailer": "^6.9.0",

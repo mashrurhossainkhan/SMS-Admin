@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API } from "../../actions/api";
+import { SchoolName } from "../../actions/api";
 import { useParams } from "react-router-dom";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const Results = () => {
   const { classNumber, section } = useParams(); // Get class & section from URL
@@ -136,6 +139,105 @@ const Results = () => {
     }
   };
 
+  const generatePDF = async (studentId, classNumber, section) => {
+    try {
+      // Fetch student results from API
+      const response = await axios.get(`${API}/api/get/result/student/${studentId.userId}`);
+      const results = response.data.data;
+  
+      if (!results.length) {
+        alert("No results found for this student.");
+        return;
+      }
+  
+      const doc = new jsPDF("p", "mm", "a4");
+  
+      // **Set Title & School Name**
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Shahid Titumir Academy Manikganj", 105, 15, null, null, "center");
+  
+      doc.setFontSize(14);
+      doc.text("Student Result", 105, 25, null, null, "center");
+  
+      // Get student name & roll number
+      const studentName = results[0].studentDetails.name;
+      const rollNo = studentId.rollNo;
+  
+      doc.setFontSize(11);
+      doc.text(`Class: ${classNumber} - Section: ${section}`, 14, 35);
+      doc.text(`Student: ${studentName} (Roll No: ${rollNo})`, 14, 42);
+  
+      // **Process Data for Table**
+      const subjects = [...new Set(results.map((res) => res.subjectId))]; // Unique subject IDs
+      const resultTypes = [...new Set(results.map((res) => res.resultTypeDetails.type))]; // Unique result types
+  
+      const studentResults = {};
+  
+      // **Correctly Map Subject Names**
+      const subjectNames = {};
+      subjects.forEach((subjectId) => {
+        const subjectData = allSubjects.find((sub) => sub.id === subjectId);
+        subjectNames[subjectId] = subjectData ? subjectData.name : `Subject ${subjectId}`;
+      });
+  
+      subjects.forEach((subjectId) => {
+        studentResults[subjectId] = {
+          subjectName: subjectNames[subjectId], // Now correctly mapped!
+          scores: {},
+          total: 0,
+        };
+      });
+  
+      // Populate student results
+      results.forEach((res) => {
+        studentResults[res.subjectId].scores[res.resultTypeDetails.type] = res.marks;
+        studentResults[res.subjectId].total += res.marks;
+      });
+  
+      // **Prepare Table Headers**
+      const tableColumnHeaders = ["Subjects", ...resultTypes, "Total", "Remarks"];
+  
+      // **Prepare Table Data**
+      const tableRows = Object.keys(studentResults).map((subjectId) => [
+        studentResults[subjectId].subjectName, // ✅ Fixed: Using correctly mapped subject names
+        ...resultTypes.map((rt) => studentResults[subjectId].scores[rt] || "N/A"),
+        studentResults[subjectId].total, // Total marks
+        "", // Empty Remarks Column
+      ]);
+  
+      // **AutoTable Configuration**
+      doc.autoTable({
+        startY: 50,
+        head: [tableColumnHeaders],
+        body: tableRows,
+        theme: "grid",
+        headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255] }, // Blue header
+        styles: { font: "helvetica", fontSize: 10 },
+        alternateRowStyles: { fillColor: [240, 240, 240] }, // Light grey rows
+        margin: { top: 30 },
+      });
+  
+      // **Add Signature Section**
+      const pageHeight = doc.internal.pageSize.height;
+      doc.setFont("helvetica", "normal");
+  
+      doc.text("__________________________", 25, pageHeight - 40);
+      doc.text("Teacher's Signature", 35, pageHeight - 30);
+  
+      doc.text("__________________________", 130, pageHeight - 40);
+      doc.text("Guardian's Signature", 140, pageHeight - 30);
+  
+      // **Save PDF**
+      doc.save(`Result_${studentName}_Class_${classNumber}_Section_${section}.pdf`);
+    } catch (error) {
+      console.error("Error fetching student results:", error);
+      alert("Failed to generate PDF.");
+    }
+  };
+  
+  
+    
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-center">
@@ -207,6 +309,12 @@ const Results = () => {
                   </td>
                 ))}
                 <td className="border p-3 font-bold">{student.total}</td>
+                <td className="border p-3 font-bold"><button
+                    className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-700 transition"
+                    onClick={() => generatePDF(student, classNumber, section)}
+                  >
+                    Print
+                  </button></td>
               </tr>
             ))}
           </tbody>

@@ -3,7 +3,7 @@ const ResultType = models.resultType;
 const Result  = models.result;
 const User  = models.user;
 const TeacherStSubjectAssociation = models.TeacherStSubjectAssociation;
-
+const { Op, fn, col } = require("sequelize");
 //result type starts
 exports.createResultType = async (req, res) => {
   try {
@@ -191,10 +191,21 @@ exports.createResult = async (req, res) => {
 
   exports.checkExistingResult = async (req, res) => {
     try {
-        const { stId, resultType,subjectid } = req.params;
+        const { stId, resultType, subjectid } = req.params;
+
+        // Get the current year
+        const currentYear = new Date().getFullYear();
 
         const result = await Result.findOne({
-            where: { stId, resultType, subjectid },
+            where: {
+                stId,
+                resultType,
+                subjectid,  // Match subject ID correctly
+                createdAt: {
+                    [Op.gte]: new Date(`${currentYear}-01-01T00:00:00Z`), // From Jan 1st of the current year
+                    [Op.lte]: new Date(`${currentYear}-12-31T23:59:59Z`) // Until Dec 31st of the current year
+                }
+            },
             attributes: ["id", "marks"], // Fetch marks along with the result ID
         });
 
@@ -204,10 +215,11 @@ exports.createResult = async (req, res) => {
             res.json({ exists: false, marks: 0 }); // Default marks to 0 if no result exists
         }
     } catch (error) {
-        console.error("Error checking result:", error);
+        console.error("❌ Error checking result:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 
   exports.deleteResult = async (req, res) => {
@@ -281,12 +293,6 @@ exports.createResult = async (req, res) => {
             model: User,
             as: 'teacherDetails', // Alias for teacher association
             attributes: ['id', 'name', 'email'], // Fields to fetch from User for teacher
-          },
-
-          {
-            model: TeacherStSubjectAssociation,
-            as: 'associationDetails', // Alias for the association
-            attributes: ['id', 'subjectId', 'stId', 'teacherId'], // Fetch relevant fields
           },
         ],
       });
