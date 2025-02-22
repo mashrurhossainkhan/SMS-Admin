@@ -151,21 +151,29 @@ exports.getStudentAmounts = async function (req, res) {
 
   exports.addCredit = async function (req, res) {
     try {
-      // Extract data from req.body
-      const { userId, amount, type, comment } = req.body;
+      // Extract data from req.body, including date from the frontend
+      const { userId, amount, type, comment, date } = req.body;
   
       // Validate required fields
-      if (!userId || !amount || !type) {
-        return res.status(400).json({ error: 'userId, amount, and type are required' });
+      if (!userId || !amount || !type || !date) {
+        return res
+          .status(400)
+          .json({ error: 'userId, amount, type, and date are required' });
       }
   
-      // Insert the new credit entry
+      // Validate that the date is in a correct format
+      const creditDate = new Date(date);
+      if (isNaN(creditDate)) {
+        return res.status(400).json({ error: 'Invalid date format' });
+      }
+  
+      // Insert the new credit entry with the frontend provided date
       const newCredit = await Credit.create({
         userId,
         amount,
         type,
         comment: comment || null, // Optional comment
-        date: new Date(), // Set date to today
+        date: creditDate,
       });
   
       // Respond with the created entry
@@ -178,7 +186,7 @@ exports.getStudentAmounts = async function (req, res) {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
-
+  
 
   exports.addDedit = async function (req, res) {
     try {
