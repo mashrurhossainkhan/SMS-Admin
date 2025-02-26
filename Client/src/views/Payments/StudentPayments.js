@@ -11,10 +11,12 @@ const StudentPayment = () => {
   const [history, setHistory] = useState([]); // State to store payment history
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [selectedStudent, setSelectedStudent] = useState(null); // State for selected student
-
+  const storedData = localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK");
+  const userId = storedData ? JSON.parse(storedData).userId : null;
+  
   // State for the credit form on the Others tab
   const [creditForm, setCreditForm] = useState({
-    userId: localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK"),
+    userId: userId,
     amount: '',
     type: '',
     comment: '',
@@ -259,7 +261,7 @@ const StudentPayment = () => {
                   value={creditForm.userId}
                   onChange={handleCreditFormChange}
                   placeholder="Enter User ID"
-                  required
+                  disabled
                 />
               </label>
             </div>
