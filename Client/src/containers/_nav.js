@@ -206,10 +206,22 @@ if (userInfo) {
   });
 
   _nav.push({
-    _tag: 'CSidebarNavItem',
-    name: 'Payments (Credit)',
-    to: '/students/payments',
+    _tag: 'CSidebarNavDropdown',
+    name: 'Payments',
+    to: '#',
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+    _children: [
+      {
+        _tag: "CSidebarNavItem",
+        name: "Credit",
+        to: "/payments/credit",
+      },
+      {
+        _tag: "CSidebarNavItem",
+        name: "Debit",
+        to: '/payment/debit',
+      },
+    ]
   });
 }
 

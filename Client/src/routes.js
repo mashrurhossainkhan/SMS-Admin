@@ -447,7 +447,14 @@ const routes = [
   },
 
   {
-    path: '/students/payments',
+    path: '/payments/credit',
+    exact: true,
+    name: 'Payments',
+    component: StudentPayment,
+  },
+
+  {
+    path: '/payment/debit',
     exact: true,
     name: 'Payments',
     component: StudentPayment,

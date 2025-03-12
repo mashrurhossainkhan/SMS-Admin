@@ -149,6 +149,36 @@ exports.getStudentAmounts = async function (req, res) {
   };
 
 
+
+
+  exports.getDebitsByUserId = async (req, res) => {
+    try {
+      const { userId } = req.params;
+  
+      // Validate `userId`
+      if (!userId) {
+        return res.status(400).json({ error: 'UserId is required' });
+      }
+  
+      // Fetch credits by userId
+      const debits = await Debit.findAll({
+        where: { userId },
+        order: [['date', 'DESC']], // Optional: Order by date descending
+      });
+  
+      // Return the result
+      if (debits.length === 0) {
+        return res.status(404).json({ message: 'No credits found for this user' });
+      }
+  
+      res.status(200).json(debits);
+    } catch (error) {
+      console.error('Error fetching credits:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+
   exports.addCredit = async function (req, res) {
     try {
       // Extract data from req.body, including date from the frontend
