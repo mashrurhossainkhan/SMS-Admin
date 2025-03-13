@@ -17,6 +17,7 @@ const AssociationController = require("../controllers/associationController")
 const paymentController = require("../controllers/paymentController")
 const resultController = require("../controllers/resultController")
 const routineController = require("../controllers/classRoutineController")
+const speechController = require("../controllers/speechController")
 
 router.use(function (req, res, next) {
   res.header(
@@ -26,6 +27,15 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+//speech API start
+router.post('/speeches', speechController.createSpeech);
+router.get('/speeches', speechController.getAllSpeeches);
+router.get('/speeches/:id', speechController.getSpeechById);
+router.put('/speeches/:id', speechController.updateSpeech);
+router.delete('/speeches/:id', speechController.deleteSpeech);
+router.patch('/speeches/restore/:id', speechController.restoreSpeech);
+//speech API end
 
 //Routine Controllers starts
 router.post("/api/create/routine", routineController.createClassRoutine);

@@ -54,6 +54,7 @@ exports.getAllStudents = async (req, res) => {
   try {
     const students = await Student.findAll({
       where: { userType: 2 }, // Filter for students
+      attributes: { exclude: ['password'] },
     });
 
     res.status(200).json({

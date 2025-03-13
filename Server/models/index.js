@@ -65,6 +65,7 @@ db.jobPosts = require('./jobPosts')(sequelize, Sequelize);
 db.subject = require('./subject')(sequelize, Sequelize);
 db.STPayment = require('./stPayments')(sequelize, Sequelize);
 db.credit = require('./Credit')(sequelize, Sequelize);
+db.speech = require('./speech')(sequelize, Sequelize);
 db.debit = require('./Debit')(sequelize, Sequelize);
 db.resultType = require('./resultType')(sequelize, Sequelize);
 db.result = require('./Result')(sequelize, Sequelize);

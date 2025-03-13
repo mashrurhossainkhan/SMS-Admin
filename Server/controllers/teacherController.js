@@ -8,6 +8,7 @@ exports.getAllTeachers = async (req, res) => {
   try {
     const students = await Teacher.findAll({
       where: { userType: 3 }, // Filter for students
+      attributes: { exclude: ['password'] },
     });
 
     res.status(200).json({
