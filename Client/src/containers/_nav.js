@@ -174,17 +174,17 @@ if (userInfo) {
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
     _children: [
       {
-        _tag: "CSidebarNavItem",
-        name: "Add Attendance",
-        to: "/attendance",
+        _tag: 'CSidebarNavItem',
+        name: 'Add Attendance',
+        to: '/attendance',
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "Attendance History",
+        _tag: 'CSidebarNavItem',
+        name: 'Attendance History',
         to: '/attendance/history/dates',
       },
-    ]
-  })
+    ],
+  });
 
   _nav.push({
     _tag: 'CSidebarNavDropdown',
@@ -193,16 +193,16 @@ if (userInfo) {
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
     _children: [
       {
-        _tag: "CSidebarNavItem",
-        name: "Result Type",
-        to: "/add/result/type",
+        _tag: 'CSidebarNavItem',
+        name: 'Result Type',
+        to: '/add/result/type',
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "Result",
+        _tag: 'CSidebarNavItem',
+        name: 'Result',
         to: '/result/all/class',
       },
-    ]
+    ],
   });
 
   _nav.push({
@@ -212,16 +212,16 @@ if (userInfo) {
     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
     _children: [
       {
-        _tag: "CSidebarNavItem",
-        name: "Credit",
-        to: "/payments/credit",
+        _tag: 'CSidebarNavItem',
+        name: 'Credit',
+        to: '/payments/credit',
       },
       {
-        _tag: "CSidebarNavItem",
-        name: "Debit",
+        _tag: 'CSidebarNavItem',
+        name: 'Debit',
         to: '/payment/debit',
       },
-    ]
+    ],
   });
 }
 

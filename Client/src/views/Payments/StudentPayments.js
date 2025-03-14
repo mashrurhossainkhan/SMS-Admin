@@ -3,6 +3,7 @@ import axios from 'axios';
 import './StudentPayment.css'; // Import the CSS file for styling
 import { API } from '../../actions/api';
 import { useLocation } from 'react-router-dom';
+import PaymentTable from './PaymentTable';
 
 const StudentPayment = () => {
   const location = useLocation(); // Get the current route
@@ -14,55 +15,56 @@ const StudentPayment = () => {
   const [history, setHistory] = useState([]); // State to store payment history
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [selectedStudent, setSelectedStudent] = useState(null); // State for selected student
-  const storedData = localStorage.getItem("3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK");
+  const storedData = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
   const userId = storedData ? JSON.parse(storedData).userId : null;
-  
+
   // State for the credit form on the Others tab
   const [creditForm, setCreditForm] = useState({
     userId: userId,
     amount: '',
     type: '',
     comment: '',
-    date: ''
+    date: '',
   });
 
   // Fetch students data from the API
   useEffect(() => {
     if (activeTab === 'students') {
       let userType;
-    
-    if (location.pathname.includes('/payment/debit')) {
-      userType = 3;
-    } else if (location.pathname.includes('/payments/credit')) {
-      userType = 2;
-    } else {
-      return; // Exit if no valid condition is met
-    }
 
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(`${API}/api/users/type/${userType}`);
-        setStudents(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
+      if (location.pathname.includes('/payment/debit')) {
+        userType = 3;
+      } else if (location.pathname.includes('/payments/credit')) {
+        userType = 2;
+      } else {
+        return; // Exit if no valid condition is met
       }
-    };
 
-    fetchUsers();
+      const fetchUsers = async () => {
+        try {
+          const response = await axios.get(`${API}/api/users/type/${userType}`);
+          setStudents(response.data);
+        } catch (error) {
+          console.error('Error fetching users:', error);
+        }
+      };
+
+      fetchUsers();
     }
-  }, [activeTab,location.pathname]);
+  }, [activeTab, location.pathname]);
 
   // Filter students based on the search query
-  const filteredStudents = students.filter((student) =>
-    student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    student.id.toString().includes(searchQuery) // Assuming student ID is numeric
+  const filteredStudents = students.filter(
+    (student) =>
+      student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      student.id.toString().includes(searchQuery) // Assuming student ID is numeric
   );
 
   const handlePaid = async (Id) => {
     const amount = amounts[Id];
     const date = dates[Id];
-  
+
     // Validate amount and date
     if (!amount) {
       alert('Amount is required before making a payment.');
@@ -72,7 +74,7 @@ const StudentPayment = () => {
       alert('Date is required before making a payment.');
       return;
     }
-  
+
     try {
       const payload = {
         userId: Id,
@@ -81,7 +83,7 @@ const StudentPayment = () => {
         comment: 'Monthly payment made via UI by ' + userId, // Optional comment
         date, // Date from the frontend
       };
-  
+
       // Determine API endpoint dynamically
       let endpoint = '';
       if (location.pathname.includes('/payment/debit')) {
@@ -92,9 +94,9 @@ const StudentPayment = () => {
         alert('Invalid payment type.');
         return;
       }
-  
+
       const response = await axios.post(endpoint, payload);
-  
+
       console.log('Payment successful:', response.data);
       alert('Payment successful!');
       // Clear amount and date for the student after successful payment
@@ -120,10 +122,9 @@ const StudentPayment = () => {
     }));
   };
 
-
   const fetchHistory = async (id) => {
     let endpoint = '';
-  
+
     // Determine API endpoint based on location
     if (location.pathname.includes('/payment/debit')) {
       endpoint = `${API}/api/payments/history/debit/${id}`;
@@ -133,7 +134,7 @@ const StudentPayment = () => {
       alert('Invalid payment type.');
       return;
     }
-  
+
     try {
       const response = await axios.get(endpoint);
       setHistory(response.data); // Set fetched history
@@ -144,16 +145,20 @@ const StudentPayment = () => {
       alert('No Payment History');
     }
   };
-  
+
   const deleteRecord = async (recordId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this record?');
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete this record?'
+    );
     if (!confirmDelete) {
       return; // Exit if the user cancels the action
     }
 
     try {
       await axios.delete(`${API}/api/credits/${recordId}`);
-      setHistory((prevHistory) => prevHistory.filter((entry) => entry.id !== recordId)); // Update UI
+      setHistory((prevHistory) =>
+        prevHistory.filter((entry) => entry.id !== recordId)
+      ); // Update UI
       alert('Record deleted successfully!');
     } catch (error) {
       console.error('Error deleting record:', error);
@@ -176,56 +181,52 @@ const StudentPayment = () => {
     }));
   };
 
- 
-const handleCreditSubmit = async (e) => {
-  e.preventDefault();
+  const handleCreditSubmit = async (e) => {
+    const { userId, amount, type, date, comment } = creditForm;
 
-  const { userId, amount, type, date, comment } = creditForm;
-
-  // Validate required fields
-  if (!userId || !amount || !type || !date) {
-    alert('User ID, amount, type, and date are required.');
-    return;
-  }
-
-  try {
-    const payload = {
-      userId,
-      amount: parseFloat(amount),
-      type,
-      comment: 'Custom payment input by ' + userId, // Optional comment
-      date,
-    };
-
-    // Determine API endpoint dynamically
-    let endpoint = '';
-    if (location.pathname.includes('/payment/debit')) {
-      endpoint = `${API}/api/payments/add/debit`;
-    } else if (location.pathname.includes('/payments/credit')) {
-      endpoint = `${API}/api/payments/add/credit`;
-    } else {
-      alert('Invalid payment type.');
+    // Validate required fields
+    if (!userId || !amount || !type || !date) {
+      alert('User ID, amount, type, and date are required.');
       return;
     }
 
-    const response = await axios.post(endpoint, payload);
-    console.log('Payment submission successful:', response.data);
-    alert('Payment submission successful!');
+    try {
+      const payload = {
+        userId,
+        amount: parseFloat(amount),
+        type,
+        comment: 'Custom payment input by ' + userId, // Optional comment
+        date,
+      };
 
-    // Reset the credit form
-    setCreditForm({
-      userId: '',
-      amount: '',
-      type: '',
-      comment: '',
-      date: '',
-    });
-  } catch (error) {
-    console.error('Error submitting payment:', error);
-    alert('Failed to submit payment. Please try again.');
-  }
-};
+      // Determine API endpoint dynamically
+      let endpoint = '';
+      if (location.pathname.includes('/payment/debit')) {
+        endpoint = `${API}/api/payments/add/debit`;
+      } else if (location.pathname.includes('/payments/credit')) {
+        endpoint = `${API}/api/payments/add/credit`;
+      } else {
+        alert('Invalid payment type.');
+        return;
+      }
 
+      const response = await axios.post(endpoint, payload);
+      console.log('Payment submission successful:', response.data);
+      alert('Payment submission successful!');
+
+      // Reset the credit form
+      setCreditForm({
+        userId: '',
+        amount: '',
+        type: '',
+        comment: '',
+        date: '',
+      });
+    } catch (error) {
+      console.error('Error submitting payment:', error);
+      alert('Failed to submit payment. Please try again.');
+    }
+  };
 
   return (
     <div className="student-payment-container">
@@ -250,20 +251,20 @@ const handleCreditSubmit = async (e) => {
         <div className="student-payments-page">
           <h1>Student Payment</h1>
           <input
-              type="text"
-              placeholder="Search by name, email, or software ID"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '10px',
-                marginBottom: '15px',
-                border: '1px solid #ddd',
-                borderRadius: '5px',
-                fontSize: '16px',
-                outline: 'none',
-              }}
-            />
+            type="text"
+            placeholder="Search by name, email, or software ID"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px',
+              marginBottom: '15px',
+              border: '1px solid #ddd',
+              borderRadius: '5px',
+              fontSize: '16px',
+              outline: 'none',
+            }}
+          />
 
           <div className="student-card-list">
             {filteredStudents.length > 0 ? (
@@ -286,7 +287,9 @@ const handleCreditSubmit = async (e) => {
                       <input
                         type="number"
                         value={amounts[student.id] || ''}
-                        onChange={(e) => handleAmountChange(student.id, e.target.value)}
+                        onChange={(e) =>
+                          handleAmountChange(student.id, e.target.value)
+                        }
                         placeholder="Enter amount"
                         required
                       />
@@ -298,7 +301,9 @@ const handleCreditSubmit = async (e) => {
                       <input
                         type="date"
                         value={dates[student.id] || ''}
-                        onChange={(e) => handleDateChange(student.id, e.target.value)}
+                        onChange={(e) =>
+                          handleDateChange(student.id, e.target.value)
+                        }
                         required
                       />
                     </label>
@@ -394,6 +399,8 @@ const handleCreditSubmit = async (e) => {
             </div>
             <button type="submit">Submit</button>
           </form>
+
+          <PaymentTable />
         </div>
       )}
 
@@ -412,7 +419,8 @@ const handleCreditSubmit = async (e) => {
               <ul>
                 {history.map((entry) => (
                   <li key={entry.id} className="history-item">
-                    {new Date(entry.date).toLocaleDateString()}: ${entry.amount} - {entry.type}
+                    {new Date(entry.date).toLocaleDateString()}: ${entry.amount}{' '}
+                    - {entry.type}
                     <span
                       className="delete-record"
                       onClick={() => deleteRecord(entry.id)}

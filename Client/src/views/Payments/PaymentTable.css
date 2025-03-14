@@ -1,0 +1,95 @@
+/* General Container */
+.container {
+  width: 90%;
+  margin: 20px auto;
+  text-align: center;
+}
+
+/* Title */
+.table-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Table */
+.payment-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Table Header */
+.payment-table th {
+  background-color: #007bff;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+}
+
+/* Table Cells */
+.payment-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+/* Alternate Row Colors */
+.payment-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover Effect */
+.payment-table tr:hover {
+  background-color: #f1f1f1;
+  transition: 0.3s ease-in-out;
+}
+
+/* Loading and Error Messages */
+.loading-text,
+.error-message {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+}
+
+/* Actions Column */
+.actions-column {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Buttons */
+.edit-btn,
+.delete-btn {
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: #000;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}

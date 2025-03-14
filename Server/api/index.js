@@ -13,11 +13,11 @@ const teacherMetaController = require('../controllers/teacherMetaController');
 const userController = require('../controllers/userController');
 const subjectController = require('../controllers/subjectController');
 const attendanceController = require('../controllers/attendanceController');
-const AssociationController = require("../controllers/associationController")
-const paymentController = require("../controllers/paymentController")
-const resultController = require("../controllers/resultController")
-const routineController = require("../controllers/classRoutineController")
-const speechController = require("../controllers/speechController")
+const AssociationController = require('../controllers/associationController');
+const paymentController = require('../controllers/paymentController');
+const resultController = require('../controllers/resultController');
+const routineController = require('../controllers/classRoutineController');
+const speechController = require('../controllers/speechController');
 
 router.use(function (req, res, next) {
   res.header(
@@ -35,20 +35,29 @@ router.get('/speeches/:id', speechController.getSpeechById);
 router.put('/speeches/:id', speechController.updateSpeech);
 router.delete('/speeches/:id', speechController.deleteSpeech);
 router.patch('/speeches/restore/:id', speechController.restoreSpeech);
-//speech API end
+//speech API endf
 
 //Routine Controllers starts
-router.post("/api/create/routine", routineController.createClassRoutine);
-router.get("/api/all/routine", routineController.getAllClassRoutines);
-router.get("/api/get/:id", routineController.getClassRoutineById);
-router.put("/api/get/:id", routineController.updateClassRoutineById);
-router.delete("/api/delete/:id", routineController.deleteClassRoutineById);
+router.post('/api/create/routine', routineController.createClassRoutine);
+router.get('/api/all/routine', routineController.getAllClassRoutines);
+router.get('/api/get/:id', routineController.getClassRoutineById);
+router.put('/api/get/:id', routineController.updateClassRoutineById);
+router.delete('/api/delete/:id', routineController.deleteClassRoutineById);
 //Routine controllers ends
 
 //result constrollers
-router.get('/api/get/result/associate/:associationId', resultController.getResultsByAssociationId);
-router.get('/api/get/result/teacher/:teacherId', resultController.getResultsByTeacherId);
-router.get('/api/get/result/student/:stId', resultController.getResultsByStudentId);
+router.get(
+  '/api/get/result/associate/:associationId',
+  resultController.getResultsByAssociationId
+);
+router.get(
+  '/api/get/result/teacher/:teacherId',
+  resultController.getResultsByTeacherId
+);
+router.get(
+  '/api/get/result/student/:stId',
+  resultController.getResultsByStudentId
+);
 router.get('/api/get/all/result/types', resultController.getResultTypes);
 router.post('/api/add/result/type', resultController.createResultType);
 router.delete('/api/delete/result/type/:id', resultController.deleteResultType);
@@ -56,28 +65,44 @@ router.post('/api/add/result', resultController.createResult);
 router.put('/api/update/result/:id', resultController.updateResult);
 
 // Add this to your router
-router.get("/api/result/check/:stId/:resultType/:subjectid", resultController.checkExistingResult);
+router.get(
+  '/api/result/check/:stId/:resultType/:subjectid',
+  resultController.checkExistingResult
+);
 
 // router.put('/api/update/result/type/:id', resultController.updateResultType);
 
 router.delete('/api/delete/result/:id', resultController.deleteResult);
 
-
-
-router.get("/api/result/student/list/:classNumber/:section", attendanceController.getRollNumbersByClassAndSection)
+router.get(
+  '/api/result/student/list/:classNumber/:section',
+  attendanceController.getRollNumbersByClassAndSection
+);
 //result controllers
 
 //paymentController
 router.get('/api/payments/all/students', paymentController.getStudentAmounts);
+router.get('/api/payments/all/credit', paymentController.getAllCredits);
+router.get('/api/payments/all/debit', paymentController.getAllDebits);
 router.post('/api/payments/add/credit', paymentController.addCredit);
-router.get('/api/payments/history/:userId', paymentController.getCreditsByUserId);
-router.get('/api/payments/history/debit/:userId', paymentController.getDebitsByUserId);
-router.delete('/api/credits/:id', paymentController.deleteCreditsById);
+router.get(
+  '/api/payments/history/:userId',
+  paymentController.getCreditsByUserId
+);
+router.get(
+  '/api/payments/history/debit/:userId',
+  paymentController.getDebitsByUserId
+);
+router.delete('/api/debit/:id', paymentController.deleteDebitById);
+router.delete('/api/credit/:id', paymentController.deleteCreditsById_1);
 router.post('/api/payments/add/debit', paymentController.addDedit);
 //payment controllers
 
 //Association Controller Starts
-router.post('/api/teacher-subject-association', AssociationController.insertAssociationRecords);
+router.post(
+  '/api/teacher-subject-association',
+  AssociationController.insertAssociationRecords
+);
 //Associaition Controller ends
 
 /* 
@@ -96,12 +121,30 @@ Admin registration API ends
 //   attendanceController.insertAttendanceRecords
 // );
 //getRollNumbersByClassAndSection
-router.get("/api/get/all/class/attendace", attendanceController.getAllUniqueClassesOrdered)
-router.get("/api/get/all/section/by/class/:classNumber", attendanceController.getSectionsByClass)
-router.get("/api/attendace/:classNumber/:section", attendanceController.getRollNumbersByClassAndSection)
-router.post("/mark-or-update-attendance", attendanceController.markOrUpdateAttendance);
-router.get("/api/get/all/history/date", attendanceController.getAllAttendanceDates)
-router.get("/api/get/class-sections/:date", attendanceController.getClassSectionsAndStudentsByDate);
+router.get(
+  '/api/get/all/class/attendace',
+  attendanceController.getAllUniqueClassesOrdered
+);
+router.get(
+  '/api/get/all/section/by/class/:classNumber',
+  attendanceController.getSectionsByClass
+);
+router.get(
+  '/api/attendace/:classNumber/:section',
+  attendanceController.getRollNumbersByClassAndSection
+);
+router.post(
+  '/mark-or-update-attendance',
+  attendanceController.markOrUpdateAttendance
+);
+router.get(
+  '/api/get/all/history/date',
+  attendanceController.getAllAttendanceDates
+);
+router.get(
+  '/api/get/class-sections/:date',
+  attendanceController.getClassSectionsAndStudentsByDate
+);
 //attance controller end
 
 //notice APIs start
@@ -126,16 +169,22 @@ router.get('/api/student/all', studentController.getAllStudents);
 router.put('/api/student/:id', studentController.updateStudentById);
 router.delete('/api/student/:id', studentController.deleteStudentById);
 router.post('/api/student/meta/create', studentController.createStudentMeta);
-router.get('/api/student/meta/get/:userid', studentController.getStudentMetaById);
-router.put('/api/student/meta/:userid', studentController.updateStudentMetaById);
+router.get(
+  '/api/student/meta/get/:userid',
+  studentController.getStudentMetaById
+);
+router.put(
+  '/api/student/meta/:userid',
+  studentController.updateStudentMetaById
+);
 //Student APIs end
 
 //techer APIs start
 router.post('/api/signup/teacher', teacherController.insertTeacherInfo);
-router.post("/api/create/meta", teacherMetaController.createTeacherMeta);
+router.post('/api/create/meta', teacherMetaController.createTeacherMeta);
 router.get('/api/teacher/all', teacherController.getAllTeachers);
-router.get("/api/get/:userid", teacherMetaController.getTeacherMetaById);
-router.put("/api/update/:userid", teacherMetaController.updateTeacherMetaById);
+router.get('/api/get/:userid', teacherMetaController.getTeacherMetaById);
+router.put('/api/update/:userid', teacherMetaController.updateTeacherMetaById);
 router.delete('/api/teacher/:id', studentController.deleteStudentById);
 //router.get('/api/signin/student', studentController.studentSignin);
 //techer APIs end
