@@ -18,6 +18,7 @@ const paymentController = require('../controllers/paymentController');
 const resultController = require('../controllers/resultController');
 const routineController = require('../controllers/classRoutineController');
 const speechController = require('../controllers/speechController');
+const dashboardController = require('../controllers/dashboardController');
 
 router.use(function (req, res, next) {
   res.header(
@@ -28,6 +29,7 @@ router.use(function (req, res, next) {
   next();
 });
 
+router.get('/api/dashboard', dashboardController.getDashboardSummary);
 //speech API start
 router.post('/speeches', speechController.createSpeech);
 router.get('/speeches', speechController.getAllSpeeches);
