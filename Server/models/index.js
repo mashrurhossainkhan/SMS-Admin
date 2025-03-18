@@ -57,6 +57,7 @@ db.teacherMetaAchievement = require('./teacherMetaAchievements')(
   sequelize,
   Sequelize
 );
+db.permissionMain = require('./permissionMain')(sequelize, Sequelize);
 db.welcomeNote = require('./welcomeNote')(sequelize, Sequelize);
 db.principalNote = require('./pricipalNote')(sequelize, Sequelize);
 db.achievements = require('./schoolAchievements')(sequelize, Sequelize);

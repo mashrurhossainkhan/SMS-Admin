@@ -25,6 +25,7 @@ import {
   cilChartLine,
   cilCreditCard,
 } from '@coreui/icons';
+import { API } from '../../actions/api';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -35,7 +36,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/dashboard');
+        const response = await axios.get(API + '/api/dashboard');
         setDashboardData(response.data.data);
       } catch (err) {
         setError('Failed to fetch dashboard data');

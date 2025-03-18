@@ -31,6 +31,18 @@ router.use(function (req, res, next) {
 });
 
 //permission controllers
+router.post('/permissions/assign', permissionController.assignPermission); // Assign permission
+router.get('/permissions/all', permissionController.getAllAssignedPermissions); // Get all assigned permissions
+router.get(
+  '/permissions/user/:userId',
+  permissionController.getPermissionsByUserId
+); // Get permissions by user
+router.put('/permissions/:id', permissionController.updateAssignedPermission); // Update permission
+router.delete(
+  '/api/user-permissions/:userId/:permissionTypeId',
+  permissionController.removeAssignedPermission
+); // Remove permission
+
 router.post('/permissions', permissionController.createPermission);
 router.get('/permissions', permissionController.getAllPermissions);
 router.get(

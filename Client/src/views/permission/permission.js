@@ -7,30 +7,37 @@ import {
   CCardBody,
   CButton,
   CSpinner,
-  CFormGroup,
-  CInputCheckbox,
 } from '@coreui/react';
+import { API } from '../../actions/api';
 
-const PermissionTable = () => {
+const Permission = () => {
   const [users, setUsers] = useState([]);
   const [permissions, setPermissions] = useState([]);
+  const [userPermissions, setUserPermissions] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [userPermissions, setUserPermissions] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const usersRes = await axios.get(
-          'http://localhost:5000/api/users/exclude-students'
-        );
-        const permissionsRes = await axios.get(
-          'http://localhost:5000/permissions'
-        );
+        const usersRes = await axios.get(`${API}/api/users/exclude-students`);
+        const permissionsRes = await axios.get(`${API}/permissions`);
+        const assignedPermsRes = await axios.get(`${API}/permissions/all`);
 
         setUsers(usersRes.data.data);
         setPermissions(permissionsRes.data.data);
+
+        const permissionsMap = {};
+        assignedPermsRes.data.data.forEach((entry) => {
+          if (!permissionsMap[entry.userId]) {
+            permissionsMap[entry.userId] = new Set();
+          }
+          permissionsMap[entry.userId].add(entry.permissionTypeId);
+        });
+
+        setUserPermissions(permissionsMap);
       } catch (err) {
+        console.error('Error fetching data:', err);
         setError('Failed to fetch data');
       } finally {
         setLoading(false);
@@ -40,29 +47,32 @@ const PermissionTable = () => {
     fetchData();
   }, []);
 
-  const handlePermissionToggle = (userId, permissionId) => {
-    setUserPermissions((prev) => {
-      const updatedPermissions = new Set(prev[userId] || []);
-      if (updatedPermissions.has(permissionId)) {
-        updatedPermissions.delete(permissionId);
-      } else {
-        updatedPermissions.add(permissionId);
-      }
-      return { ...prev, [userId]: updatedPermissions };
-    });
-  };
+  const handlePermissionToggle = async (userId, permissionTypeId) => {
+    const isAssigned = userPermissions[userId]?.has(permissionTypeId);
 
-  const handleSaveChanges = async () => {
     try {
-      await axios.post(
-        'http://localhost:5000/api/user-permissions/bulk-update',
-        {
-          permissions: userPermissions,
+      if (isAssigned) {
+        await axios.delete(
+          `${API}/api/user-permissions/${userId}/${permissionTypeId}`
+        );
+      } else {
+        await axios.post(`${API}/permissions/assign`, {
+          userId,
+          permissionTypeId,
+        });
+      }
+
+      setUserPermissions((prev) => {
+        const updatedPermissions = new Set(prev[userId] || []);
+        if (isAssigned) {
+          updatedPermissions.delete(permissionTypeId);
+        } else {
+          updatedPermissions.add(permissionTypeId);
         }
-      );
-      alert('Permissions updated successfully!');
+        return { ...prev, [userId]: updatedPermissions };
+      });
     } catch (err) {
-      alert('Failed to update permissions.');
+      alert('Failed to update permission');
     }
   };
 
@@ -77,57 +87,53 @@ const PermissionTable = () => {
         ) : error ? (
           <p className="text-danger">{error}</p>
         ) : (
-          <>
-            <CDataTable
-              items={users}
-              fields={[
-                { key: 'name', label: 'User' },
-                ...permissions.map((perm) => ({
-                  key: perm.id,
-                  label: perm.type,
-                })),
-              ]}
-              hover
-              striped
-              bordered
-              itemsPerPage={10}
-              pagination
-              scopedSlots={{
-                name: (item) => (
-                  <td>
-                    <strong>{item.name}</strong> <br />
-                    <small>{item.email}</small>
+          <CDataTable
+            items={users}
+            fields={[
+              { key: 'name', label: 'User' },
+              ...permissions.map((perm) => ({
+                key: perm.id,
+                label: perm.type,
+              })),
+            ]}
+            hover
+            striped
+            bordered
+            itemsPerPage={10}
+            pagination
+            scopedSlots={{
+              name: (item) => (
+                <td>
+                  <strong>{item.name}</strong> <br />
+                  <small>{item.email}</small>
+                </td>
+              ),
+              ...permissions.reduce((acc, perm) => {
+                acc[perm.id] = (item) => (
+                  <td className="text-center">
+                    <input
+                      type="checkbox"
+                      checked={userPermissions[item.id]?.has(perm.id) || false}
+                      onChange={() => handlePermissionToggle(item.id, perm.id)}
+                    />
                   </td>
-                ),
-                ...permissions.reduce((acc, perm) => {
-                  acc[perm.id] = (item) => (
-                    <td className="text-center">
-                      <CFormGroup>
-                        <CInputCheckbox
-                          checked={
-                            userPermissions[item.id]?.has(perm.id) || false
-                          }
-                          onChange={() =>
-                            handlePermissionToggle(item.id, perm.id)
-                          }
-                        />
-                      </CFormGroup>
-                    </td>
-                  );
-                  return acc;
-                }, {}),
-              }}
-            />
-            <div className="text-center mt-3">
-              <CButton color="primary" onClick={handleSaveChanges}>
-                Save Changes
-              </CButton>
-            </div>
-          </>
+                );
+                return acc;
+              }, {}),
+            }}
+          />
         )}
+        <div className="d-flex justify-content-end mt-3">
+          <CButton
+            color="success"
+            onClick={() => alert('Permissions updated successfully!')}
+          >
+            Save Changes
+          </CButton>
+        </div>
       </CCardBody>
     </CCard>
   );
 };
 
-export default PermissionTable;
+export default Permission;
