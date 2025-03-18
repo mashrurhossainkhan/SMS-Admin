@@ -47,6 +47,7 @@ const ButtonGroups = React.lazy(() =>
 const Buttons = React.lazy(() => import('./views/buttons/buttons/Buttons'));
 const Charts = React.lazy(() => import('./views/charts/Charts'));
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'));
+const Permission = React.lazy(() => import('./views/permission/permission'));
 const CoreUIIcons = React.lazy(() =>
   import('./views/icons/coreui-icons/CoreUIIcons')
 );
@@ -116,7 +117,9 @@ const DepositReport = React.lazy(() => import('./views/report/deposit_report'));
 
 const Company = React.lazy(() => import('./views/Company/Company'));
 const Subject = React.lazy(() => import('./views/Subject/SubjectCreate'));
-const ClassRoutine = React.lazy(() => import('./views/ClassRoutine/ClassRoutineTable'));
+const ClassRoutine = React.lazy(() =>
+  import('./views/ClassRoutine/ClassRoutineTable')
+);
 
 const AllStudentsByClassSection = React.lazy(() =>
   import('./views/Attendance/StudentList')
@@ -138,7 +141,11 @@ const routes = [
   { path: '/base', name: 'Base', component: Cards, exact: true },
   { path: '/base/breadcrumbs', name: 'Breadcrumbs', component: Breadcrumbs },
   { path: '/base/cards', name: 'Cards', component: Cards },
-  { path: '/students/:classNumber/:section', name: 'studentList', component: AllStudentsByClassSection },
+  {
+    path: '/students/:classNumber/:section',
+    name: 'studentList',
+    component: AllStudentsByClassSection,
+  },
   { path: '/base/carousels', name: 'Carousel', component: Carousels },
   { path: '/base/collapses', name: 'Collapse', component: Collapses },
   { path: '/base/forms', name: 'Forms', component: BasicForms },
@@ -301,6 +308,13 @@ const routes = [
     name: 'Shelf',
     component: Shelf,
   },
+
+  {
+    path: '/permission',
+    exact: true,
+    name: 'Permission',
+    component: Permission,
+  },
   // Billing
   {
     path: '/billing',
@@ -375,14 +389,12 @@ const routes = [
     component: Attendance,
   },
 
-
   {
     path: '/result/all/class',
     exact: true,
     name: 'Attendance',
     component: Attendance,
   },
-
 
   {
     path: '/attendance/history',

@@ -19,6 +19,7 @@ const resultController = require('../controllers/resultController');
 const routineController = require('../controllers/classRoutineController');
 const speechController = require('../controllers/speechController');
 const dashboardController = require('../controllers/dashboardController');
+const permissionController = require('../controllers/permissionControllers');
 
 router.use(function (req, res, next) {
   res.header(
@@ -29,6 +30,17 @@ router.use(function (req, res, next) {
   next();
 });
 
+//permission controllers
+router.post('/permissions', permissionController.createPermission);
+router.get('/permissions', permissionController.getAllPermissions);
+router.get(
+  '/api/users/exclude-students',
+  permissionController.getUsersExceptStudents
+);
+router.get('/permissions/:id', permissionController.getPermissionById);
+router.put('/permissions/:id', permissionController.updatePermission); //
+router.delete('/permissions/:id', permissionController.deletePermission);
+//permission controllers
 router.get('/api/dashboard', dashboardController.getDashboardSummary);
 //speech API start
 router.post('/speeches', speechController.createSpeech);

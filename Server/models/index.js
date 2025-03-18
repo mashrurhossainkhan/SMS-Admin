@@ -52,6 +52,7 @@ db.classRoutine = require('./classRoutine')(sequelize, Sequelize);
 db.attendance = require('./attendance')(sequelize, Sequelize);
 db.studentMeta = require('./studentMeta')(sequelize, Sequelize);
 db.teacherMeta = require('./teacherMeta')(sequelize, Sequelize);
+db.permission = require('./permission')(sequelize, Sequelize);
 db.teacherMetaAchievement = require('./teacherMetaAchievements')(
   sequelize,
   Sequelize
@@ -114,12 +115,10 @@ db.result.belongsTo(db.TeacherStSubjectAssociation, {
   as: 'associationDetails', // Alias for the association
 });
 
-
 db.TeacherStSubjectAssociation.belongsTo(db.user, {
   foreignKey: 'stId',
   as: 'student', // Alias for reverse association
 });
-
 
 db.user.hasMany(db.TeacherStSubjectAssociation, {
   foreignKey: 'stId',

@@ -1,32 +1,38 @@
 import React from 'react';
 import CIcon from '@coreui/icons-react';
+import {
+  cilHome,
+  cilClipboard,
+  cilCalendar,
+  cilSchool,
+  cilUser,
+  cilCheckCircle,
+  cilChartLine,
+  cilCreditCard,
+  cilLockUnlocked,
+} from '@coreui/icons';
+
 var userInfo = JSON.parse(
   localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK')
 );
+
 const _nav = [
+  // Dashboard
   {
     _tag: 'CSidebarNavItem',
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
+    icon: <CIcon content={cilHome} customClasses="c-sidebar-nav-icon" />,
   },
 
-  //notice_board
+  // Notice Board
   {
     _tag: 'CSidebarNavDropdown',
     name: 'Notice Board',
     route: '/notice_board',
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilClipboard} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Create',
-        to: '/notice_board/create',
-      },
+      { _tag: 'CSidebarNavItem', name: 'Create', to: '/notice_board/create' },
       {
         _tag: 'CSidebarNavItem',
         name: 'Manage',
@@ -35,12 +41,12 @@ const _nav = [
     ],
   },
 
-  //assign subjects to a teacher
+  // Routine
   {
     _tag: 'CSidebarNavDropdown',
     name: 'Routine',
     route: '#',
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilCalendar} customClasses="c-sidebar-nav-icon" />,
     _children: [
       {
         _tag: 'CSidebarNavItem',
@@ -52,132 +58,42 @@ const _nav = [
         name: 'Routine Create',
         to: '/routine/create',
       },
-      // {
-      //   _tag: 'CSidebarNavItem',
-      //   name: 'Create',
-      //   to: '/association/teacher/students/subjects',
-      // },
-      // {
-      //   _tag: 'CSidebarNavItem',
-      //   name: 'Manage',
-      //   to: '/assigned/subject/manage/all',
-      // },
     ],
   },
 
-  //Students
+  // Students
   {
     _tag: 'CSidebarNavDropdown',
-    name: 'Sudents',
+    name: 'Students',
     route: '/student',
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilSchool} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Create',
-        to: '/student/create',
-      },
-      // {
-      //   _tag: 'CSidebarNavItem',
-      //   name: 'Manage',
-      //   to: '/notice_board/manage/all',
-      // },
+      { _tag: 'CSidebarNavItem', name: 'Create', to: '/student/create' },
     ],
   },
 
-  //Students
+  // Teachers
   {
     _tag: 'CSidebarNavDropdown',
     name: 'Teachers',
     route: '/teacher',
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilUser} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Create',
-        to: '/teacher/create',
-      },
-      // {
-      //   _tag: 'CSidebarNavItem',
-      //   name: 'Manage',
-      //   to: '/notice_board/manage/all',
-      // },
+      { _tag: 'CSidebarNavItem', name: 'Create', to: '/teacher/create' },
     ],
   },
-
-  // User Group
-  /*{
-    _tag: "CSidebarNavDropdown",
-    name: "User Group",
-    route: "/user_Group",
-    icon: "cil-puzzle",
-    _children: [
-      {
-        _tag: "CSidebarNavItem",
-        name: "Add Group",
-        to: "/user_group/add_group",
-      },
-      {
-        _tag: "CSidebarNavItem",
-        name: "Manage Group Of User",
-        to: "/user_group/manage_group_user",
-      },
-    ],
-  }*/
-
-  // Brand
-  /*
-  {
-    _tag: "CSidebarNavItem",
-    name: "Brand",
-    to: "/brand",
-    icon: <CIcon name="cil-speedometer" customClasses="c-sidebar-nav-icon" />,
-  },
-*/
 ];
 
-// if (userInfo) {
-//   if (userInfo.isAdmin != 1) _nav.splice(1, 1);
-// }
-
-// Adjust nav based on user information
+// If user exists, add role-based navigation items
 if (userInfo) {
-  // Remove User menu for non-admins
-  // if (userInfo.isAdmin !== 1) {
-  //   _nav.splice(1, 1);
-  // }
-
-  // Add "Attendance" for userType 3
-  // if (userInfo.userType === 3) {
-  //   _nav.push({
-  //     _tag: 'CSidebarNavItem',
-  //     name: 'Attendance',
-  //     to: '/attendance',
-  //     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
-  //   });
-
-  //   _nav.push({
-  //     _tag: 'CSidebarNavItem',
-  //     name: 'Result',
-  //     to: '/report',
-  //     icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
-  //   });
-  // }
-
-  // if (userInfo.userType === 1) {
-  // }
-
+  // Attendance Section (For Teachers)
   _nav.push({
     _tag: 'CSidebarNavDropdown',
     name: 'Attendance',
     to: '#',
-    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilCheckCircle} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Add Attendance',
-        to: '/attendance',
-      },
+      { _tag: 'CSidebarNavItem', name: 'Add Attendance', to: '/attendance' },
       {
         _tag: 'CSidebarNavItem',
         name: 'Attendance History',
@@ -186,42 +102,37 @@ if (userInfo) {
     ],
   });
 
+  // Result Section
   _nav.push({
     _tag: 'CSidebarNavDropdown',
     name: 'Result',
     to: '#',
-    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilChartLine} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Result Type',
-        to: '/add/result/type',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Result',
-        to: '/result/all/class',
-      },
+      { _tag: 'CSidebarNavItem', name: 'Result Type', to: '/add/result/type' },
+      { _tag: 'CSidebarNavItem', name: 'Result', to: '/result/all/class' },
     ],
   });
 
+  // Payments Section
   _nav.push({
     _tag: 'CSidebarNavDropdown',
     name: 'Payments',
     to: '#',
-    icon: <CIcon name="cil-task" customClasses="c-sidebar-nav-icon" />,
+    icon: <CIcon content={cilCreditCard} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Credit',
-        to: '/payments/credit',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Debit',
-        to: '/payment/debit',
-      },
+      { _tag: 'CSidebarNavItem', name: 'Credit', to: '/payments/credit' },
+      { _tag: 'CSidebarNavItem', name: 'Debit', to: '/payment/debit' },
     ],
+  });
+
+  _nav.push({
+    _tag: 'CSidebarNavItem',
+    name: 'Permission',
+    to: '/permission',
+    icon: (
+      <CIcon content={cilLockUnlocked} customClasses="c-sidebar-nav-icon" />
+    ),
   });
 }
 
