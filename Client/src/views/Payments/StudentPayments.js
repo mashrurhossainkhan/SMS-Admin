@@ -16,7 +16,24 @@ const StudentPayment = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [selectedStudent, setSelectedStudent] = useState(null); // State for selected student
   const storedData = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
-  const userId = storedData ? JSON.parse(storedData).userId : null;
+  const storedToken = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
+  let userId = null;
+  let tokenEmail = null;
+
+  if (storedToken) {
+    try {
+      const parsed = JSON.parse(storedToken);
+      const token = parsed?.token;
+      if (token) {
+        const base64Payload = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(base64Payload));
+        userId = decodedPayload.userId;
+        tokenEmail = decodedPayload.email;
+      }
+    } catch (err) {
+      console.error('Error decoding token:', err);
+    }
+  }
 
   // State for the credit form on the Others tab
   const [creditForm, setCreditForm] = useState({
@@ -43,9 +60,26 @@ const StudentPayment = () => {
       const fetchUsers = async () => {
         try {
           const response = await axios.get(`${API}/api/users/type/${userType}`);
-          setStudents(response.data);
+          const users = response.data;
+
+          // Fetch studentmeta for each user
+          const usersWithMeta = await Promise.all(
+            users.map(async (user) => {
+              try {
+                const metaRes = await axios.get(
+                  `${API}/api/student/meta/get/${user.id}`
+                );
+                return { ...user, meta: metaRes.data }; // Attach meta
+              } catch (err) {
+                console.warn(`Meta not found for user ${user.id}`);
+                return { ...user, meta: null };
+              }
+            })
+          );
+
+          setStudents(usersWithMeta);
         } catch (error) {
-          console.error('Error fetching users:', error);
+          console.error('Error fetching users or metadata:', error);
         }
       };
 
@@ -80,7 +114,7 @@ const StudentPayment = () => {
         userId: Id,
         amount: parseFloat(amount),
         type: 'monthly payment',
-        comment: 'Monthly payment made via UI by ' + userId, // Optional comment
+        comment: 'Monthly payment made via UI by ' + tokenEmail, // Optional comment
         date, // Date from the frontend
       };
 
@@ -148,14 +182,14 @@ const StudentPayment = () => {
 
   const deleteRecord = async (recordId) => {
     const confirmDelete = window.confirm(
-      'Are you sure you want to delete this record?'
+      'Are you sure you want to delete this record?' + recordId
     );
     if (!confirmDelete) {
       return; // Exit if the user cancels the action
     }
 
     try {
-      await axios.delete(`${API}/api/credits/${recordId}`);
+      await axios.delete(`${API}/api/credit/${recordId}`);
       setHistory((prevHistory) =>
         prevHistory.filter((entry) => entry.id !== recordId)
       ); // Update UI
@@ -182,6 +216,7 @@ const StudentPayment = () => {
   };
 
   const handleCreditSubmit = async (e) => {
+    e.preventDefault();
     const { userId, amount, type, date, comment } = creditForm;
 
     // Validate required fields
@@ -195,7 +230,7 @@ const StudentPayment = () => {
         userId,
         amount: parseFloat(amount),
         type,
-        comment: 'Custom payment input by ' + userId, // Optional comment
+        comment: 'Custom payment input by ' + tokenEmail, // Optional comment
         date,
       };
 
@@ -211,7 +246,6 @@ const StudentPayment = () => {
       }
 
       const response = await axios.post(endpoint, payload);
-      console.log('Payment submission successful:', response.data);
       alert('Payment submission successful!');
 
       // Reset the credit form
@@ -236,7 +270,9 @@ const StudentPayment = () => {
           className={`tab-button ${activeTab === 'students' ? 'active' : ''}`}
           onClick={() => setActiveTab('students')}
         >
-          Students Payments
+          {location.pathname.includes('/payment/debit')
+            ? 'Teacher Monthly Payment'
+            : 'Student Monthly Payment'}
         </button>
         <button
           className={`tab-button ${activeTab === 'others' ? 'active' : ''}`}
@@ -244,12 +280,25 @@ const StudentPayment = () => {
         >
           Others
         </button>
+        <button
+          className={`tab-button ${
+            activeTab === 'alltransactions' ? 'active' : ''
+          }`}
+          onClick={() => setActiveTab('allTransactions')}
+        >
+          Show All Transactions
+        </button>
       </div>
 
       {/* Students Payments Page */}
       {activeTab === 'students' && (
         <div className="student-payments-page">
-          <h1>Student Payment</h1>
+          <h1>
+            {location.pathname.includes('/payment/debit')
+              ? 'Teacher Monthly Payment'
+              : 'Student Monthly Payment'}
+          </h1>
+
           <input
             type="text"
             placeholder="Search by name, email, or software ID"
@@ -274,12 +323,24 @@ const StudentPayment = () => {
                   <p>
                     <strong>Student Software ID:</strong> {student.id}
                   </p>
+                  {location.pathname.includes('/payments/credit') && (
+                    <>
+                      <p>
+                        <strong>Roll No:</strong>{' '}
+                        {student.meta?.data?.rollNo || 'N/A'}
+                      </p>
+                      <p>
+                        <strong>Class:</strong>{' '}
+                        {student.meta?.data?.class || 'N/A'}
+                      </p>
+                      <p>
+                        <strong>Section:</strong>{' '}
+                        {student.meta?.data?.section || 'N/A'}
+                      </p>
+                    </>
+                  )}
                   <p>
                     <strong>Email:</strong> {student.email}
-                  </p>
-                  <p>
-                    <strong>Created At:</strong>{' '}
-                    {new Date(student.createdAt).toLocaleDateString()}
                   </p>
                   <div className="amount-input">
                     <label>
@@ -329,6 +390,7 @@ const StudentPayment = () => {
           </div>
         </div>
       )}
+      {activeTab === 'allTransactions' && <PaymentTable />}
 
       {/* Others Page - Credit Input Form */}
       {activeTab === 'others' && (
@@ -399,8 +461,6 @@ const StudentPayment = () => {
             </div>
             <button type="submit">Submit</button>
           </form>
-
-          <PaymentTable />
         </div>
       )}
 

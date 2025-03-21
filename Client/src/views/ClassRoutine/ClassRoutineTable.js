@@ -19,6 +19,17 @@ import {
 } from '@coreui/react';
 import { jwtDecode } from 'jwt-decode';
 import { API } from '../../actions/api';
+import './RoutineTable.css';
+
+const dayColors = {
+  MONDAY: '#FFEEAD',
+  TUESDAY: '#D0F4DE',
+  WEDNESDAY: '#FFCAD4',
+  THURSDAY: '#B5EAEA',
+  FRIDAY: '#E4C1F9',
+  SATURDAY: '#FAF3DD',
+  SUNDAY: '#FFC6FF',
+};
 
 const ClassRoutineTable = () => {
   const [filters, setFilters] = useState({
@@ -49,138 +60,86 @@ const ClassRoutineTable = () => {
     const token = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
     if (token) {
       try {
-        const decodedToken = jwtDecode(token);
-        setUserType(decodedToken.userType);
-      } catch (error) {
-        console.error('Invalid token:', error);
+        const decoded = jwtDecode(token);
+        setUserType(decoded.userType);
+      } catch (err) {
+        console.error('Token decode error', err);
       }
     }
-    fetchRoutines();
     fetchSubjects();
     fetchTeachers();
+    fetchRoutines();
   }, []);
 
   const fetchRoutines = async () => {
     setLoading(true);
-    const queryParams = new URLSearchParams(filters).toString();
+    const params = new URLSearchParams(filters).toString();
     try {
-      const response = await fetch(`${API}/api/all/routine?${queryParams}`);
-      const result = await response.json();
-      if (response.ok) {
-        setRoutines(result.data || []);
-      } else {
-        console.error('Error fetching routines:', result.message);
-      }
-    } catch (error) {
-      console.error('Server error:', error);
+      const res = await fetch(`${API}/api/all/routine?${params}`);
+      const data = await res.json();
+      if (res.ok) setRoutines(data.data || []);
+    } catch (err) {
+      console.error('Routine fetch error:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const fetchSubjects = async () => {
-    try {
-      const response = await fetch(API + '/api/subjects/all/info');
-      const result = await response.json();
-      if (response.ok) {
-        setSubjects(result || []);
-      } else {
-        console.error('Error fetching subjects:', result.message);
-        setSubjects([]);
-      }
-    } catch (error) {
-      console.error('Server error:', error);
-      setSubjects([]);
-    }
+    const res = await fetch(API + '/api/subjects/all/info');
+    const data = await res.json();
+    setSubjects(data || []);
   };
 
   const fetchTeachers = async () => {
-    try {
-      const response = await fetch(API + '/api/teacher/all');
-      const result = await response.json();
-      if (response.ok) {
-        setTeachers(result.data || []);
-      } else {
-        console.error('Error fetching teachers:', result.message);
-        setTeachers([]);
-      }
-    } catch (error) {
-      console.error('Server error:', error);
-      setTeachers([]);
-    }
+    const res = await fetch(API + '/api/teacher/all');
+    const data = await res.json();
+    setTeachers(data.data || []);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this class routine?'))
-      return;
-
-    try {
-      const response = await fetch(API + `/api/delete/${id}`, {
-        method: 'DELETE',
-      });
-      const result = await response.json();
-
-      if (response.ok) {
-        alert('Class routine deleted successfully!');
-        setRoutines(routines.filter((routine) => routine.id !== id));
-      } else {
-        alert(result.message || 'Failed to delete class routine.');
-      }
-    } catch (error) {
-      console.error('Error deleting class routine:', error);
-      alert('Server error! Try again.');
+    if (!window.confirm('Confirm delete?')) return;
+    const res = await fetch(`${API}/api/delete/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      alert('Deleted');
+      setRoutines(routines.filter((r) => r.id !== id));
     }
   };
 
   const openModal = (routine = null) => {
-    if (routine) {
-      setCurrentRoutine(routine);
-    } else {
-      setCurrentRoutine({
+    setCurrentRoutine(
+      routine || {
         day: 'MONDAY',
         startTime: '',
         endTime: '',
-        subjectId: subjects.length > 0 ? subjects[0].id : '',
+        subjectId: subjects[0]?.id || '',
         teacherId: '',
         class: '',
         section: '',
         roomNumber: '',
-      });
-    }
+      }
+    );
     setModal(true);
   };
 
   const handleSubmit = async () => {
-    const apiEndpoint = currentRoutine.id
+    const endpoint = currentRoutine.id
       ? `/api/get/${currentRoutine.id}`
       : '/api/create/routine';
     const method = currentRoutine.id ? 'PUT' : 'POST';
 
-    try {
-      const response = await fetch(API + apiEndpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(currentRoutine),
-      });
+    const res = await fetch(API + endpoint, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(currentRoutine),
+    });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        alert(
-          currentRoutine.id
-            ? 'Routine updated successfully!'
-            : 'Routine added successfully!'
-        );
-        fetchRoutines();
-        setModal(false);
-      } else {
-        alert(result.message || 'Failed to save class routine.');
-      }
-    } catch (error) {
-      console.error('Error saving class routine:', error);
-      alert('Server error! Try again.');
+    if (res.ok) {
+      alert(currentRoutine.id ? 'Updated!' : 'Created!');
+      fetchRoutines();
+      setModal(false);
+    } else {
+      alert('Failed to save routine due to clash or server error.');
     }
   };
 
@@ -197,21 +156,11 @@ const ClassRoutineTable = () => {
   ];
 
   return (
-    <CRow className="justify-content-center mt-5">
-      <CCol md="10">
-        <CCard className="shadow-lg rounded-lg border border-gray-200">
-          <CCardBody className="p-4">
-            <h2 className="text-xl font-semibold mb-4">Class Routine</h2>
-
-            {userType !== 2 && (
-              <CButton
-                color="primary"
-                className="mb-3"
-                onClick={() => openModal(null)}
-              >
-                Add New Routine
-              </CButton>
-            )}
+    <CRow className="justify-content-center mt-4">
+      <CCol md="11">
+        <CCard className="shadow-lg">
+          <CCardBody>
+            <h3 className="mb-4 text-info">📘 Class Routine</h3>
 
             {/* Filters */}
             <CRow className="mb-3">
@@ -253,15 +202,7 @@ const ClassRoutineTable = () => {
                   }
                 >
                   <option value="">All Days</option>
-                  {[
-                    'MONDAY',
-                    'TUESDAY',
-                    'WEDNESDAY',
-                    'THURSDAY',
-                    'FRIDAY',
-                    'SATURDAY',
-                    'SUNDAY',
-                  ].map((day) => (
+                  {Object.keys(dayColors).map((day) => (
                     <option key={day} value={day}>
                       {day}
                     </option>
@@ -275,20 +216,28 @@ const ClassRoutineTable = () => {
                     setFilters({ ...filters, class: e.target.value })
                   }
                 >
-                  <option value="">All Class</option>
+                  <option value="">All Classes</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((cls) => (
-                    <option key={cls} value={cls}>
-                      {cls}
-                    </option>
+                    <option key={cls}>{cls}</option>
                   ))}
                 </CSelect>
               </CCol>
               <CCol md="1">
-                <CButton color="primary" onClick={fetchRoutines}>
-                  Filter
+                <CButton color="info" onClick={fetchRoutines}>
+                  🔍
                 </CButton>
               </CCol>
             </CRow>
+
+            {userType !== 2 && (
+              <CButton
+                color="success"
+                className="mb-3"
+                onClick={() => openModal(null)}
+              >
+                ➕ Add Routine
+              </CButton>
+            )}
 
             {loading ? (
               <CSpinner color="primary" />
@@ -302,22 +251,32 @@ const ClassRoutineTable = () => {
                 itemsPerPage={10}
                 pagination
                 scopedSlots={{
+                  day: (item) => (
+                    <td
+                      style={{
+                        backgroundColor: dayColors[item.day],
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {item.day}
+                    </td>
+                  ),
                   ...(userType !== 2 && {
                     actions: (item) => (
                       <td>
                         <CButton
-                          color="info"
                           size="sm"
+                          color="info"
                           onClick={() => openModal(item)}
                         >
-                          Edit
+                          ✏️ Edit
                         </CButton>{' '}
                         <CButton
-                          color="danger"
                           size="sm"
+                          color="danger"
                           onClick={() => handleDelete(item.id)}
                         >
-                          Delete
+                          🗑️ Delete
                         </CButton>
                       </td>
                     ),
@@ -339,24 +298,16 @@ const ClassRoutineTable = () => {
             {[
               {
                 label: 'Day',
-                type: 'select',
                 key: 'day',
-                options: [
-                  'MONDAY',
-                  'TUESDAY',
-                  'WEDNESDAY',
-                  'THURSDAY',
-                  'FRIDAY',
-                  'SATURDAY',
-                  'SUNDAY',
-                ],
+                type: 'select',
+                options: Object.keys(dayColors),
               },
-              { label: 'Class', type: 'text', key: 'class' },
-              { label: 'Section', type: 'text', key: 'section' },
-              { label: 'Room Number', type: 'text', key: 'roomNumber' },
-              { label: 'Start Time', type: 'time', key: 'startTime' },
-              { label: 'End Time', type: 'time', key: 'endTime' },
-            ].map(({ label, type, key, options }) => (
+              { label: 'Class', key: 'class', type: 'text' },
+              { label: 'Section', key: 'section', type: 'text' },
+              { label: 'Room Number', key: 'roomNumber', type: 'text' },
+              { label: 'Start Time', key: 'startTime', type: 'time' },
+              { label: 'End Time', key: 'endTime', type: 'time' },
+            ].map(({ label, key, type, options }) => (
               <CFormGroup key={key}>
                 <CLabel>{label}</CLabel>
                 {type === 'select' ? (
@@ -382,7 +333,10 @@ const ClassRoutineTable = () => {
                     onChange={(e) =>
                       setCurrentRoutine({
                         ...currentRoutine,
-                        [key]: e.target.value,
+                        [key]:
+                          key === 'section'
+                            ? e.target.value.toUpperCase()
+                            : e.target.value,
                       })
                     }
                   />
@@ -390,7 +344,6 @@ const ClassRoutineTable = () => {
               </CFormGroup>
             ))}
 
-            {/* Subject Dropdown */}
             <CFormGroup>
               <CLabel>Subject</CLabel>
               <CSelect
@@ -403,15 +356,14 @@ const ClassRoutineTable = () => {
                 }
               >
                 <option>-- Select Subject --</option>
-                {subjects.map((subject) => (
-                  <option key={subject.id} value={subject.id}>
-                    {subject.name}
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
                   </option>
                 ))}
               </CSelect>
             </CFormGroup>
 
-            {/* Teacher Dropdown */}
             <CFormGroup>
               <CLabel>Teacher</CLabel>
               <CSelect
@@ -423,10 +375,10 @@ const ClassRoutineTable = () => {
                   })
                 }
               >
-                <option>-- Assign Teacher --</option>
-                {teachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.name} ({teacher.email})
+                <option>-- Select Teacher --</option>
+                {teachers.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name} ({t.email})
                   </option>
                 ))}
               </CSelect>
@@ -435,10 +387,10 @@ const ClassRoutineTable = () => {
         </CModalBody>
         <CModalFooter>
           <CButton color="primary" onClick={handleSubmit}>
-            Save
+            💾 Save
           </CButton>
           <CButton color="secondary" onClick={() => setModal(false)}>
-            Cancel
+            ❌ Cancel
           </CButton>
         </CModalFooter>
       </CModal>

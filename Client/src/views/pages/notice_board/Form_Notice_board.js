@@ -13,9 +13,12 @@ import {
   CRow,
   CTextarea,
 } from '@coreui/react';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 import CIcon from '@coreui/icons-react';
 import { useDispatch } from 'react-redux';
 import { addNotice } from '../../../actions/noticeActions';
+import './NoticeForm.css';
 
 const FormNoticeBoard = ({ history, location }) => {
   const dispatch = useDispatch();
@@ -78,15 +81,21 @@ const FormNoticeBoard = ({ history, location }) => {
                   </CInputGroup>
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-                      <CInputGroupText>noticeDetails</CInputGroupText>
+                      <CInputGroupText>Notice Details</CInputGroupText>
                     </CInputGroupPrepend>
-                    <CTextarea
-                      placeholder="Notice Details"
-                      autoComplete="notice-details"
-                      style={{ height: '100%' }}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                    />
+                    <div style={{ flex: 1 }}>
+                      <ReactQuill
+                        theme="snow"
+                        value={description}
+                        onChange={setDescription}
+                        placeholder="Write your notice here..."
+                        style={{
+                          height: '200px',
+                          borderRadius: '0 6px 6px 0',
+                          backgroundColor: '#fff',
+                        }}
+                      />
+                    </div>
                   </CInputGroup>
                   {/* <CInputGroup className="mb-4">
                     <CInputGroupPrepend>

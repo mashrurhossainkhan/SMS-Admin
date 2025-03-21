@@ -1,107 +1,129 @@
-/* StudentPayment.css */
-
 /* Container */
 .student-payment-container {
-  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 32px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
 }
 
 /* Tabs */
 .tabs {
   display: flex;
   justify-content: center;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 30px;
 }
 
 .tab-button {
-  padding: 10px 20px;
-  margin: 0 10px;
+  padding: 10px 24px;
   border: none;
-  background: #007bff;
-  color: white;
+  border-radius: 8px;
+  background: #e0e7ff;
+  color: #1e3a8a;
+  font-weight: 600;
   font-size: 16px;
   cursor: pointer;
   transition: background 0.3s;
-  border-radius: 5px;
 }
 
-.tab-button.active {
-  background: #0056b3;
-}
-
+.tab-button.active,
 .tab-button:hover {
-  background: #0056b3;
+  background: #4338ca;
+  color: #fff;
 }
 
-/* Student Payments Page */
+/* Page Titles */
 .student-payments-page h1,
 .others-page h1 {
   text-align: center;
-  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #111827;
+}
+
+/* Search Box */
+.student-payments-page input[type='text'] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin: 0 auto 20px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 15px;
 }
 
 /* Student Cards */
 .student-card-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 24px;
 }
 
 .student-card {
-  width: 300px;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background: #ffffff;
-  text-align: center;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.student-card:hover {
+  transform: translateY(-4px);
 }
 
 .student-card h2 {
-  margin-bottom: 10px;
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #1f2937;
 }
 
 .student-card p {
   font-size: 14px;
-  margin: 5px 0;
+  margin: 4px 0;
+  color: #4b5563;
 }
 
-/* Input Fields */
+/* Input fields */
 .amount-input,
 .date-input {
-  margin: 10px 0;
+  margin-top: 12px;
+  text-align: left;
 }
 
 .amount-input input,
 .date-input input {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 10px;
+  margin-top: 4px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
 }
 
 /* Buttons */
 .paid-button {
   width: 100%;
-  padding: 8px;
-  margin-top: 10px;
+  padding: 10px;
+  margin-top: 12px;
   border: none;
-  background: #28a745;
-  color: white;
-  font-size: 14px;
+  border-radius: 6px;
+  font-size: 15px;
+  background: #10b981;
+  color: #fff;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
-  border-radius: 5px;
+  transition: background 0.3s ease;
 }
 
 .paid-button:hover {
-  background: #218838;
+  background: #059669;
 }
 
 .paid-button:disabled {
-  background: #ccc;
+  background: #d1d5db;
+  color: #6b7280;
   cursor: not-allowed;
 }
 
@@ -112,83 +134,176 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(17, 24, 39, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
   background: white;
-  padding: 20px;
-  width: 400px;
-  border-radius: 10px;
-  text-align: center;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
   position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 18px;
+  top: 14px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ef4444;
   cursor: pointer;
 }
 
 .history-item {
-  list-style: none;
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
 }
 
 .delete-record {
-  color: red;
+  color: #dc2626;
   cursor: pointer;
-  font-weight: bold;
   margin-left: 10px;
+  font-weight: bold;
 }
 
-/* Others - Credit Input Form */
+/* Credit Form */
 .credit-form {
-  width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   margin: 0 auto;
-  padding: 20px;
-  border-radius: 10px;
-  background: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.07);
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .form-group label {
+  font-weight: 600;
   display: block;
-  font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 6px;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
 }
 
 .credit-form button {
   width: 100%;
-  padding: 10px;
-  border: none;
-  background: #007bff;
+  padding: 12px;
+  background-color: #3b82f6;
   color: white;
-  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background 0.3s;
-  border-radius: 5px;
+  transition: background 0.3s ease;
 }
 
 .credit-form button:hover {
-  background: #0056b3;
+  background-color: #2563eb;
+}
+/* Enhanced Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(17, 24, 39, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  position: relative;
+  animation: slideIn 0.3s ease-out;
+  text-align: left;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0px);
+    opacity: 1;
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 14px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ef4444;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: #dc2626;
+}
+
+.modal-content h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.modal-content p {
+  font-size: 14px;
+  margin-bottom: 20px;
+  color: #374151;
+}
+
+.history-item {
+  list-style: none;
+  font-size: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f3f4f6;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.history-item span.delete-record {
+  color: #dc2626;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: transform 0.2s ease;
+}
+
+.history-item span.delete-record:hover {
+  transform: scale(1.2);
 }

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   CHeader,
   CToggler,
@@ -7,11 +7,11 @@ import {
   CHeaderNav,
   CSubheader,
   CBreadcrumbRouter,
-} from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
 
 // routes config
-import routes from "../routes";
+import routes from '../routes';
 
 import {
   TheHeaderDropdown,
@@ -19,7 +19,7 @@ import {
   TheHeaderDropdownNotif,
   TheHeaderDropdownTasks,
   TheSidebar,
-} from "./index";
+} from './index';
 
 const TheHeader = () => {
   const [open, setOpen] = useState(false);
@@ -27,27 +27,28 @@ const TheHeader = () => {
   const sidebarShow = useSelector((state) => state.sidebarShow);
 
   const toggleSidebar = () => {
-    dispatch({ type: "set", sidebarShow: sidebarShow === "responsive" ? false : "responsive" });
+    dispatch({
+      type: 'set',
+      sidebarShow: sidebarShow === 'responsive' ? false : 'responsive',
+    });
   };
 
   const toggleSidebarMobile = () => {
     //alert(JSON.stringify(sidebarShow))
 
     setOpen(!open);
-    console.log(open)
+    console.log(open);
   };
 
   return (
     <CHeader withSubheader>
-       {open ? <TheSidebar/> : ""}
+      {open ? <TheSidebar /> : ''}
       {/* Mobile Sidebar Toggle */}
       <CToggler
         inHeader
         className="ml-md-3 d-lg-none"
         onClick={toggleSidebarMobile}
       />
-
-     
 
       {/* Desktop Sidebar Toggle */}
       <CToggler
@@ -60,10 +61,7 @@ const TheHeader = () => {
         Shahid Titumir Academy Manikganj
       </CHeaderBrand>
 
-      <CHeaderNav className="px-3">
-        <TheHeaderDropdownNotif />
-        <TheHeaderDropdownTasks />
-        <TheHeaderDropdownMssg />
+      <CHeaderNav className="px-3" style={{ marginLeft: 'auto' }}>
         <TheHeaderDropdown />
       </CHeaderNav>
 

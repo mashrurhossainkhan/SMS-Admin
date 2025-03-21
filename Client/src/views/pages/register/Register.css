@@ -1,0 +1,63 @@
+/* Register.css */
+
+body {
+  background: linear-gradient(135deg, #dfe9f3, #ffffff);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.rounded-lg {
+  border-radius: 1rem !important;
+}
+
+.text-xl {
+  font-size: 1.5rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6;
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb !important;
+}
+
+input[type='text'],
+input[type='password'] {
+  transition: all 0.3s ease;
+}
+
+input[type='text']:focus,
+input[type='password']:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+}
+
+button[type='submit'] {
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  font-weight: 600;
+  transition: background 0.3s ease;
+  border: none;
+}
+
+button[type='submit']:hover {
+  background: linear-gradient(to right, #5a67d8, #6b46c1);
+  transform: scale(1.02);
+}

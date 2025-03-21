@@ -1,0 +1,65 @@
+/* Dashboard.css */
+
+/* Banner Overlay */
+.dashboard-banner h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+/* Card Titles */
+.card h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-bottom: 8px;
+}
+
+.card h3 {
+  font-size: 1.75rem;
+  color: #2d3748;
+  font-weight: 700;
+}
+
+/* Individual Cards */
+.card {
+  border-radius: 12px;
+  border: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* Success/Danger Balance Card */
+.card.bg-success,
+.card.bg-danger {
+  color: #fff !important;
+  background-image: linear-gradient(to right, #38a169, #48bb78);
+  border: none;
+}
+
+.card.bg-danger {
+  background-image: linear-gradient(to right, #e53e3e, #f56565);
+}
+
+/* Spinner Centering */
+.spinner-border {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Animate Banner */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

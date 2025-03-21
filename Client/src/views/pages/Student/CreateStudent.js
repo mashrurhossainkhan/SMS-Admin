@@ -10,7 +10,7 @@ const CreateStudent = () => {
         <TheHeader />
         <div className="c-body">
           <Register userTypeProps="2" />
-          <StudentTable/>
+          <StudentTable />
         </div>
         <TheFooter />
       </div>

@@ -1,0 +1,73 @@
+/* Card wrapper */
+.c-app .c-default-layout .card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(145deg, #ffffff, #f4f4f4);
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.c-app .c-default-layout .card:hover {
+  transform: translateY(-4px);
+}
+
+/* Header title */
+.c-app .c-default-layout .card h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Input label */
+.c-app .c-default-layout .input-group-text {
+  width: 140px;
+  font-weight: 600;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 6px 0 0 6px;
+}
+
+/* Input and textarea fields */
+.c-app .c-default-layout .form-control {
+  min-height: 46px;
+  font-size: 15px;
+  border-radius: 0 6px 6px 0;
+  border: 1px solid #ddd;
+  transition: border 0.2s ease;
+}
+
+.c-app .c-default-layout .form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+/* Larger textarea */
+.c-app .c-default-layout textarea.form-control {
+  min-height: 200px;
+  resize: vertical;
+  padding-top: 14px;
+}
+
+/* Button styling */
+.btnNoticeBoard {
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 20px;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btnNoticeBoard:hover {
+  background: linear-gradient(to right, #ff416c, #ff4b2b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}

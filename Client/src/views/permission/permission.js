@@ -7,6 +7,7 @@ import {
   CCardBody,
   CButton,
   CSpinner,
+  CSwitch,
 } from '@coreui/react';
 import { API } from '../../actions/api';
 
@@ -77,15 +78,17 @@ const Permission = () => {
   };
 
   return (
-    <CCard>
-      <CCardHeader>
-        <h4>Manage User Permissions</h4>
+    <CCard className="shadow-lg rounded">
+      <CCardHeader className="bg-primary text-white">
+        <h4 className="mb-0">👥 Manage User Permissions</h4>
       </CCardHeader>
       <CCardBody>
         {loading ? (
-          <CSpinner color="primary" />
+          <div className="text-center my-5">
+            <CSpinner color="primary" size="lg" />
+          </div>
         ) : error ? (
-          <p className="text-danger">{error}</p>
+          <p className="text-danger text-center">{error}</p>
         ) : (
           <CDataTable
             items={users}
@@ -94,25 +97,31 @@ const Permission = () => {
               ...permissions.map((perm) => ({
                 key: perm.id,
                 label: perm.type,
+                _style: { width: '120px', textAlign: 'center' },
               })),
             ]}
             hover
             striped
             bordered
-            itemsPerPage={10}
+            responsive
+            itemsPerPage={8}
             pagination
             scopedSlots={{
               name: (item) => (
                 <td>
-                  <strong>{item.name}</strong> <br />
-                  <small>{item.email}</small>
+                  <strong>{item.name}</strong>
+                  <br />
+                  <small className="text-muted">{item.email}</small>
                 </td>
               ),
               ...permissions.reduce((acc, perm) => {
                 acc[perm.id] = (item) => (
                   <td className="text-center">
-                    <input
-                      type="checkbox"
+                    <CSwitch
+                      size="sm"
+                      color="success"
+                      shape="pill"
+                      variant="opposite"
                       checked={userPermissions[item.id]?.has(perm.id) || false}
                       onChange={() => handlePermissionToggle(item.id, perm.id)}
                     />
@@ -123,12 +132,14 @@ const Permission = () => {
             }}
           />
         )}
-        <div className="d-flex justify-content-end mt-3">
+
+        <div className="d-flex justify-content-end mt-4">
           <CButton
             color="success"
+            className="px-4"
             onClick={() => alert('Permissions updated successfully!')}
           >
-            Save Changes
+            💾 Save Changes
           </CButton>
         </div>
       </CCardBody>

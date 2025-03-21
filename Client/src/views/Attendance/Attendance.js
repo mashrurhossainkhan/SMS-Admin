@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { API } from '../../actions/api';
 import ResultMatrixTable from '../report/ResultMatrixTable';
+import './ClassCards.css';
 
 const ClassCards = () => {
   const currentPath = window.location.pathname;
@@ -68,7 +69,7 @@ const ClassCards = () => {
           {classes.map((classNumber) => (
             <div
               key={classNumber}
-              className="p-4 border rounded-lg shadow-lg bg-blue-100 text-center text-xl font-semibold cursor-pointer"
+              className="class-card p-4 text-center text-xl font-semibold"
               onClick={() => fetchSections(classNumber)}
             >
               <div className="flex flex-col items-center">
@@ -95,7 +96,7 @@ const ClassCards = () => {
                           return (
                             <div
                               key={section}
-                              className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
+                              className="section-button text-center cursor-pointer"
                               onClick={() =>
                                 (window.location.href = targetPath)
                               } // Navigate on click

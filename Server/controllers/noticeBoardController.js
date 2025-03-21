@@ -35,7 +35,8 @@ exports.addNotice = async function (req, res) {
 exports.getAllNotices = async function (req, res) {
   try {
     await Notice.findAll({
-      order: [['createdAt', 'DESC']], // Sort by 'createdAt' field in descending order
+      where: { visibility: 'true' }, // 👈 Filter by visibility
+      order: [['createdAt', 'DESC']],
       limit: 30,
     })
       .then((notices) => {

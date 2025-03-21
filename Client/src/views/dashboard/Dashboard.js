@@ -8,26 +8,10 @@ import {
   CCol,
   CRow,
   CSpinner,
-  CButton,
-  CDropdown,
-  CDropdownToggle,
-  CDropdownMenu,
-  CDropdownItem,
 } from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import {
-  cilHome,
-  cilClipboard,
-  cilCalendar,
-  cilSchool,
-  cilUser,
-  cilCheckCircle,
-  cilChartLine,
-  cilCreditCard,
-} from '@coreui/icons';
-import _nav from '../../containers/_nav';
 import { API } from '../../actions/api';
 import { jwtDecode } from 'jwt-decode';
+import './Dashboard.css';
 
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
@@ -72,20 +56,34 @@ const Dashboard = () => {
     <CRow>
       <CCol xs="12">
         {/* 🚀 Banner Section */}
-        <div className="dashboard-banner">
+        <div className="dashboard-banner" style={{ position: 'relative' }}>
           <img
             src="/header.jpeg"
             alt="Dashboard Banner"
             className="banner-image"
-            style={{ height: '300px' }}
+            style={{ width: '100%', height: '300px', objectFit: 'cover' }}
           />
-          <div className="banner-overlay">
+          <div
+            className="banner-overlay"
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'rgba(0, 0, 0, 0.4)',
+              color: 'white',
+            }}
+          >
             <h1>Welcome to Your Dashboard</h1>
           </div>
         </div>
 
         {/* 📊 Dashboard Summary - Hidden if userType === 2 */}
-        {userType !== 2 && (
+        {userType !== 2 && userType !== 3 && (
           <CCard className="mt-4">
             <CCardHeader>Dashboard Summary</CCardHeader>
             <CCardBody>

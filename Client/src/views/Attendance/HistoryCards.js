@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { API } from "../../actions/api";
-import { TheSidebar } from "../../containers";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { API } from '../../actions/api';
+import { TheSidebar } from '../../containers';
+import './HistoryCards.css';
 
 const HistoryCards = () => {
   const [dates, setDates] = useState([]);
@@ -22,7 +23,7 @@ const HistoryCards = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching attendance history dates:", error);
+        console.error('Error fetching attendance history dates:', error);
         setLoading(false);
       });
   }, []);
@@ -44,7 +45,7 @@ const HistoryCards = () => {
         setLoadingClassSections((prev) => ({ ...prev, [date]: false }));
       })
       .catch((error) => {
-        console.error("Error fetching class sections:", error);
+        console.error('Error fetching class sections:', error);
         setLoadingClassSections((prev) => ({ ...prev, [date]: false }));
       });
   };
@@ -66,11 +67,14 @@ const HistoryCards = () => {
         const selectedClassSection = response.data.find(
           (entry) => entry.class === classNumber && entry.section === section
         );
-        setStudentData((prev) => ({ ...prev, [key]: selectedClassSection?.students || [] }));
+        setStudentData((prev) => ({
+          ...prev,
+          [key]: selectedClassSection?.students || [],
+        }));
         setLoadingStudents((prev) => ({ ...prev, [key]: false }));
       })
       .catch((error) => {
-        console.error("Error fetching student details:", error);
+        console.error('Error fetching student details:', error);
         setLoadingStudents((prev) => ({ ...prev, [key]: false }));
       });
   };
@@ -78,77 +82,115 @@ const HistoryCards = () => {
   return (
     <>
       <TheSidebar />
-      <div className="p-5">
-        <h1 className="text-2xl font-bold text-center mb-4">Attendance History</h1>
+      <div className="p-5 history-container">
+        <h1 className="history-title">Attendance History</h1>
 
         {loading ? (
           <p className="text-center text-gray-600">Loading...</p>
         ) : dates.length === 0 ? (
-          <p className="text-center text-red-500">No attendance history found.</p>
+          <p className="text-center text-red-500">
+            No attendance history found.
+          </p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {dates.map((date, index) => (
               <div key={index} className="w-full">
                 <div
-                  className="p-4 border rounded-lg shadow-lg bg-blue-100 text-center text-xl font-semibold cursor-pointer hover:bg-blue-200 transition"
+                  className="history-date-card"
                   onClick={() => fetchClassSections(date)}
                 >
                   {date}
                 </div>
 
                 {openDate === date && (
-                  <div className="mt-2 p-3 bg-gray-100 border rounded-lg shadow-md">
+                  <div className="history-section">
                     {loadingClassSections[date] ? (
-                      <p className="text-center text-gray-500">Loading class sections...</p>
+                      <p className="text-center text-gray-500">
+                        Loading class sections...
+                      </p>
                     ) : classSections[date]?.length ? (
-                      classSections[date].map(({ class: classNumber, section }) => {
-                        const key = `${date}-${classNumber}-${section}`;
-                        return (
-                          <div key={key} className="mt-2">
-                            <div
-                              className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
-                              onClick={() => fetchStudents(date, classNumber, section)}
-                            >
-                              Class {classNumber} - Section {section}
-                            </div>
-
-                            {openClassSection === key && (
-                              <div className="mt-2">
-                                {loadingStudents[key] ? (
-                                  <p className="text-center text-gray-500">Loading students...</p>
-                                ) : studentData[key]?.length ? (
-                                  <div style={{display: "flex", justifyContent: "center"}} className="overflow-x-auto">
-                                    <table className="w-full border-collapse border border-gray-300 bg-white shadow-lg">
-                                      <thead>
-                                        <tr style={{color: "black"}} className="bg-blue-500 text-black text-lg">
-                                          <th className="border p-4">Roll No</th>
-                                          <th className="border p-4">Name</th>
-                                          <th className="border p-4">Present</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        {studentData[key].map((student, idx) => (
-                                          <tr key={idx} className="text-center text-lg bg-gray-50 hover:bg-gray-200">
-                                            <td className="border p-4">{student.rollNo}</td>
-                                            <td className="border p-4">{student.studentName}</td>
-                                            <td className="border p-4">
-                                              {student.presentOrAbsent ? "✅" : "❌"}
-                                            </td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                ) : (
-                                  <p className="text-center text-red-500">No students found.</p>
-                                )}
+                      classSections[date].map(
+                        ({ class: classNumber, section }) => {
+                          const key = `${date}-${classNumber}-${section}`;
+                          return (
+                            <div key={key} className="mt-2">
+                              <div
+                                className="history-class-section"
+                                onClick={() =>
+                                  fetchStudents(date, classNumber, section)
+                                }
+                              >
+                                Class {classNumber} - Section {section}
                               </div>
-                            )}
-                          </div>
-                        );
-                      })
+
+                              {openClassSection === key && (
+                                <div className="mt-2">
+                                  {loadingStudents[key] ? (
+                                    <p className="text-center text-gray-500">
+                                      Loading students...
+                                    </p>
+                                  ) : studentData[key]?.length ? (
+                                    <div
+                                      style={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                      }}
+                                      className="overflow-x-auto"
+                                    >
+                                      <table className="history-table">
+                                        <thead>
+                                          <tr
+                                            style={{ color: 'black' }}
+                                            className="bg-blue-500 text-black text-lg"
+                                          >
+                                            <th className="border p-4">
+                                              Roll No
+                                            </th>
+                                            <th className="border p-4">Name</th>
+                                            <th className="border p-4">
+                                              Present
+                                            </th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          {studentData[key].map(
+                                            (student, idx) => (
+                                              <tr
+                                                key={idx}
+                                                className="text-center text-lg bg-gray-50 hover:bg-gray-200"
+                                              >
+                                                <td className="border p-4">
+                                                  {student.rollNo}
+                                                </td>
+                                                <td className="border p-4">
+                                                  {student.studentName}
+                                                </td>
+                                                <td className="border p-4">
+                                                  {student.presentOrAbsent
+                                                    ? '✅'
+                                                    : '❌'}
+                                                </td>
+                                              </tr>
+                                            )
+                                          )}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  ) : (
+                                    <p className="text-center text-red-500">
+                                      No students found.
+                                    </p>
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+                      )
                     ) : (
-                      <p className="text-center text-gray-500">No class sections available.</p>
+                      <p className="text-center text-gray-500">
+                        No class sections available.
+                      </p>
                     )}
                   </div>
                 )}

@@ -1,0 +1,87 @@
+/* StudentList.css */
+
+/* Main attendance container */
+.attendance-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #f0f4f8, #e0f7fa);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header Styles */
+.attendance-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0077b6;
+  margin-bottom: 1rem;
+}
+
+.attendance-subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+/* Table Styles */
+.attendance-table {
+  width: 90%;
+  max-width: 800px;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 2rem;
+}
+
+.attendance-table th {
+  background-color: #0077b6;
+  color: white;
+  padding: 1rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.attendance-table td {
+  padding: 0.9rem;
+  font-size: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.attendance-table tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+.attendance-table tr:hover {
+  background-color: #e1f5fe;
+  transition: background 0.3s ease;
+}
+
+/* Checkbox Styles */
+input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  accent-color: #28a745;
+  cursor: pointer;
+}
+
+/* Submit Button */
+.attendance-submit-btn {
+  padding: 12px 24px;
+  background-color: #28a745;
+  color: white;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 128, 0, 0.2);
+  transition: background 0.3s ease;
+}
+
+.attendance-submit-btn:hover {
+  background-color: #218838;
+}

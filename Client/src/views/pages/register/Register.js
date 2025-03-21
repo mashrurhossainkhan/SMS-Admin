@@ -13,6 +13,8 @@ import {
   CInputGroupText,
   CRow,
 } from '@coreui/react';
+import './Register.css';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../../actions/userActions';
 import CIcon from '@coreui/icons-react';
@@ -60,9 +62,11 @@ const Register = ({ history, location, userTypeProps }) => {
             <CCard className="shadow-lg rounded-lg border border-gray-200">
               <CCardBody className="p-6">
                 <CForm onSubmit={submit}>
-                  <h1 className="text-xl font-semibold text-gray-700">Register</h1>
+                  <h1 className="text-xl font-semibold text-gray-700">
+                    Register
+                  </h1>
                   <p className="text-gray-500 mb-4">Create your account</p>
-  
+
                   {/* Username Input */}
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
@@ -79,11 +83,13 @@ const Register = ({ history, location, userTypeProps }) => {
                       onChange={(e) => setName(e.target.value)}
                     />
                   </CInputGroup>
-  
+
                   {/* Email Input */}
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
-                      <CInputGroupText className="bg-gray-200">@</CInputGroupText>
+                      <CInputGroupText className="bg-gray-200">
+                        @
+                      </CInputGroupText>
                     </CInputGroupPrepend>
                     <CInput
                       type="text"
@@ -94,7 +100,7 @@ const Register = ({ history, location, userTypeProps }) => {
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </CInputGroup>
-  
+
                   {/* Password Input */}
                   <CInputGroup className="mb-3">
                     <CInputGroupPrepend>
@@ -111,7 +117,7 @@ const Register = ({ history, location, userTypeProps }) => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </CInputGroup>
-  
+
                   {/* Confirm Password Input */}
                   <CInputGroup className="mb-4">
                     <CInputGroupPrepend>
@@ -128,8 +134,13 @@ const Register = ({ history, location, userTypeProps }) => {
                       onChange={(e) => setPassword2(e.target.value)}
                     />
                   </CInputGroup>
-  
-                  <CButton type="submit" color="primary" block className="py-2 text-lg">
+
+                  <CButton
+                    type="submit"
+                    color="primary"
+                    block
+                    className="py-2 text-lg"
+                  >
                     Create Account
                   </CButton>
                 </CForm>
@@ -139,7 +150,7 @@ const Register = ({ history, location, userTypeProps }) => {
         </CRow>
       </CContainer>
     </div>
-  );  
+  );
 };
 
 export default Register;

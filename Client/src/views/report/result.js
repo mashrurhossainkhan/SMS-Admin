@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import ResultMatrixTable from './ResultMatrixTable';
+import './Results.css';
 
 const Results = () => {
   const { classNumber, section } = useParams(); // Get class & section from URL
@@ -73,7 +74,11 @@ const Results = () => {
       })
       .catch((error) => console.error('Error fetching result types:', error));
     setLoading(false);
-  }, [classNumber, section]);
+
+    if (allSubjects.length > 0 && !selectedSubject) {
+      setSelectedSubjct(allSubjects[0].id);
+    }
+  }, [classNumber, section, allSubjects.length, selectedSubject]);
 
   // Fetch existing marks for each student and update input fields
   useEffect(() => {
@@ -131,15 +136,31 @@ const Results = () => {
       const existingResult = await axios.get(
         `${API}/api/result/check/${student.userId}/${type.id}/${selectedSubject}`
       );
+
+      const stored = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
+      const parsed = JSON.parse(stored);
+      const token = parsed?.token;
+      let decodedPayload = null;
+      if (token) {
+        const base64Payload = token.split('.')[1];
+        decodedPayload = JSON.parse(atob(base64Payload));
+        console.log('erfeferf' + decodedPayload);
+
+        if (decodedPayload?.userId) {
+          setTeacherId(decodedPayload.userId);
+        }
+      }
       const resultData = {
         resultType: type.type,
         stId: student.userId,
-        teacherId: teacherId,
+        teacherId: decodedPayload?.userId ? decodedPayload.userId : '',
         selectedSubject,
         //associationId: 1, // Placeholder, adjust if needed
         marks: student.scores[type.type] || 0,
         remarks: student.scores[type.type] >= 75 ? 'Good' : '',
       };
+
+      console.log(resultData);
 
       const resultDataUpdate = {
         resultType: type.id,
@@ -292,8 +313,8 @@ const Results = () => {
       {userType === 2 ? (
         <ResultMatrixTable />
       ) : (
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-center">
+        <div className="results-container">
+          <h1 className="results-title">
             Results for Class {classNumber} - Section {section}
           </h1>
 
@@ -309,14 +330,12 @@ const Results = () => {
                 </h1>
 
                 {allSubjects.length > 0 ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  <div className="subjects-grid">
                     {allSubjects.map((subject) => (
                       <button
                         key={subject.id}
-                        className={`p-4 border border-gray-300 rounded-lg text-center font-semibold shadow-md transition ${
-                          selectedSubject === subject.id
-                            ? 'bg-blue-500 text-#732439' // Selected Subject Styling
-                            : 'bg-blue-100 hover:bg-blue-300'
+                        className={`subject-button ${
+                          selectedSubject === subject.id ? 'selected' : ''
                         }`}
                         onClick={() => setSelectedSubjct(subject.id)}
                       >
@@ -332,7 +351,7 @@ const Results = () => {
 
                 {/* Display Selected Subject */}
                 {selectedSubject && (
-                  <p className="mt-6 text-center text-lg font-bold text-blue-600">
+                  <p className="selected-subject">
                     Selected Subject:{' '}
                     {
                       allSubjects.find((sub) => sub.id === selectedSubject)
@@ -342,11 +361,8 @@ const Results = () => {
                 )}
               </div>
               {selectedSubject && (
-                <div
-                  style={{ overflowX: 'scroll' }}
-                  className="mt-6 w-full max-w-5xl mx-auto overflow-x-auto"
-                >
-                  <table className="w-full border-collapse border border-gray-300 bg-white shadow-lg">
+                <div className="mt-6 w-full max-w-6xl mx-auto overflow-x-auto">
+                  <table className="results-table">
                     <thead>
                       <tr
                         style={{ color: 'black' }}
@@ -387,7 +403,7 @@ const Results = () => {
                           </td>
                           <td className="border p-3 font-bold">
                             <button
-                              className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-700 transition"
+                              className="print-button"
                               onClick={() =>
                                 generatePDF(student, classNumber, section)
                               }
