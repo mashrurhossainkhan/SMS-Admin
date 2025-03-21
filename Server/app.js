@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -51,7 +52,5 @@ app.use(function (req, res, next) {
 
 // Using all API
 app.use(api);
-
-
 
 module.exports = app;

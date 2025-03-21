@@ -117,6 +117,7 @@ const DepositReport = React.lazy(() => import('./views/report/deposit_report'));
 
 const Company = React.lazy(() => import('./views/Company/Company'));
 const Subject = React.lazy(() => import('./views/Subject/SubjectCreate'));
+const Fees = React.lazy(() => import('./views/Fees/FeeForm'));
 const ClassRoutine = React.lazy(() =>
   import('./views/ClassRoutine/ClassRoutineTable')
 );
@@ -477,6 +478,13 @@ const routes = [
     exact: true,
     name: 'Associations',
     component: Association,
+  },
+
+  {
+    path: '/fees/create',
+    exact: true,
+    name: 'Fees',
+    component: Fees,
   },
 ];
 

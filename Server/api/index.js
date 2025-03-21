@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 const passport = require('passport');
 const jwtStrategry = require('../strategies/jwt');
+const authMiddleware = require('../config/authMiddleWare');
 passport.use(jwtStrategry);
 
 // Import all controller
@@ -20,6 +21,7 @@ const routineController = require('../controllers/classRoutineController');
 const speechController = require('../controllers/speechController');
 const dashboardController = require('../controllers/dashboardController');
 const permissionController = require('../controllers/permissionControllers');
+const feeController = require('../controllers/feesController');
 
 router.use(function (req, res, next) {
   res.header(
@@ -29,6 +31,14 @@ router.use(function (req, res, next) {
 
   next();
 });
+
+//fees controller
+router.post('/api/fees', feeController.createFee);
+router.get('/api/fees', feeController.getFees);
+router.get('/api/fees/:id', feeController.getFeeById);
+router.put('/api/fees/:id', feeController.updateFee);
+router.delete('/api/fees/:id', feeController.deleteFee);
+//fees controller
 
 //permission controllers
 router.post('/permissions/assign', permissionController.assignPermission); // Assign permission

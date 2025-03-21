@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const models = require('../models');
 const Student = models.user;
+const User = models.user;
+const PermissionMain = models.permissionMain;
 const StudentMeta = models.studentMeta;
 
 exports.studentSignup = async function (req, res) {
@@ -49,7 +51,6 @@ exports.studentSignin = async function (req, res) {
   }
 };
 
-
 exports.getAllStudents = async (req, res) => {
   try {
     const students = await Student.findAll({
@@ -62,16 +63,14 @@ exports.getAllStudents = async (req, res) => {
       data: students,
     });
   } catch (error) {
-    console.error("Error fetching students:", error);
+    console.error('Error fetching students:', error);
     res.status(500).json({
       success: false,
-      message: "Server error. Could not fetch students.",
+      message: 'Server error. Could not fetch students.',
       error: error.message,
     });
   }
 };
-
-
 
 // 📌 Function to update student by ID
 exports.updateStudentById = async (req, res) => {
@@ -82,7 +81,9 @@ exports.updateStudentById = async (req, res) => {
     // Find student by ID
     const student = await Student.findByPk(id);
     if (!student) {
-      return res.status(404).json({ success: false, message: "Student not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Student not found' });
     }
 
     // Update student details
@@ -90,49 +91,41 @@ exports.updateStudentById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Student updated successfully",
+      message: 'Student updated successfully',
       data: student,
     });
   } catch (error) {
-    console.error("Error updating student:", error);
+    console.error('Error updating student:', error);
     res.status(500).json({
       success: false,
-      message: "Server error. Could not update student.",
+      message: 'Server error. Could not update student.',
       error: error.message,
     });
   }
 };
 
-// 📌 Function to delete student by ID
 exports.deleteStudentById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const userId = req.params.id;
 
-    // Find student by ID
-    const student = await Student.findByPk(id);
-    if (!student) {
-      return res.status(404).json({ success: false, message: "Student not found" });
+    // Step 1: Delete related records in permission_main
+    await PermissionMain.destroy({ where: { userId } });
+
+    // Step 2: Now delete the student
+    const result = await User.destroy({ where: { id: userId } });
+
+    if (result) {
+      res
+        .status(200)
+        .json({ success: true, message: 'Student deleted successfully' });
+    } else {
+      res.status(404).json({ success: false, message: 'Student not found' });
     }
-
-    // Hard delete student
-    await student.destroy();
-
-    res.status(200).json({
-      success: true,
-      message: "Student deleted successfully",
-    });
   } catch (error) {
-    console.error("Error deleting student:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error. Could not delete student.",
-      error: error.message,
-    });
+    console.error('Error deleting student:', error);
+    res.status(500).json({ success: false, error: error.message });
   }
 };
-
-
-
 
 // 📌 Create Student Meta Data
 exports.createStudentMeta = async (req, res) => {
@@ -141,14 +134,14 @@ exports.createStudentMeta = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "Student metadata created successfully",
+      message: 'Student metadata created successfully',
       data: studentMeta,
     });
   } catch (error) {
-    console.error("Error creating student metadata:", error);
+    console.error('Error creating student metadata:', error);
     res.status(500).json({
       success: false,
-      message: "Server error. Could not create student metadata.",
+      message: 'Server error. Could not create student metadata.',
       error: error.message,
     });
   }
@@ -162,7 +155,9 @@ exports.getStudentMetaById = async (req, res) => {
     const studentMeta = await StudentMeta.findOne({ where: { userid } });
 
     if (!studentMeta) {
-      return res.status(404).json({ success: false, message: "Student metadata not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Student metadata not found' });
     }
 
     res.status(200).json({
@@ -170,10 +165,10 @@ exports.getStudentMetaById = async (req, res) => {
       data: studentMeta,
     });
   } catch (error) {
-    console.error("Error fetching student metadata:", error);
+    console.error('Error fetching student metadata:', error);
     res.status(500).json({
       success: false,
-      message: "Server error. Could not fetch student metadata.",
+      message: 'Server error. Could not fetch student metadata.',
       error: error.message,
     });
   }
@@ -189,7 +184,9 @@ exports.updateStudentMetaById = async (req, res) => {
     const studentMeta = await StudentMeta.findOne({ where: { userid } });
 
     if (!studentMeta) {
-      return res.status(404).json({ success: false, message: "Student metadata not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Student metadata not found' });
     }
 
     // Update metadata
@@ -197,14 +194,14 @@ exports.updateStudentMetaById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Student metadata updated successfully",
+      message: 'Student metadata updated successfully',
       data: studentMeta,
     });
   } catch (error) {
-    console.error("Error updating student metadata:", error);
+    console.error('Error updating student metadata:', error);
     res.status(500).json({
       success: false,
-      message: "Server error. Could not update student metadata.",
+      message: 'Server error. Could not update student metadata.',
       error: error.message,
     });
   }

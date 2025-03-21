@@ -47,6 +47,7 @@ db.Sequelize = Sequelize;
 // New models
 db.notice_board = require('./notice_board')(sequelize, Sequelize);
 db.user = require('./user')(sequelize, Sequelize);
+db.fees = require('./Fees')(sequelize, Sequelize);
 db.userType = require('./UserType')(sequelize, Sequelize);
 db.classRoutine = require('./classRoutine')(sequelize, Sequelize);
 db.attendance = require('./attendance')(sequelize, Sequelize);

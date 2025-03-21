@@ -1,0 +1,31 @@
+.matrix-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fdfdfd;
+}
+
+.matrix-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.matrix-table th,
+.matrix-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.matrix-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}

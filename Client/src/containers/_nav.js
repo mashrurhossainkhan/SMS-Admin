@@ -10,11 +10,26 @@ import {
   cilChartLine,
   cilCreditCard,
   cilLockUnlocked,
+  cilDollar,
 } from '@coreui/icons';
+import { jwtDecode } from 'jwt-decode';
 
 var userInfo = JSON.parse(
   localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK')
 );
+
+// Extract userType from token
+let userType = null;
+const token = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK'); // Get JWT token
+if (token) {
+  try {
+    const decodedToken = jwtDecode(token); // Decode JWT
+    userType = decodedToken.userType; // Extract userType
+    console.log(decodedToken);
+  } catch (error) {
+    console.error('Invalid token:', error);
+  }
+}
 
 const _nav = [
   // Dashboard
@@ -32,7 +47,15 @@ const _nav = [
     route: '/notice_board',
     icon: <CIcon content={cilClipboard} customClasses="c-sidebar-nav-icon" />,
     _children: [
-      { _tag: 'CSidebarNavItem', name: 'Create', to: '/notice_board/create' },
+      ...(userType !== 2
+        ? [
+            {
+              _tag: 'CSidebarNavItem',
+              name: 'create notice',
+              to: '/notice_board/create',
+            },
+          ]
+        : []),
       {
         _tag: 'CSidebarNavItem',
         name: 'Manage',
@@ -48,92 +71,130 @@ const _nav = [
     route: '#',
     icon: <CIcon content={cilCalendar} customClasses="c-sidebar-nav-icon" />,
     _children: [
+      ...(userType !== 2
+        ? [
+            {
+              _tag: 'CSidebarNavItem',
+              name: 'Subject Create',
+              to: '/subject/create',
+            },
+          ]
+        : []),
       {
         _tag: 'CSidebarNavItem',
-        name: 'Subject Create',
-        to: '/subject/create',
-      },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Routine Create',
+        name: 'Routine',
         to: '/routine/create',
       },
     ],
   },
-
-  // Students
-  {
-    _tag: 'CSidebarNavDropdown',
-    name: 'Students',
-    route: '/student',
-    icon: <CIcon content={cilSchool} customClasses="c-sidebar-nav-icon" />,
-    _children: [
-      { _tag: 'CSidebarNavItem', name: 'Create', to: '/student/create' },
-    ],
-  },
-
-  // Teachers
-  {
-    _tag: 'CSidebarNavDropdown',
-    name: 'Teachers',
-    route: '/teacher',
-    icon: <CIcon content={cilUser} customClasses="c-sidebar-nav-icon" />,
-    _children: [
-      { _tag: 'CSidebarNavItem', name: 'Create', to: '/teacher/create' },
-    ],
-  },
 ];
+
+// Hide Students and Teachers if userType === 2
+if (userType !== 2) {
+  _nav.push(
+    // Students
+    {
+      _tag: 'CSidebarNavDropdown',
+      name: 'Students',
+      route: '/student',
+      icon: <CIcon content={cilSchool} customClasses="c-sidebar-nav-icon" />,
+      _children: [
+        { _tag: 'CSidebarNavItem', name: 'Create', to: '/student/create' },
+      ],
+    },
+
+    // Teachers
+    {
+      _tag: 'CSidebarNavDropdown',
+      name: 'Teachers',
+      route: '/teacher',
+      icon: <CIcon content={cilUser} customClasses="c-sidebar-nav-icon" />,
+      _children: [
+        { _tag: 'CSidebarNavItem', name: 'Create', to: '/teacher/create' },
+      ],
+    }
+  );
+}
 
 // If user exists, add role-based navigation items
 if (userInfo) {
-  // Attendance Section (For Teachers)
-  _nav.push({
-    _tag: 'CSidebarNavDropdown',
-    name: 'Attendance',
-    to: '#',
-    icon: <CIcon content={cilCheckCircle} customClasses="c-sidebar-nav-icon" />,
-    _children: [
-      { _tag: 'CSidebarNavItem', name: 'Add Attendance', to: '/attendance' },
-      {
-        _tag: 'CSidebarNavItem',
-        name: 'Attendance History',
-        to: '/attendance/history/dates',
-      },
-    ],
+  // ❌ Remove Attendance Section if userType === 2
+  if (userType !== 2) {
+    _nav.push({
+      _tag: 'CSidebarNavDropdown',
+      name: 'Attendance',
+      to: '#',
+      icon: (
+        <CIcon content={cilCheckCircle} customClasses="c-sidebar-nav-icon" />
+      ),
+      _children: [
+        { _tag: 'CSidebarNavItem', name: 'Add Attendance', to: '/attendance' },
+        {
+          _tag: 'CSidebarNavItem',
+          name: 'Attendance History',
+          to: '/attendance/history/dates',
+        },
+      ],
+    });
+  }
+
+  // Result Section (Hide "Result Type" if userType === 2)
+  const resultChildren = [];
+  if (userType !== 2) {
+    resultChildren.push({
+      _tag: 'CSidebarNavItem',
+      name: 'Result Type',
+      to: '/add/result/type',
+    });
+  }
+  resultChildren.push({
+    _tag: 'CSidebarNavItem',
+    name: 'Result',
+    to: '/result/all/class',
   });
 
-  // Result Section
   _nav.push({
     _tag: 'CSidebarNavDropdown',
     name: 'Result',
     to: '#',
     icon: <CIcon content={cilChartLine} customClasses="c-sidebar-nav-icon" />,
-    _children: [
-      { _tag: 'CSidebarNavItem', name: 'Result Type', to: '/add/result/type' },
-      { _tag: 'CSidebarNavItem', name: 'Result', to: '/result/all/class' },
-    ],
+    _children: resultChildren,
   });
 
-  // Payments Section
-  _nav.push({
-    _tag: 'CSidebarNavDropdown',
-    name: 'Payments',
-    to: '#',
-    icon: <CIcon content={cilCreditCard} customClasses="c-sidebar-nav-icon" />,
-    _children: [
-      { _tag: 'CSidebarNavItem', name: 'Credit', to: '/payments/credit' },
-      { _tag: 'CSidebarNavItem', name: 'Debit', to: '/payment/debit' },
-    ],
-  });
-
-  _nav.push({
-    _tag: 'CSidebarNavItem',
-    name: 'Permission',
-    to: '/permission',
-    icon: (
-      <CIcon content={cilLockUnlocked} customClasses="c-sidebar-nav-icon" />
-    ),
-  });
+  // Payments Section (Hide if userType === 2)
+  if (userType !== 2) {
+    _nav.push({
+      _tag: 'CSidebarNavDropdown',
+      name: 'Payments',
+      to: '#',
+      icon: (
+        <CIcon content={cilCreditCard} customClasses="c-sidebar-nav-icon" />
+      ),
+      _children: [
+        { _tag: 'CSidebarNavItem', name: 'Credit', to: '/payments/credit' },
+        { _tag: 'CSidebarNavItem', name: 'Debit', to: '/payment/debit' },
+      ],
+    });
+  }
+  if (userType !== 2) {
+    _nav.push({
+      _tag: 'CSidebarNavItem',
+      name: 'Fees Setup',
+      to: '/fees/create',
+      icon: <CIcon content={cilDollar} customClasses="c-sidebar-nav-icon" />,
+    });
+  }
+  // Permission Section (Hide if userType === 2)
+  if (userType !== 2) {
+    _nav.push({
+      _tag: 'CSidebarNavItem',
+      name: 'Permission',
+      to: '/permission',
+      icon: (
+        <CIcon content={cilLockUnlocked} customClasses="c-sidebar-nav-icon" />
+      ),
+    });
+  }
 }
 
 export default _nav;

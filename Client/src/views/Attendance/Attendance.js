@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { API } from "../../actions/api";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { API } from '../../actions/api';
+import ResultMatrixTable from '../report/ResultMatrixTable';
 
 const ClassCards = () => {
   const currentPath = window.location.pathname;
@@ -9,15 +10,31 @@ const ClassCards = () => {
   const [openClass, setOpenClass] = useState(null);
   const [sections, setSections] = useState({});
   const [loading, setLoading] = useState({});
-
+  const [userType, setUserType] = useState(null);
   useEffect(() => {
+    const stored = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
+    try {
+      const parsed = JSON.parse(stored);
+      const token = parsed?.token;
+
+      if (token) {
+        const base64Payload = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(base64Payload));
+
+        if (decodedPayload?.userType !== undefined) {
+          setUserType(decodedPayload.userType);
+        }
+      }
+    } catch (err) {
+      console.error('Error decoding token:', err);
+    }
     axios
       .get(`${API}/api/get/all/class/attendace`)
       .then((response) => {
         setClasses(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching classes:", error);
+        console.error('Error fetching classes:', error);
       });
   }, []);
 
@@ -37,57 +54,66 @@ const ClassCards = () => {
         setLoading((prev) => ({ ...prev, [classNumber]: false }));
       })
       .catch((error) => {
-        console.error("Error fetching sections:", error);
+        console.error('Error fetching sections:', error);
         setLoading((prev) => ({ ...prev, [classNumber]: false }));
       });
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 p-5">
-      {classes.map((classNumber) => (
-        <div
-          key={classNumber}
-          className="p-4 border rounded-lg shadow-lg bg-blue-100 text-center text-xl font-semibold cursor-pointer"
-          onClick={() => fetchSections(classNumber)}
-        >
-          <div className="flex flex-col items-center">
-            <span>Class {classNumber}</span>
-            {openClass === classNumber && (
-              <div className="mt-2 w-full bg-white border rounded-lg shadow-md p-2">
-                {loading[classNumber] ? (
-                  <p className="text-gray-500 text-sm">Loading sections...</p>
-                ) : (
-                  <div className="grid grid-cols-2 gap-2">
-      {sections[classNumber]?.map((section) => {
-        // Determine navigation path based on current location
-        const targetPath =
-        currentPath === "/attendance/history"
-          ? "/attendance/history/dates"
-          : currentPath === "/attendance"
-          ? `/attendance/students/${classNumber}/${section}`
-          : currentPath === "/result/all/class"
-          ? `/report/${classNumber}/${section}`
-          : `/attendance/students/${classNumber}/${section}`;
-      
-      
-        return (
-          <div
-            key={section}
-            className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
-            onClick={() => (window.location.href = targetPath)} // Navigate on click
-          >
-            Section {section}
-          </div>
-        );
-            })}
-          </div>
+    <>
+      {userType === 2 ? (
+        <ResultMatrixTable />
+      ) : (
+        <div className="grid grid-cols-3 gap-4 p-5">
+          {classes.map((classNumber) => (
+            <div
+              key={classNumber}
+              className="p-4 border rounded-lg shadow-lg bg-blue-100 text-center text-xl font-semibold cursor-pointer"
+              onClick={() => fetchSections(classNumber)}
+            >
+              <div className="flex flex-col items-center">
+                <span>Class {classNumber}</span>
+                {openClass === classNumber && (
+                  <div className="mt-2 w-full bg-white border rounded-lg shadow-md p-2">
+                    {loading[classNumber] ? (
+                      <p className="text-gray-500 text-sm">
+                        Loading sections...
+                      </p>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2">
+                        {sections[classNumber]?.map((section) => {
+                          // Determine navigation path based on current location
+                          const targetPath =
+                            currentPath === '/attendance/history'
+                              ? '/attendance/history/dates'
+                              : currentPath === '/attendance'
+                              ? `/attendance/students/${classNumber}/${section}`
+                              : currentPath === '/result/all/class'
+                              ? `/report/${classNumber}/${section}`
+                              : `/attendance/students/${classNumber}/${section}`;
+
+                          return (
+                            <div
+                              key={section}
+                              className="p-2 bg-green-100 text-center rounded-lg text-sm font-medium cursor-pointer hover:bg-green-300 block"
+                              onClick={() =>
+                                (window.location.href = targetPath)
+                              } // Navigate on click
+                            >
+                              Section {section}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 };
 

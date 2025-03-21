@@ -1,0 +1,60 @@
+.fee-table-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.fee-table-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.fee-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.fee-table th,
+.fee-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.fee-table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.fee-table input {
+  width: 80%;
+  padding: 5px;
+  font-size: 14px;
+}
+
+.fee-table button {
+  margin: 2px;
+  padding: 4px 8px;
+  font-size: 13px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.fee-table button:hover {
+  opacity: 0.8;
+}
+
+.fee-table button:nth-child(1) {
+  background-color: #007bff;
+  color: white;
+}
+
+.fee-table button:nth-child(2) {
+  background-color: #dc3545;
+  color: white;
+}

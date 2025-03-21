@@ -1,9 +1,76 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 // Model import
 const models = require('../models');
 const { name } = require('../strategies/jwt');
 const User = models.user;
+const StudentMeta = models.studentMeta;
 const TeacherStSubjectAssociation = models.TeacherStSubjectAssociation;
+
+//http://localhost:5000/api/user/login
+exports.login = async function (req, res) {
+  let body = req.body;
+  try {
+    const user = await User.findOne({
+      where: {
+        email: body.email,
+      },
+    });
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: 'Email is not correct!' });
+    }
+
+    const isMatch = await bcrypt.compare(body.password, user.password);
+
+    if (isMatch) {
+      let studentMetaData = {}; // Default empty object
+
+      // If userType is 2, fetch class, rollNo, and section from studentMeta
+      if (user.userType === 2) {
+        const studentMeta = await StudentMeta.findOne({
+          where: { userid: user.id },
+        });
+
+        if (studentMeta) {
+          studentMetaData = {
+            class: studentMeta.class,
+            rollNo: studentMeta.rollNo,
+            section: studentMeta.section,
+          };
+        }
+      }
+
+      // Generate JWT Token
+      const token = jwt.sign(
+        {
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+          userType: user.userType,
+          ...studentMetaData, // Append student meta data if available
+        },
+        process.env.JWT_SECRET, // Use a secure environment variable
+        { expiresIn: '24h' } // Token expires in 24 hours
+      );
+
+      return res.json({
+        token: token, // Send the JWT token to the frontend
+        success: true,
+        message: 'Login successful',
+      });
+    } else {
+      return res
+        .status(401)
+        .json({ success: false, message: 'Invalid credentials' });
+    }
+  } catch (e) {
+    return res.status(500).send({ success: false, error: e.message });
+  }
+};
+
 // Signup user
 //http://localhost:5000/api/user/register
 exports.signup = async function (req, res) {
@@ -56,43 +123,6 @@ exports.user_meta_data = async function (req, res) {
   // }
 };
 
-//http://localhost:5000/api/user/login
-exports.login = async function (req, res) {
-  let body = req.body;
-  try {
-    const user = await User.findOne({
-      where: {
-        email: body.email,
-      },
-    });
-
-    if (!user) {
-      res.json('Email is not correct!');
-    }
-
-    console.log('user information ==> ' + JSON.stringify(user));
-
-    const isMatch = await bcrypt.compare(body.password, user.password);
-
-    if (isMatch) {
-      res.send({
-        email: user.email,
-        userId: user.id,
-        name: user.name,
-        userType: user.userType,
-        success: true,
-        message: 'Login successful',
-      });
-    } else {
-      res.send({ success: false, message: 'Invalid credentials' });
-    }
-
-    //exports.authenticate(req, res);
-  } catch (e) {
-    return res.status(400).send({ error: e.message });
-  }
-};
-
 //get user by type ID
 // Get users by userType ID
 exports.getUserByType = async (req, res) => {
@@ -132,4 +162,3 @@ exports.getUserByType = async (req, res) => {
       .json({ message: 'Internal server error', error: error.message });
   }
 };
-
