@@ -69,6 +69,30 @@ exports.getFeeById = async (req, res) => {
   }
 };
 
+
+exports.getFeeByClass = async (req, res) => {
+  try {
+    const { className } = req.params;
+
+    const fee = await Fees.findOne({
+      where: { class: className },
+    });
+
+    if (!fee) {
+      return res.status(404).json({ error: 'Fee not found for this class' });
+    }
+
+    res.status(200).json({
+      message: '✅ Fee retrieved successfully',
+      data: fee,
+    });
+  } catch (error) {
+    console.error('❌ Error fetching fee by class:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
 // Update Fee
 exports.updateFee = async (req, res) => {
   try {

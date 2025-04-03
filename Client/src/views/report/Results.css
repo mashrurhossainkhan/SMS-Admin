@@ -52,17 +52,22 @@
   text-align: center;
 }
 
-.results-table {
-  margin-top: 2rem;
+.table-scroll-wrapper {
+  overflow-x: auto;
   width: 100%;
-  max-width: 100%;
+}
+
+/* Ensure table doesn't squish */
+.results-table {
+  min-width: 800px; /* Adjust as needed */
+  width: max-content;
   border-collapse: collapse;
   border: 1px solid #d1d5db;
   background-color: #ffffff;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   border-radius: 8px;
-  overflow: hidden;
 }
+
 
 .results-table thead {
   background-color: #3b82f6;
@@ -83,6 +88,7 @@
 }
 
 .results-table input[type='number'] {
+  min-width: 70px; /* ✅ Set a minimum width */
   width: 100%;
   padding: 0.4rem;
   text-align: center;
@@ -90,6 +96,7 @@
   border-radius: 6px;
   transition: 0.2s;
 }
+
 
 .results-table input[type='number']:focus {
   border-color: #3b82f6;

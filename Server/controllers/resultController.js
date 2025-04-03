@@ -105,61 +105,63 @@ exports.getResultTypes = async (req, res) => {
   }
 };
 //result type ends
-
 exports.createResult = async (req, res) => {
   try {
-    let { resultType, stId, teacherId, selectedSubject, marks, remarks } =
-      req.body;
+    const payload = Array.isArray(req.body) ? req.body : [req.body]; // Handle single or multiple
 
-    // **Check for missing fields**
-    if (
-      !resultType ||
-      !stId ||
-      !teacherId ||
-      !selectedSubject ||
-      marks === undefined
-    ) {
-      return res.status(400).json({
-        error: '❌ Missing required fields',
-        details: { resultType, stId, teacherId, marks },
-      });
+    const resultsToInsert = [];
+
+    for (let entry of payload) {
+      let { resultType, stId, teacherId, selectedSubject, marks, remarks } = entry;
+
+      // Validate
+      if (!resultType || !stId || !teacherId || !selectedSubject || marks === undefined) {
+        return res.status(400).json({
+          error: '❌ Missing required fields in one or more entries',
+          details: entry,
+        });
+      }
+
+      // Resolve resultType ID
+     // If resultType is already a valid ID (number)
+if (typeof resultType !== 'number') {
+  return res.status(400).json({
+    error: `❌ resultType must be a number (ID)`,
+  });
+}
+
+// Optional: Verify the ID exists
+const resultTypeExists = await ResultType.findByPk(resultType);
+if (!resultTypeExists) {
+  return res.status(400).json({
+    error: `❌ Result type with ID '${resultType}' does not exist`,
+  });
+}
+
+resultsToInsert.push({
+  resultType, // Directly using the ID
+  stId,
+  teacherId,
+  subjectId: selectedSubject,
+  marks,
+  remarks: remarks || null,
+});
+
     }
 
-    // 🔹 **Fetch the resultType ID from result_types table**
-    const resultTypeRecord = await ResultType.findOne({
-      attributes: ['id'],
-      where: { type: resultType },
-      raw: true,
-    });
-
-    if (!resultTypeRecord) {
-      return res.status(400).json({
-        error: `❌ Result type '${resultType}' does not exist`,
-      });
-    }
-
-    // 🔹 Use the resultType ID instead of name
-    resultType = resultTypeRecord.id;
-
-    // 🔹 Insert the result
-    const newResult = await Result.create({
-      resultType,
-      stId,
-      subjectId: selectedSubject,
-      teacherId,
-      marks,
-      remarks: remarks || null,
-    });
+    // 🔹 Bulk insert results
+    const createdResults = await Result.bulkCreate(resultsToInsert);
 
     res.status(201).json({
-      message: '✅ Result created successfully',
-      data: newResult,
+      message: '✅ Results created successfully',
+      data: createdResults,
     });
   } catch (error) {
-    console.error('❌ Error creating result:', error);
+    console.error('❌ Error creating results:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 exports.updateResult = async (req, res) => {
   try {

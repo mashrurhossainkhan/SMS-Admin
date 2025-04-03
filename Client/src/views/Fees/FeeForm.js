@@ -8,6 +8,7 @@ const FeeForm = () => {
   const [className, setClassName] = useState('');
   const [fees, setFees] = useState('');
   const [message, setMessage] = useState('');
+  const [tableKey, setTableKey] = useState(0); // ✅ Key to force re-render
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +22,7 @@ const FeeForm = () => {
       setMessage(response.data.message);
       setClassName('');
       setFees('');
+      setTableKey(prev => prev + 1); // ✅ Force FeeTable to remount and fetch again
     } catch (error) {
       const err = error?.response?.data?.error || 'Something went wrong!';
       setMessage(`❌ ${err}`);
@@ -53,7 +55,10 @@ const FeeForm = () => {
 
         <button type="submit">Submit</button>
       </form>
-      <FeeTable />
+      
+      {/* ✅ FeeTable will re-render when `key` changes */}
+      <FeeTable key={tableKey} />
+      
       {message && <p className="message">{message}</p>}
     </div>
   );

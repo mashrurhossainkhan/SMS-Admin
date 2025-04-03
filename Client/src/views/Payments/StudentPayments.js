@@ -6,9 +6,11 @@ import { useLocation } from 'react-router-dom';
 import PaymentTable from './PaymentTable';
 
 const StudentPayment = () => {
+  const today = new Date().toISOString().split('T')[0];
   const location = useLocation(); // Get the current route
   const [activeTab, setActiveTab] = useState('students'); // State to control the active tab
   const [students, setStudents] = useState([]);
+  const [classFees, setClassFees] = useState({});
   const [searchQuery, setSearchQuery] = useState(''); // Search query state
   const [amounts, setAmounts] = useState({}); // State to store amounts for each student
   const [dates, setDates] = useState({}); // State to store dates for each student
@@ -52,6 +54,20 @@ const StudentPayment = () => {
       if (location.pathname.includes('/payment/debit')) {
         userType = 3;
       } else if (location.pathname.includes('/payments/credit')) {
+        const fetchFees = async () => {
+          try {
+            const response = await axios.get(`${API}/api/fees`);
+            const feeMap = {};
+            response.data.data.forEach((fee) => {
+              feeMap[fee.class] = fee.fees;
+            });
+            setClassFees(feeMap);
+          } catch (err) {
+            console.error('Error fetching fees by class:', err);
+          }
+        };
+      
+        fetchFees();
         userType = 2;
       } else {
         return; // Exit if no valid condition is met
@@ -96,8 +112,12 @@ const StudentPayment = () => {
   );
 
   const handlePaid = async (Id) => {
-    const amount = amounts[Id];
-    const date = dates[Id];
+    const student = students.find((s) => s.id === Id);
+  const studentClass = student?.meta?.data?.class;
+
+  const amount =
+    amounts[Id] !== undefined ? amounts[Id] : classFees[studentClass];
+  const date = dates[Id] || today;
 
     // Validate amount and date
     if (!amount) {
@@ -346,14 +366,17 @@ const StudentPayment = () => {
                     <label>
                       <strong>Amount:</strong>
                       <input
-                        type="number"
-                        value={amounts[student.id] || ''}
-                        onChange={(e) =>
-                          handleAmountChange(student.id, e.target.value)
-                        }
-                        placeholder="Enter amount"
-                        required
-                      />
+                          type="number"
+                          value={
+                            amounts[student.id] !== undefined
+                              ? amounts[student.id]
+                              : classFees[student.meta?.data?.class] || ''
+                          }
+                          onChange={(e) => handleAmountChange(student.id, e.target.value)}
+                          placeholder={`Default: ${classFees[student.meta?.data?.class] || 'Enter amount'}`}
+                          required
+                        />
+
                     </label>
                   </div>
                   <div className="date-input">
@@ -361,7 +384,7 @@ const StudentPayment = () => {
                       <strong>Date:</strong>
                       <input
                         type="date"
-                        value={dates[student.id] || ''}
+                        value={dates[student.id] || today}
                         onChange={(e) =>
                           handleDateChange(student.id, e.target.value)
                         }
@@ -372,7 +395,15 @@ const StudentPayment = () => {
                   <button
                     className="paid-button"
                     onClick={() => handlePaid(student.id)}
-                    disabled={!amounts[student.id] || !dates[student.id]}
+                    disabled={
+                      !(
+                        (amounts[student.id] !== undefined
+                          ? amounts[student.id]
+                          : classFees[student.meta?.data?.class]) &&
+                        (dates[student.id] || today)
+                      )
+                    }
+                    
                   >
                     Paid
                   </button>

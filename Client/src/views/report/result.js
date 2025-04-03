@@ -98,6 +98,13 @@ const Results = () => {
               } else {
                 student.scores[type.type] = 0; // Default value if no result exists
               }
+              const localKey = `results_${classNumber}_${section}_${selectedSubject}`;
+const stored = localStorage.getItem(localKey);
+if (stored) {
+  const parsedLocal = JSON.parse(stored);
+  setStudents(parsedLocal);
+}
+
             } catch (error) {
               console.error(
                 `Error fetching result for ${student.name} (${type.type}):`,
@@ -119,74 +126,73 @@ const Results = () => {
     }
   }, [students.length, resultTypes.length, selectedSubject]);
 
+
+  const handleSaveAll = async () => {
+    try {
+      for (let student of students) {
+        for (let type of resultTypes) {
+          const marks = student.scores[type.type] || 0;
+  
+          // Check if result exists
+          const existingResult = await axios.get(
+            `${API}/api/result/check/${student.userId}/${type.id}/${selectedSubject}`
+          );
+  
+          const payload = {
+            resultType: type.id,
+            stId: student.userId,
+            teacherId: teacherId,
+            selectedSubject,
+            marks,
+            remarks: marks >= 75 ? 'Good' : '',
+          };
+  
+          const updatePayload = {
+            resultType: type.id,
+            stId: student.userId,
+            teacherId: teacherId,
+            selectedSubject,
+            marks,
+            remarks: marks >= 75 ? 'Good' : '',
+          };
+  
+          if (existingResult.data.exists) {
+            await axios.put(
+              `${API}/api/update/result/${existingResult.data.resultId}`,
+              updatePayload
+            );
+          } else {
+            await axios.post(`${API}/api/add/result`, payload);
+          }
+        }
+      }
+  
+      alert('✅ All results saved successfully!');
+      // Optionally clear localStorage
+      const localKey = `results_${classNumber}_${section}_${selectedSubject}`;
+      localStorage.removeItem(localKey);
+    } catch (error) {
+      console.error('❌ Error saving all results:', error);
+      alert('Failed to save results. Please try again.');
+    }
+  };
+  
+
   // Handle input change & auto-save result
-  const handleInputChange = async (studentIndex, type, value) => {
+  const handleInputChange = (studentIndex, type, value) => {
     const updatedStudents = [...students];
     updatedStudents[studentIndex].scores[type.type] = parseFloat(value) || 0;
-    // Recalculate total
     updatedStudents[studentIndex].total = Object.values(
       updatedStudents[studentIndex].scores
     ).reduce((acc, val) => acc + val, 0);
-
+  
     setStudents(updatedStudents);
-
-    // **Auto-save the result**
-    try {
-      const student = updatedStudents[studentIndex];
-      const existingResult = await axios.get(
-        `${API}/api/result/check/${student.userId}/${type.id}/${selectedSubject}`
-      );
-
-      const stored = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
-      const parsed = JSON.parse(stored);
-      const token = parsed?.token;
-      let decodedPayload = null;
-      if (token) {
-        const base64Payload = token.split('.')[1];
-        decodedPayload = JSON.parse(atob(base64Payload));
-        console.log('erfeferf' + decodedPayload);
-
-        if (decodedPayload?.userId) {
-          setTeacherId(decodedPayload.userId);
-        }
-      }
-      const resultData = {
-        resultType: type.type,
-        stId: student.userId,
-        teacherId: decodedPayload?.userId ? decodedPayload.userId : '',
-        selectedSubject,
-        //associationId: 1, // Placeholder, adjust if needed
-        marks: student.scores[type.type] || 0,
-        remarks: student.scores[type.type] >= 75 ? 'Good' : '',
-      };
-
-      console.log(resultData);
-
-      const resultDataUpdate = {
-        resultType: type.id,
-        stId: student.userId,
-        teacherId: teacherId,
-        selectedSubject,
-        //associationId: 1, // Placeholder, adjust if needed
-        marks: student.scores[type.type] || 0,
-        remarks: student.scores[type.type] >= 75 ? 'Good' : '',
-      };
-      //console.log(existingResult.data.exists)
-
-      if (existingResult.data.exists) {
-        // If result exists, update it
-        await axios.put(
-          `${API}/api/update/result/${existingResult.data.resultId}`,
-          resultDataUpdate
-        );
-      } else {
-        // If result doesn't exist, create it
-        await axios.post(`${API}/api/add/result`, resultData);
-      }
-    } catch (error) {
-      console.error('Error auto-saving result:', error);
-    }
+  
+    // ✅ Store in localStorage
+    const localKey = `results_${classNumber}_${section}_${selectedSubject}`;
+    localStorage.setItem(localKey, JSON.stringify(updatedStudents));
   };
+  
 
   const generatePDF = async (studentId, classNumber, section) => {
     try {
@@ -361,8 +367,8 @@ const Results = () => {
                 )}
               </div>
               {selectedSubject && (
-                <div className="mt-6 w-full max-w-6xl mx-auto overflow-x-auto">
-                  <table className="results-table">
+            <div className="table-scroll-wrapper mt-6 w-full max-w-6xl mx-auto overflow-x-auto">
+  <table className="results-table">
                     <thead>
                       <tr
                         style={{ color: 'black' }}
@@ -410,6 +416,25 @@ const Results = () => {
                             >
                               Print
                             </button>
+
+                            <div className="text-center mt-4">
+  <button
+    className="save-all-button"
+    onClick={handleSaveAll}
+    style={{
+      backgroundColor: '#4CAF50',
+      color: 'white',
+      padding: '10px 20px',
+      fontSize: '16px',
+      border: 'none',
+      borderRadius: '5px',
+      cursor: 'pointer',
+    }}
+  >
+    💾 Save All to Database
+  </button>
+</div>
+
                           </td>
                         </tr>
                       ))}

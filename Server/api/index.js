@@ -38,6 +38,7 @@ router.get('/api/fees', feeController.getFees);
 router.get('/api/fees/:id', feeController.getFeeById);
 router.put('/api/fees/:id', feeController.updateFee);
 router.delete('/api/fees/:id', feeController.deleteFee);
+router.get('/fees/class/:className', feeController.getFeeByClass);
 //fees controller
 
 //permission controllers
