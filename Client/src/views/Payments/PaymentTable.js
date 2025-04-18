@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { API } from '../../actions/api';
+import { API, SchoolName } from '../../actions/api';
 import './PaymentTable.css';
 
 const PaymentTable = ({
   filterType = null,
   excludeType = null,
   refreshKey = 0,
+  searchComment = '',
 }) => {
+  const [transactions, setTransactions] = useState([]);
   const [payments, setPayments] = useState([]);
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,14 +17,15 @@ const PaymentTable = ({
   const [typeFilter, setTypeFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const receiptRef = useRef();
+  const [selectedPayment, setSelectedPayment] = useState(null);
 
   const path = window.location.pathname;
   const isDebitPage = path.includes('/payment/debit');
   const API_URL = isDebitPage
-    ? API + '/api/payments/all/debit'
-    : API + '/api/payments/all/credit';
-
-  const DELETE_URL = isDebitPage ? API + '/api/debit/' : API + '/api/credit/';
+    ? `${API}/api/payments/all/debit`
+    : `${API}/api/payments/all/credit`;
+  const DELETE_URL = isDebitPage ? `${API}/api/debit/` : `${API}/api/credit/`;
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -51,12 +54,10 @@ const PaymentTable = ({
   useEffect(() => {
     let filtered = [...payments];
 
-    // Type filtering
     if (typeFilter) {
       filtered = filtered.filter((p) => p.type === typeFilter);
     }
 
-    // Date filtering
     if (startDate) {
       filtered = filtered.filter(
         (p) => new Date(p.date) >= new Date(startDate)
@@ -66,8 +67,14 @@ const PaymentTable = ({
       filtered = filtered.filter((p) => new Date(p.date) <= new Date(endDate));
     }
 
+    if (searchComment) {
+      filtered = filtered.filter((p) =>
+        p.comment?.toLowerCase().includes(searchComment.toLowerCase())
+      );
+    }
+
     setFilteredPayments(filtered);
-  }, [typeFilter, startDate, endDate, payments]);
+  }, [typeFilter, startDate, endDate, payments, searchComment]);
 
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this record?')) return;
@@ -81,6 +88,20 @@ const PaymentTable = ({
     }
   };
 
+  const handlePrint = () => {
+    const printContent = receiptRef.current.innerHTML;
+    const newWindow = window.open('', '', 'width=800,height=600');
+    newWindow.document.write('<html><head><title>Receipt</title>');
+    newWindow.document.write(
+      '<style>body{font-family:sans-serif;padding:20px;} .signatures{margin-top:40px;display:flex;justify-content:space-between;} .signature-box{width:45%;text-align:center;} .receipt{border:1px solid #ddd;padding:20px;} table{width:100%;border-collapse:collapse;} td{padding:8px 0;} .title{font-weight:bold;}</style>'
+    );
+    newWindow.document.write('</head><body>');
+    newWindow.document.write(printContent);
+    newWindow.document.write('</body></html>');
+    newWindow.document.close();
+    newWindow.print();
+  };
+
   const uniqueTypes = [...new Set(payments.map((p) => p.type))];
 
   return (
@@ -89,7 +110,6 @@ const PaymentTable = ({
         {isDebitPage ? 'Debit Transactions' : 'Credit Transactions'}
       </h2>
 
-      {/* Filters */}
       <div
         className="filters"
         style={{
@@ -99,7 +119,6 @@ const PaymentTable = ({
           flexWrap: 'wrap',
         }}
       >
-        {/* Type filter */}
         <div>
           <label htmlFor="type-select">Filter by Type:</label>
           <select
@@ -117,7 +136,6 @@ const PaymentTable = ({
           </select>
         </div>
 
-        {/* Start date */}
         <div>
           <label>From:</label>
           <input
@@ -128,7 +146,6 @@ const PaymentTable = ({
           />
         </div>
 
-        {/* End date */}
         <div>
           <label>To:</label>
           <input
@@ -152,7 +169,7 @@ const PaymentTable = ({
               <th>ID</th>
               <th>Type</th>
               <th>Amount</th>
-              <th>User</th>
+              <th>Name</th>
               <th>Email</th>
               <th>Comment</th>
               <th>Actions</th>
@@ -176,6 +193,16 @@ const PaymentTable = ({
                     >
                       Delete
                     </button>
+                    <button
+                      className="print-btn"
+                      onClick={() => {
+                        setSelectedPayment(payment);
+                        setTimeout(() => handlePrint(), 100);
+                      }}
+                      style={{ marginLeft: '8px' }}
+                    >
+                      Print
+                    </button>
                   </td>
                 </tr>
               ))
@@ -186,6 +213,59 @@ const PaymentTable = ({
             )}
           </tbody>
         </table>
+      )}
+
+      {selectedPayment && (
+        <div style={{ display: 'none' }}>
+          <div ref={receiptRef} className="receipt">
+            <h1>{SchoolName}</h1>
+            <h3>Payment Receipt</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td className="title">Date:</td>
+                  <td>{new Date(selectedPayment.date).toLocaleDateString()}</td>
+                </tr>
+                <tr>
+                  <td className="title">Transaction ID:</td>
+                  <td>{selectedPayment.id}</td>
+                </tr>
+                <tr>
+                  <td className="title">Type:</td>
+                  <td>{selectedPayment.type}</td>
+                </tr>
+                <tr>
+                  <td className="title">Amount:</td>
+                  <td>${selectedPayment.amount.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td className="title">Name:</td>
+                  <td>{selectedPayment.user_name}</td>
+                </tr>
+                <tr>
+                  <td className="title">Email:</td>
+                  <td>{selectedPayment.user_email}</td>
+                </tr>
+                <tr>
+                  <td className="title">Comment:</td>
+                  <td>{selectedPayment.comment || 'N/A'}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div className="signatures">
+              <div className="signature-box">
+                _______________________
+                <br />
+                Customer Signature
+              </div>
+              <div className="signature-box">
+                _______________________
+                <br />
+                Authority Signature
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

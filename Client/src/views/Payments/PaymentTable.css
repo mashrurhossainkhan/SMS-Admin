@@ -84,6 +84,7 @@
 
 /* Buttons */
 .edit-btn,
+.print-btn,
 .delete-btn {
   border: none;
   padding: 8px 14px;

@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './StudentPayment.css'; // Import the CSS file for styling
-import { API } from '../../actions/api';
+import { API, SchoolName } from '../../actions/api';
 import { useLocation } from 'react-router-dom';
 import PaymentTable from './PaymentTable';
+import { useRef } from 'react';
 
 const StudentPayment = () => {
+  const receiptRef = useRef();
+  const [lastPaidAmount, setLastPaidAmount] = useState('');
+  const [lastPaidMonths, setLastPaidMonths] = useState('');
+  const [lastPaidDate, setLastPaidDate] = useState('');
+
+  const [lastPaidStudent, setLastPaidStudent] = useState(null);
   const today = new Date().toISOString().split('T')[0];
   const location = useLocation(); // Get the current route
+  const isCreditPage = location.pathname.includes('/payments/credit');
   const [activeTab, setActiveTab] = useState('students'); // State to control the active tab
   const [students, setStudents] = useState([]);
   const [classFees, setClassFees] = useState({});
@@ -17,6 +25,9 @@ const StudentPayment = () => {
   const [history, setHistory] = useState([]); // State to store payment history
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [selectedStudent, setSelectedStudent] = useState(null); // State for selected student
+  const [comments, setComments] = useState({});
+  const [transactionSearch, setTransactionSearch] = useState('');
+
   const storedData = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
   const storedToken = localStorage.getItem('3tyscBeRLqeTBTacRzEUXDAmKmGV6qMK');
   let userId = null;
@@ -46,6 +57,24 @@ const StudentPayment = () => {
     date: '',
   });
 
+  const handlePrint = () => {
+    const content = receiptRef.current.innerHTML;
+    const win = window.open('', '', 'width=800,height=600');
+    win.document.write('<html><head><title>Receipt</title>');
+    win.document.write(`<style>
+      body { font-family: Arial; padding: 20px; }
+      .signatures { margin-top: 40px; display: flex; justify-content: space-between; }
+      .signature-box { width: 45%; text-align: center; }
+      table { width: 100%; margin-top: 20px; }
+      td { padding: 6px 0; }
+    </style>`);
+    win.document.write('</head><body>');
+    win.document.write(content);
+    win.document.write('</body></html>');
+    win.document.close();
+    win.print();
+  };
+
   // Fetch students data from the API
   useEffect(() => {
     if (activeTab === 'students') {
@@ -66,7 +95,7 @@ const StudentPayment = () => {
             console.error('Error fetching fees by class:', err);
           }
         };
-      
+
         fetchFees();
         userType = 2;
       } else {
@@ -113,11 +142,11 @@ const StudentPayment = () => {
 
   const handlePaid = async (Id) => {
     const student = students.find((s) => s.id === Id);
-  const studentClass = student?.meta?.data?.class;
+    const studentClass = student?.meta?.data?.class;
 
-  const amount =
-    amounts[Id] !== undefined ? amounts[Id] : classFees[studentClass];
-  const date = dates[Id] || today;
+    const amount =
+      amounts[Id] !== undefined ? amounts[Id] : classFees[studentClass];
+    const date = dates[Id] || today;
 
     // Validate amount and date
     if (!amount) {
@@ -130,20 +159,35 @@ const StudentPayment = () => {
     }
 
     try {
-      const payload = {
-        userId: Id,
-        amount: parseFloat(amount),
-        type: 'monthly payment',
-        comment: 'Monthly payment made via UI by ' + tokenEmail, // Optional comment
-        date, // Date from the frontend
-      };
-
+      let payload;
       // Determine API endpoint dynamically
       let endpoint = '';
       if (location.pathname.includes('/payment/debit')) {
         endpoint = `${API}/api/payments/add/debit`;
+        payload = {
+          userId: Id,
+          amount: parseFloat(amount),
+          type: 'monthly payment',
+          comment:
+            'Teacher id : months: ' +
+            JSON.stringify(comments) + // Optional comment
+            'Monthly payment made via UI by ' +
+            tokenEmail,
+          date, // Date from the frontend
+        };
       } else if (location.pathname.includes('/payments/credit')) {
         endpoint = `${API}/api/payments/add/credit`;
+        payload = {
+          userId: Id,
+          amount: parseFloat(amount),
+          type: 'monthly payment',
+          comment:
+            'Student id : months: ' +
+            JSON.stringify(comments) + // Optional comment
+            'Monthly payment made via UI by ' +
+            tokenEmail,
+          date, // Date from the frontend
+        };
       } else {
         alert('Invalid payment type.');
         return;
@@ -151,7 +195,13 @@ const StudentPayment = () => {
 
       const response = await axios.post(endpoint, payload);
 
-      console.log('Payment successful:', response.data);
+      setLastPaidStudent(student);
+      setLastPaidAmount(amount);
+      setLastPaidMonths(comments[Id]);
+      setLastPaidDate(date);
+
+      setTimeout(() => handlePrint(), 100); // ensure DOM updates before print
+
       alert('Payment successful!');
       // Clear amount and date for the student after successful payment
       setAmounts((prev) => ({ ...prev, [Id]: '' }));
@@ -366,19 +416,102 @@ const StudentPayment = () => {
                     <label>
                       <strong>Amount:</strong>
                       <input
-                          type="number"
-                          value={
-                            amounts[student.id] !== undefined
-                              ? amounts[student.id]
-                              : classFees[student.meta?.data?.class] || ''
-                          }
-                          onChange={(e) => handleAmountChange(student.id, e.target.value)}
-                          placeholder={`Default: ${classFees[student.meta?.data?.class] || 'Enter amount'}`}
-                          required
-                        />
-
+                        type="number"
+                        value={
+                          amounts[student.id] !== undefined
+                            ? amounts[student.id]
+                            : classFees[student.meta?.data?.class] || ''
+                        }
+                        onChange={(e) =>
+                          handleAmountChange(student.id, e.target.value)
+                        }
+                        placeholder={`Default: ${
+                          classFees[student.meta?.data?.class] || 'Enter amount'
+                        }`}
+                        required
+                        disabled={isCreditPage}
+                      />
                     </label>
                   </div>
+
+                  <div className="month-input">
+                    <label>
+                      <strong>Month(s):</strong>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: '8px',
+                        }}
+                      >
+                        {[
+                          'January',
+                          'February',
+                          'March',
+                          'April',
+                          'May',
+                          'June',
+                          'July',
+                          'August',
+                          'September',
+                          'October',
+                          'November',
+                          'December',
+                        ].map((month) => {
+                          const selectedMonths = comments[student.id]
+                            ? comments[student.id].split(', ')
+                            : [];
+
+                          const isChecked = selectedMonths.includes(month);
+
+                          const toggleMonth = () => {
+                            const updatedMonths = isChecked
+                              ? selectedMonths.filter((m) => m !== month)
+                              : [...selectedMonths, month];
+
+                            setComments((prev) => ({
+                              ...prev,
+                              [student.id]: updatedMonths.join(', '),
+                            }));
+                          };
+
+                          return (
+                            <label
+                              key={month}
+                              style={{ display: 'flex', alignItems: 'center' }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={toggleMonth}
+                              />
+                              {month}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </label>
+
+                    <label style={{ marginTop: '8px', display: 'block' }}>
+                      <input
+                        type="text"
+                        value={comments[student.id] || ''}
+                        onChange={(e) =>
+                          setComments((prev) => ({
+                            ...prev,
+                            [student.name]: e.target.value,
+                          }))
+                        }
+                        placeholder="Selected months will appear here"
+                        style={{
+                          width: '100%',
+                          padding: '6px',
+                          marginTop: '4px',
+                        }}
+                      />
+                    </label>
+                  </div>
+
                   <div className="date-input">
                     <label>
                       <strong>Date:</strong>
@@ -400,10 +533,11 @@ const StudentPayment = () => {
                         (amounts[student.id] !== undefined
                           ? amounts[student.id]
                           : classFees[student.meta?.data?.class]) &&
-                        (dates[student.id] || today)
+                        (dates[student.id] || today) &&
+                        comments[student.id] &&
+                        comments[student.id].trim() !== ''
                       )
                     }
-                    
                   >
                     Paid
                   </button>
@@ -421,7 +555,27 @@ const StudentPayment = () => {
           </div>
         </div>
       )}
-      {activeTab === 'allTransactions' && <PaymentTable />}
+      {activeTab === 'allTransactions' && (
+        <div style={{ margin: '16px 0' }}>
+          <input
+            type="text"
+            placeholder="Search by comment (e.g., January)"
+            value={transactionSearch}
+            onChange={(e) => setTransactionSearch(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '5px',
+              fontSize: '16px',
+            }}
+          />
+        </div>
+      )}
+
+      {activeTab === 'allTransactions' && (
+        <PaymentTable searchComment={transactionSearch} />
+      )}
 
       {/* Others Page - Credit Input Form */}
       {activeTab === 'others' && (
@@ -441,6 +595,7 @@ const StudentPayment = () => {
                 />
               </label>
             </div>
+
             <div className="form-group">
               <label>
                 Amount:
@@ -479,6 +634,7 @@ const StudentPayment = () => {
                 />
               </label>
             </div>
+
             <div className="form-group">
               <label>
                 Comment:
@@ -524,6 +680,87 @@ const StudentPayment = () => {
             ) : (
               <p>No payment history available.</p>
             )}
+          </div>
+        </div>
+      )}
+
+      {lastPaidStudent && (
+        <div style={{ display: 'none' }}>
+          <div ref={receiptRef}>
+            <h1>{SchoolName}</h1>
+            <h2>Payment Receipt</h2>
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <strong>Name:</strong>
+                  </td>
+                  <td>{lastPaidStudent.name}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>ID:</strong>
+                  </td>
+                  <td>{lastPaidStudent.id}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Email:</strong>
+                  </td>
+                  <td>{lastPaidStudent.email}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Class:</strong>
+                  </td>
+                  <td>{lastPaidStudent.meta?.data?.class}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Amount:</strong>
+                  </td>
+                  <td>{lastPaidAmount}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Months:</strong>
+                  </td>
+                  <td>{lastPaidMonths}</td>
+                </tr>
+                <tr>
+                  <td>
+                    <strong>Date:</strong>
+                  </td>
+                  <td>{lastPaidDate}</td>
+                </tr>
+
+                <tr>
+                  <td>
+                    <strong>Paid by:</strong>
+                  </td>
+                  <td>{tokenEmail}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div
+              className="signatures"
+              style={{
+                marginTop: '50px',
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div className="signature-box">
+                ______________________
+                <br />
+                Customer Signature
+              </div>
+              <div className="signature-box">
+                ______________________
+                <br />
+                Authority Signature
+              </div>
+            </div>
           </div>
         </div>
       )}
